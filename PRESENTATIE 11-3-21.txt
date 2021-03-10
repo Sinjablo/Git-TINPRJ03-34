@@ -1,0 +1,4 @@
+We gebruiken SPIFFS (SPI Flash File System) om de webserver die we als GUI gebruiken apart op de flas memory van de ESP2866 te zetten. Dan kunnen we de code schrijven in CPP, en de websever in HTLM,CSS, ect.
+Dit houd de bank code meer overzichtelijk.
+
+We willen gebruik gaan maken van de ESPAsyncWebServer-esphome Library, hiermee kunnen we makkelijk contact leggen tussen de webserver en de code, via Json
