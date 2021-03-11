@@ -7,7 +7,9 @@
 #include <Wire.h>
 //#include <Adafruit_Sensor.h>
 //#include <Adafruit_BME280.h>
-
+void nothing(){
+	Serial.println("doei");
+}
 const int irTest = D1;
 
 //Adafruit_BME280 bme; // I2C
@@ -73,6 +75,7 @@ String processor(const String &var)
 	}
 }
 
+// int x = digitalRead(irTest);
 
 void setup()
 {
