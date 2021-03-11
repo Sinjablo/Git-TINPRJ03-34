@@ -16,20 +16,24 @@
         <a href="/off"><button class="button button2">OFF</button></a>
     </p>
     <p>
-        <span class="sensor-labels">Temperature</span>
+        <span class="sensor-labels">Testing</span>
         <span id="temperature">%TEMPERATURE%</span>
-        <sup class="units">&deg;C</sup>
+
     </p>
-    <p>
-        <span class="sensor-labels">Humidity</span>
-        <span id="humidity">%HUMIDITY%</span>
-        <sup class="units">&#37;</sup>
-    </p>
-    <p>
-        <span class="sensor-labels">Pressure</span>
-        <span id="pressure">%PRESSURE%</span>
-        <sup class="units">hPa</sup>
-    </p>
+    <!--
+
+        <p>
+            <span class="sensor-labels">Humidity</span>
+            <span id="humidity">%HUMIDITY%</span>
+            <sup class="units">&#37;</sup>
+        </p>
+        <p>
+            <span class="sensor-labels">Pressure</span>
+            <span id="pressure">%PRESSURE%</span>
+            <sup class="units">hPa</sup>
+        </p>
+    -->
+        
 </body>
 <script>
     setInterval(function () {
@@ -41,8 +45,8 @@
         };
         xhttp.open("GET", "/temperature", true);
         xhttp.send();
-    }, 10000);
-
+    }, 1000);
+    /*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -64,6 +68,7 @@
         xhttp.open("GET", "/pressure", true);
         xhttp.send();
     }, 10000);
+    */
 </script>
 
 </html>
