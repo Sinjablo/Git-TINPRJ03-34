@@ -5,16 +5,8 @@
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
 #include <Wire.h>
-//#include <Adafruit_Sensor.h>
-//#include <Adafruit_BME280.h>
-void nothing(){
-	Serial.println("doei");
-}
-const int irTest = D1;
 
-//Adafruit_BME280 bme; // I2C
-//Adafruit_BME280 bme(BME_CS); // hardware SPI
-//Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
+const int irTest = D1;
 
 // Replace with your network credentials
 const char *ssid = "SamsungSmartFridge";
@@ -31,8 +23,12 @@ AsyncWebServer server(80);
 String getIrTest()
 {
 	int x = digitalRead(irTest);
-	// Read temperature as Fahrenheit (isFahrenheit = true)
-	//float temperature = 1.8 * bme.readTemperature() + 32;
+	Serial.println(x);
+	return String(x);
+}
+String getIrTest1()
+{
+	int x = 34;
 	Serial.println(x);
 	return String(x);
 }
@@ -53,6 +49,7 @@ String getPressure()
 */
 
 // Replaces placeholder with LED state value
+// ONLY FOR START-UP I THINK
 String processor(const String &var)
 {
 	Serial.println(var);
@@ -71,11 +68,10 @@ String processor(const String &var)
 	}
 	else if (var == "TEMPERATURE")
 	{
-		return getIrTest();
+		return getIrTest1();
 	}
 }
 
-// int x = digitalRead(irTest);
 
 void setup()
 {
@@ -84,13 +80,6 @@ void setup()
 	pinMode(ledPin, OUTPUT);
 	pinMode(irTest, OUTPUT);
 
-	/*
-  // Initialize the sensor
-  if (!bme.begin(0x76)) {
-    Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    while (1);
-  }
-  */
 	// Initialize SPIFFS
 	if (!SPIFFS.begin())
 	{
@@ -147,6 +136,6 @@ void setup()
 	server.begin();
 }
 
-void loop()
-{
+void loop(){
+	
 }
