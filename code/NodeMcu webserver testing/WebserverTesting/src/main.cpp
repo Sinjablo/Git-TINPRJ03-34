@@ -8,7 +8,7 @@
 //#include <Adafruit_Sensor.h>
 //#include <Adafruit_BME280.h>
 void nothing(){
-	Serial.println("Hallo");
+	Serial.println("doei");
 }
 const int irTest = D1;
 
