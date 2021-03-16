@@ -5,13 +5,18 @@
 #include <ESPAsyncWebServer.h>
 #include <FS.h>
 #include <Wire.h>
+#include <iostream>
+#include <string>
 
 const int irTest = D1;
 
 // Replace with your network credentials
-const char *ssid = "SamsungSmartFridge";
-const char *password = "Nodemcu1";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
+using namespace std;  
+
+String y;
 // Set LED GPIO
 const int ledPin = 2;
 // Stores LED state
@@ -26,11 +31,27 @@ String getIrTest()
 	Serial.println(x);
 	return String(x);
 }
-String getIrTest1()
-{
-	int x = 34;
-	Serial.println(x);
-	return String(x);
+String getPasscode(){
+	int passcodeLenght;
+    //passcodeLenght = tostring(y);
+	
+    passcodeLenght = y.lenght();
+
+	switch (passcodeLenght)
+	{
+	case 1:
+		document.getElementById("humidity").innerHTML = "*";
+		break;
+	case 2:
+		document.getElementById("humidity").innerHTML = "**";
+		break;
+	case 3:
+		document.getElementById("humidity").innerHTML = "***";
+		break;
+	case 4:
+		document.getElementById("humidity").innerHTML = "****";
+		break;
+	}
 }
 /*
 String getHumidity()
@@ -66,10 +87,6 @@ String processor(const String &var)
 		Serial.print(ledState);
 		return ledState;
 	}
-	else if (var == "TEMPERATURE")
-	{
-		return getIrTest1();
-	}
 }
 
 
@@ -98,6 +115,10 @@ void setup()
 	// Print ESP32 Local IP Address
 	Serial.println(WiFi.localIP());
 
+
+
+	server.serveStatic("/index", SPIFFS, "index.html");
+	server.serveStatic("/passcode", SPIFFS, "passcode.html");
 	// Route for root / web page
 	server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send(SPIFFS, "/index.html", String(), false, processor);
@@ -108,21 +129,19 @@ void setup()
 		request->send(SPIFFS, "/style.css", "text/css");
 	});
 
-	// Route to set GPIO to HIGH
-	server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request) {
-		digitalWrite(ledPin, HIGH);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
+	server.on("/RfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getIrTest().c_str());
+		Serial.println("triggered");
+		
 	});
-
-	// Route to set GPIO to LOW
-	server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request) {
-		digitalWrite(ledPin, LOW);
-		request->send(SPIFFS, "/index.html", String(), false, processor);
-	});
-
-	server.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request) {
+	server.on("/PasscodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getIrTest().c_str());
 	});
+	
+	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getPasscode().c_str());
+	});
+
 	/*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getHumidity().c_str());
@@ -133,9 +152,13 @@ void setup()
 	});
 	*/
 	// Start server
+	
 	server.begin();
 }
 
 void loop(){
+	if(digitalRead(irTest) == 1){
+		getPasscode();
+	}
 	
 }
