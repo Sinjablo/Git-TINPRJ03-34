@@ -16,7 +16,7 @@ const char *password = "MaJaNe14245.";
 
 using namespace std;  
 
-String y;
+String x;
 // Set LED GPIO
 const int ledPin = 2;
 // Stores LED state
@@ -25,54 +25,34 @@ String ledState;
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
-String getIrTest()
-{
+//Variables
+bool abortCheck = false;
+
+
+//--------------------------------------String return functions for the webserver to switch pages
+
+String getAbort(){
+
+	bool tempAbortCheck = abortCheck;
+	abortCheck = false;
+	return String(tempAbortCheck);
+}
+
+String getIrTest(){
 	int x = digitalRead(irTest);
-	Serial.println(x);
 	return String(x);
 }
-String getPasscode(){
-	int passcodeLenght;
-    //passcodeLenght = tostring(y);
+
+String getRfidCheck(){
+
 	
-    passcodeLenght = y.lenght();
-
-	switch (passcodeLenght)
-	{
-	case 1:
-		document.getElementById("humidity").innerHTML = "*";
-		break;
-	case 2:
-		document.getElementById("humidity").innerHTML = "**";
-		break;
-	case 3:
-		document.getElementById("humidity").innerHTML = "***";
-		break;
-	case 4:
-		document.getElementById("humidity").innerHTML = "****";
-		break;
-	}
-}
-/*
-String getHumidity()
-{
-	float humidity = bme.readHumidity();
-	Serial.println(humidity);
-	return String(humidity);
 }
 
-String getPressure()
-{
-	float pressure = bme.readPressure() / 100.0F;
-	Serial.println(pressure);
-	return String(pressure);
-}
-*/
+String getPasscodeCheck(){
 
-// Replaces placeholder with LED state value
+}
 // ONLY FOR START-UP I THINK
-String processor(const String &var)
-{
+String processor(const String &var){
 	Serial.println(var);
 	if (var == "STATE")
 	{
@@ -89,9 +69,7 @@ String processor(const String &var)
 	}
 }
 
-
-void setup()
-{
+void setup(){
 	// Serial port for debugging purposes
 	Serial.begin(115200);
 	pinMode(ledPin, OUTPUT);
@@ -115,8 +93,6 @@ void setup()
 	// Print ESP32 Local IP Address
 	Serial.println(WiFi.localIP());
 
-
-
 	server.serveStatic("/index", SPIFFS, "index.html");
 	server.serveStatic("/passcode", SPIFFS, "passcode.html");
 	// Route for root / web page
@@ -129,6 +105,9 @@ void setup()
 		request->send(SPIFFS, "/style.css", "text/css");
 	});
 
+	server.on("/abort", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getAbort().c_str());
+	});
 	server.on("/RfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getIrTest().c_str());
 		Serial.println("triggered");
@@ -138,11 +117,11 @@ void setup()
 		request->send_P(200, "text/plain", getIrTest().c_str());
 	});
 	
-	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getPasscode().c_str());
+	/*
+	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
 	});
 
-	/*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getHumidity().c_str());
 	});
@@ -157,8 +136,9 @@ void setup()
 }
 
 void loop(){
-	if(digitalRead(irTest) == 1){
-		getPasscode();
+
+	if(digitalRead(D1) == HIGH){
+		abortCheck = true;
 	}
 	
 }

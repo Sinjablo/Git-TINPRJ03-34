@@ -9,11 +9,22 @@
 </head>
 
 <body>
-    <h1>Please enter your passcode down below</h1>
+    <h1>PAGE 2!!!</h1>
+    <p>GPIO state<strong> %STATE%</strong></p>
+    <p>
+        <a href="/on"><button class="button">ON</button></a>
+        <a href="/off"><button class="button button2">OFF</button></a>
+    </p>
+    <p>
+        <span class="sensor-labels">Testing</span>
+        <span id="temperature">%TEMPERATURE%</span>
+
+    </p>
     
     <p>
         <span class="sensor-labels">Humidity</span>
-        <span id="humidity">%PASSCODE%</span>
+        <span id="humidity">%HUMIDITY%</span>
+        <sup class="units">&#37;</sup>
     </p>
     <!--
         <p>
@@ -30,8 +41,12 @@
         /**/
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("temperature").innerHTML = this.responseText;
                 if(this.responseText == 1){
+                    //document.getElementById("temperature").innerHTML = "Hallo";
                     location.replace("/PLACE_HOLDER");
+                }else if(this.responseText == 66){
+                    location.replace("/index");
                 }
             }
         };
@@ -43,26 +58,26 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("passcode").innerHTML = this.responseText;
+                
+                
             }
         };
-        xhttp.open("GET", "/passcodeLenght", true);
+        xhttp.open("GET", "/humidity", true);
         xhttp.send();
-    }, 1000);
-
+    }, 100);
+    
+    /*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == true){
-                    location.replace("/index");
-                }
+                document.getElementById("pressure").innerHTML = this.responseText;
             }
         };
-        xhttp.open("GET", "/abort", true);
+        xhttp.open("GET", "/pressure", true);
         xhttp.send();
-    }, 1000);
-
+    }, 10000);
+    */
 </script>
 
 </html>
