@@ -11,8 +11,8 @@
 const int irTest = D1;
 
 // Replace with your network credentials
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
 using namespace std;  
 
