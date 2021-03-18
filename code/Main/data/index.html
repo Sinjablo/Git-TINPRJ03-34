@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1>Welcome to *insert name* bank</h1>
+    <h1>Welcome to Boejie bank</h1>
     <h2>Please scan you debit card.</h2>
 
         
@@ -29,6 +29,19 @@
         };
         
         xhttp.open("GET", "/RfidCheck", true);
+        xhttp.send();
+    }, 1000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == true){
+                    location.replace("/index");
+                }
+            }
+        };
+        xhttp.open("GET", "/abort", true);
         xhttp.send();
     }, 1000);
 </script>

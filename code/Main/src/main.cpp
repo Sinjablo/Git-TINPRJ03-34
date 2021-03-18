@@ -16,7 +16,7 @@ const int irTest = D1;
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
-
+//hallo
 const char *ssid = "LaptopieVanSander";
 const char *password = "KrijgsheerSander";
 
@@ -115,9 +115,7 @@ void setup(){
 		request->send_P(200, "text/plain", getAbort().c_str());
 	});
 	server.on("/RfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getIrTest().c_str());
-		Serial.println("triggered");
-		
+		request->send_P(200, "text/plain", getIrTest().c_str());		
 	});
 	server.on("/PasscodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getIrTest().c_str());
