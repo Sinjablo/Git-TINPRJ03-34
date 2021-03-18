@@ -16,9 +16,12 @@ const int irTest = D1;
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
-//hallo
+
 const char *ssid = "LaptopieVanSander";
 const char *password = "KrijgsheerSander";
+
+//const char *ssid = "lenovolaptop";
+//const char *password = "jarno123";
 
 using namespace std;  
 
