@@ -147,7 +147,7 @@ void setup(){
 		request->send_P(200, "text/plain", getLastName().c_str());
 	});
 	server.on("/witdrawCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getbalanceCheck().c_str());
+		request->send_P(200, "text/plain", getBalanceCheck().c_str());
 	});
 	server.on("/balanceCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getWithdrawCheck().c_str());
