@@ -35,31 +35,51 @@ String ledState;
 AsyncWebServer server(80);
 
 //Variables
+// variables to return to the GUI website
 bool abortCheck = false;
+bool rfidCheck = false;
+bool passcodeCheck = false;
+String lastName = "Vuijk";
+bool withdrawCheck = false;
+bool balanceCheck = false;
 
 
 //--------------------------------------String return functions for the webserver to switch pages
 
-String getAbort(){
-
+String getAbortCheck(){
 	bool tempAbortCheck = abortCheck;
 	abortCheck = false;
 	return String(tempAbortCheck);
 }
-
 String getIrTest(){
 	int x = digitalRead(irTest);
 	return String(x);
 }
-
 String getRfidCheck(){
-
+	bool tempAbortCheck = abortCheck;
+	abortCheck = false;
+	return String(tempAbortCheck);
 	
 }
-
 String getPasscodeCheck(){
-
+	bool tempPasscodeCheck = passcodeCheck;
+	passcodeCheck = false;
+	return String(tempPasscodeCheck);
 }
+String getLastName(){
+	return lastName;
+}
+String getWithdrawCheck(){
+	bool tempWithdrawCheck = withdrawCheck;
+	withdrawCheck = false;
+	return String(tempWithdrawCheck);
+}
+String getBalanceCheck(){
+	bool tempBalanceCheck = balanceCheck;
+	balanceCheck = false;
+	return String(tempBalanceCheck);
+}
+
 // ONLY FOR START-UP I THINK
 String processor(const String &var){
 	Serial.println(var);
@@ -115,15 +135,23 @@ void setup(){
 	});
 
 	server.on("/abort", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getAbort().c_str());
+		request->send_P(200, "text/plain", getAbortCheck().c_str());
 	});
-	server.on("/RfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
+	server.on("/rfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getIrTest().c_str());		
 	});
-	server.on("/PasscodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
+	server.on("/passcodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getIrTest().c_str());
 	});
-	
+	server.on("/lastName", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getLastName().c_str());
+	});
+	server.on("/witdrawCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getbalanceCheck().c_str());
+	});
+	server.on("/balanceCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getWithdrawCheck().c_str());
+	});
 	/*
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
