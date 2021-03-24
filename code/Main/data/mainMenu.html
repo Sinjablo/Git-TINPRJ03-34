@@ -9,19 +9,47 @@
 </head>
 
 <body>
-    <p>
-    <span class="sensor-labels">Welcome back Mr/Mrs. </span>
-        <span id="lastName">%LASTNAME%</span>
-    
-    </p>
-    <h1>Please make a selection.</h1>
-    <p>
-        <span class="menuBox">Check balance</span>
+        <!--
         <span class="menuBox">Withdraw</span>
-    </p>
+        -->
+
+  
+        <span class="menuBox left1">Check balance</span>
+        <span class="menuBox left2">Check balance</span>
+        <span class="menuBox left3">Check balance</span>
+        <span class="menuBox left4">Check balance</span>
+  
+        <span class="menuBox right1">Check balance</span>
+        <span class="menuBox right2">Check balance</span>
+        <span class="menuBox right3">Check balance</span>
+        <span class="menuBox right4">Check balance</span>
+
+
+        <span class="sensor-labels">Welcome back Mr/Miss. </span>
+        <span id="lastName">%LASTNAME%</span>
+        
+        
+        <h1>Please make a selection.</h1>
+        
+        
+     
         
 </body>
 <script>
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        /**/
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == 1){
+                    location.replace("/withdraw");
+                }
+            }
+        };
+        xhttp.open("GET", "/tempBtn", true);
+        xhttp.send();
+    }, 1000);
+
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -44,7 +72,7 @@
         };
         xhttp.open("GET", "/lastName", true);
         xhttp.send();
-    }, 10000);
+    }, 1000);
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -87,3 +115,28 @@
 </script>
 
 </html>
+
+<!--
+    .wrapper{
+      width: 100%;
+    }
+    .leftTab{
+	display: inline-block;
+	background-color: #008CBA;
+	color: white;
+      
+      
+    border: none;
+    border-radius: 0px 32px 32px 0px;
+    padding: 16px 40px;
+    font-size: 30px;
+    margin: 2px;
+    margin-top: 250px;
+	float: left;
+	}
+    .left1{
+      position: absolute;
+      left: 0px;
+      top: 0%;
+    }
+-->

@@ -8,17 +8,17 @@
 #include <iostream>
 #include <string>
 
-const int irTest = D1;
+const int tempBtn = D1;
 
 // Replace with your network credentials
-//const char *ssid = "ASUS1424";
-//const char *password = "MaJaNe14245.";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
 
-const char *ssid = "LaptopieVanSander";
-const char *password = "KrijgsheerSander";
+//const char *ssid = "LaptopieVanSander";
+//const char *password = "KrijgsheerSander";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
@@ -51,8 +51,8 @@ String getAbortCheck(){
 	abortCheck = false;
 	return String(tempAbortCheck);
 }
-String getIrTest(){
-	int x = digitalRead(irTest);
+String getTempBtn(){
+	int x = digitalRead(tempBtn);
 	return String(x);
 }
 String getRfidCheck(){
@@ -102,7 +102,7 @@ void setup(){
 	// Serial port for debugging purposes
 	Serial.begin(115200);
 	pinMode(ledPin, OUTPUT);
-	pinMode(irTest, OUTPUT);
+	pinMode(tempBtn, OUTPUT);
 
 	// Initialize SPIFFS
 	if (!SPIFFS.begin())
@@ -124,24 +124,30 @@ void setup(){
 
 	server.serveStatic("/index", SPIFFS, "index.html");
 	server.serveStatic("/passcode", SPIFFS, "passcode.html");
+	server.serveStatic("/mainMenu", SPIFFS, "mainMenu.html");
+	server.serveStatic("/balance", SPIFFS, "balance.html");
+	server.serveStatic("/withdraw", SPIFFS, "withdraw.html");
+
 	// Route for root / web page
 	server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send(SPIFFS, "/index.html", String(), false, processor);
 	});
-
 	// Route to load style.css file
 	server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send(SPIFFS, "/style.css", "text/css");
 	});
-
+	server.on("/tempBtn", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getTempBtn().c_str());
+	});
+	// route to abort the transaction processes and return to index
 	server.on("/abort", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getAbortCheck().c_str());
 	});
 	server.on("/rfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getIrTest().c_str());		
+		request->send_P(200, "text/plain", getRfidCheck().c_str());		
 	});
 	server.on("/passcodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getIrTest().c_str());
+		request->send_P(200, "text/plain", getPasscodeCheck().c_str());
 	});
 	server.on("/lastName", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getLastName().c_str());
@@ -172,8 +178,7 @@ void setup(){
 
 void loop(){
 
-	if(digitalRead(D1) == HIGH){
-		abortCheck = true;
-	}
+	Serial.println(digitalRead(tempBtn));
+	delay(200);
 	
 }

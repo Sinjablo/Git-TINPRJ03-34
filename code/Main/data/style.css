@@ -38,12 +38,57 @@ html {
       display: inline-block;
       background-color: #008CBA;
       color: white;
-      width: 505px;
+      
       
       border: none;
-      border-radius: 4px;
       padding: 16px 40px;
       font-size: 30px;
-      margin: 2px;
-      margin-top: 250px;
     }
+    .left1{
+      position: absolute;
+      left: 0px;
+      top: 12.5%;
+	  border-radius: 0px 32px 32px 0px;
+    }
+    .left2{
+      position: absolute;
+      left: 0px;
+      top: 37.5%;
+	  border-radius: 0px 32px 32px 0px;
+    }
+    .left3{
+      position: absolute;
+      left: 0px;
+      top: 62.5%;
+	  border-radius: 0px 32px 32px 0px;
+    }
+    .left4{
+      position: absolute;
+      left: 0px;
+      top: 87.5%;
+	  border-radius: 0px 32px 32px 0px;
+    }
+	.right1{
+		position: absolute;
+		right: 0px;
+		top: 12.5%;
+		border-radius: 32px 0px 0px 32px;
+	}
+	.right2{
+		position: absolute;
+		right: 0px;
+		top: 37.5%;
+		border-radius: 32px 0px 0px 32px;
+	}
+	.right3{
+		position: absolute;
+		right: 0px;
+		top: 62.5%;
+		border-radius: 32px 0px 0px 32px;
+	}
+	.right4{
+		position: absolute;
+		right: 0px;
+		top: 87.5%;
+		border-radius: 32px 0px 0px 32px;
+	}
