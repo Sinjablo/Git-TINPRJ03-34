@@ -11,14 +11,14 @@
 const int tempBtn = D1;
 
 // Replace with your network credentials
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
 
-//const char *ssid = "LaptopieVanSander";
-//const char *password = "KrijgsheerSander";
+const char *ssid = "LaptopieVanSander";
+const char *password = "KrijgsheerSander";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
@@ -178,7 +178,6 @@ void setup(){
 
 void loop(){
 
-	Serial.println(digitalRead(tempBtn));
 	delay(200);
 	
 }

@@ -13,7 +13,6 @@ html {
     }
     .button {
       display: inline-block;
-      background-color: #008CBA;
       border: none;
       border-radius: 4px;
       color: white;
@@ -44,51 +43,69 @@ html {
       padding: 16px 40px;
       font-size: 30px;
     }
+	#lastName{
+		font-size: 32pt;
+	}
+	#menuText1{
+		font-size: 32pt;
+	}
+	#menuText2{
+		font-size: 30pt;
+		color: black;
+	}
     .left1{
       position: absolute;
       left: 0px;
       top: 12.5%;
 	  border-radius: 0px 32px 32px 0px;
+	  background-color: #008CBA;
     }
     .left2{
       position: absolute;
       left: 0px;
       top: 37.5%;
 	  border-radius: 0px 32px 32px 0px;
+	  background-color: #008CBA;
     }
     .left3{
       position: absolute;
       left: 0px;
       top: 62.5%;
 	  border-radius: 0px 32px 32px 0px;
+	  background-color: #008CBA;
     }
     .left4{
       position: absolute;
       left: 0px;
       top: 87.5%;
 	  border-radius: 0px 32px 32px 0px;
+	  background-color: #008CBA;
     }
 	.right1{
 		position: absolute;
 		right: 0px;
 		top: 12.5%;
 		border-radius: 32px 0px 0px 32px;
+		background-color: #f44336;
 	}
 	.right2{
 		position: absolute;
 		right: 0px;
 		top: 37.5%;
 		border-radius: 32px 0px 0px 32px;
+		background-color: #f44336;
 	}
 	.right3{
 		position: absolute;
 		right: 0px;
 		top: 62.5%;
 		border-radius: 32px 0px 0px 32px;
+		background-color: #f44336;
 	}
 	.right4{
 		position: absolute;
 		right: 0px;
 		top: 87.5%;
 		border-radius: 32px 0px 0px 32px;
+		background-color: #f44336;
 	}
