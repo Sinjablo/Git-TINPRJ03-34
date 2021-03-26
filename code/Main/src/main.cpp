@@ -8,8 +8,9 @@
 #include <Wire.h>
 #include <iostream>
 #include <string>
+#include <keypad.h>
 
-const int tempBtn = 23;
+const int tempBtn = 16;
 
 // Replace with your network credentials
 const char *ssid = "ASUS1424";
@@ -23,6 +24,24 @@ const char *password = "MaJaNe14245.";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
+
+//--------- Setup keypad----
+const byte ROWS = 4; 
+const byte COLS = 4; 
+
+char hexaKeys[ROWS][COLS] = {
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
+};
+//byte rowPins[ROWS] = {26, 25, 33, 32}; 
+//byte colPins[COLS] = {35, 34, 39, 36}; 
+byte rowPins[ROWS] = {23, 22, 3, 21}; 
+byte colPins[COLS] = {19, 18, 5, 17};
+Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
+//----------End keypad setpu
+
 
 using namespace std;  
 
@@ -179,6 +198,10 @@ void setup(){
 
 void loop(){
 
+	char customKey = customKeypad.getKey();
+  
+  	if (customKey){
+    	Serial.println(customKey);
+  	}
 	delay(200);
-	
 }
