@@ -10,7 +10,6 @@
 #include <string>
 #include <keypad.h>
 
-const int tempBtn = 4;
 
 // Replace with your network credentials
 const char *ssid = "ASUS1424";
@@ -49,6 +48,7 @@ using namespace std;
 String dummyPasscode = "7777";
 String dummyTempPasscode;
 String x;
+const int tempBtn = 4;
 // Set LED GPIO
 const int ledPin = 2;
 // Stores LED state
@@ -161,7 +161,7 @@ void setup(){
 	// Route to load style.css file
 	server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send(SPIFFS, "/style.css", "text/css");
-	});
+	});/*
 	server.on("/tempBtn", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getTempBtn().c_str());
 	});
@@ -184,7 +184,7 @@ void setup(){
 	server.on("/balanceCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getWithdrawCheck().c_str());
 	});
-	/*
+	
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
 	});
@@ -203,7 +203,7 @@ void setup(){
 }
 
 void loop(){
-
+	/*
 	char customKey = customKeypad.getKey();
   
   	if (customKey){
@@ -216,4 +216,5 @@ void loop(){
 		}
   	}
 	delay(200);
+	*/
 }
