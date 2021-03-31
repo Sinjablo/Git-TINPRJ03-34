@@ -10,7 +10,7 @@
 #include <string>
 #include <keypad.h>
 
-const int tempBtn = 16;
+const int tempBtn = 4;
 
 // Replace with your network credentials
 const char *ssid = "ASUS1424";
@@ -38,13 +38,16 @@ char hexaKeys[ROWS][COLS] = {
 //byte rowPins[ROWS] = {26, 25, 33, 32}; 
 //byte colPins[COLS] = {35, 34, 39, 36}; 
 byte rowPins[ROWS] = {23, 22, 3, 21}; 
-byte colPins[COLS] = {19, 18, 5, 17};
+byte colPins[COLS] = {19, 18, 16, 17};
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
-//----------End keypad setpu
+//----------End keypad setUp
 
 
 using namespace std;  
 
+//dummy variables:
+String dummyPasscode = "7777";
+String dummyTempPasscode;
 String x;
 // Set LED GPIO
 const int ledPin = 2;
@@ -58,7 +61,7 @@ AsyncWebServer server(80);
 // variables to return to the GUI website
 bool abortCheck = false;
 bool rfidCheck = false;
-bool passcodeCheck = false;
+int passcodeCheck = 0;
 String lastName = "Vuijk";
 bool withdrawCheck = false;
 bool balanceCheck = false;
@@ -82,8 +85,9 @@ String getRfidCheck(){
 	
 }
 String getPasscodeCheck(){
-	bool tempPasscodeCheck = passcodeCheck;
-	passcodeCheck = false;
+	Serial.println("loc2");
+	int tempPasscodeCheck = passcodeCheck;
+	passcodeCheck = 0;
 	return String(tempPasscodeCheck);
 }
 String getLastName(){
@@ -100,6 +104,7 @@ String getBalanceCheck(){
 	return String(tempBalanceCheck);
 }
 
+/*
 // ONLY FOR START-UP I THINK
 String processor(const String &var){
 	Serial.println(var);
@@ -116,7 +121,8 @@ String processor(const String &var){
 		Serial.print(ledState);
 		return ledState;
 	}
-}
+
+}*/
 
 void setup(){
 	// Serial port for debugging purposes
@@ -150,7 +156,7 @@ void setup(){
 
 	// Route for root / web page
 	server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send(SPIFFS, "/index.html", String(), false, processor);
+		request->send(SPIFFS, "/index.html", String(), false);
 	});
 	// Route to load style.css file
 	server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -201,7 +207,13 @@ void loop(){
 	char customKey = customKeypad.getKey();
   
   	if (customKey){
-    	Serial.println(customKey);
+		if(dummyTempPasscode.length() < 4){
+			dummyTempPasscode += customKey;
+			Serial.println(dummyTempPasscode);
+		}if(dummyTempPasscode == dummyPasscode){
+			passcodeCheck = 1;
+			Serial.println("loc1");
+		}
   	}
 	delay(200);
 }
