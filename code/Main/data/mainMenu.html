@@ -39,12 +39,17 @@
         /**/
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/withdraw");
+                switch(this.responseText){
+                    case 1:
+                        location.replace("/balance");
+                        break;
+                    case 4:
+                        location.replace("/balance");
+                        break;
                 }
             }
         };
-        xhttp.open("GET", "/tempBtn", true);
+        xhttp.open("GET", "/navigation", true);
         xhttp.send();
     }, 1000);
 
@@ -58,17 +63,6 @@
             }
         };
         xhttp.open("GET", "/abort", true);
-        xhttp.send();
-    }, 1000);
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("lastName").innerHTML = this.responseText;
-            }
-        };
-        xhttp.open("GET", "/lastName", true);
         xhttp.send();
     }, 1000);
 

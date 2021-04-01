@@ -12,14 +12,14 @@
 
 
 // Replace with your network credentials
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
 
-//const char *ssid = "LaptopieVanSander";
-//const char *password = "KrijgsheerSander";
+const char *ssid = "LaptopieVanSander";
+const char *password = "KrijgsheerSander";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
@@ -41,6 +41,7 @@ byte colPins[COLS] = {19, 18, 16, 17};
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
 //----------End keypad setUp
 
+int page;
 
 using namespace std;  
 
@@ -48,6 +49,7 @@ using namespace std;
 String dummyPasscode = "7777";
 String dummyTempPasscode;
 String x;
+char g;
 const int tempBtn = 4;
 // Set LED GPIO
 const int ledPin = 2;
@@ -59,6 +61,7 @@ AsyncWebServer server(80);
 
 //Variables
 // variables to return to the GUI website
+char navigationKey;
 bool abortCheck = false;
 bool rfidCheck = false;
 int passcodeCheck = 0;
@@ -74,9 +77,39 @@ String getAbortCheck(){
 	abortCheck = false;
 	return String(tempAbortCheck);
 }
-String getTempBtn(){
-	int x = digitalRead(tempBtn);
-	return String(x);
+String getNavigation(){
+
+	String tempNavigationKey;
+	switch (navigationKey)
+	{
+	case 1:
+		tempNavigationKey = 1;
+		break;
+	case 4:
+		tempNavigationKey = 4;
+		break;
+	case 7:
+		tempNavigationKey = 7;
+		break;
+	case '*':
+		tempNavigationKey = 10;
+		break;
+	case 'A':
+		tempNavigationKey = 11;
+		break;
+	case 'B':
+		tempNavigationKey = 12;
+		break;
+	case 'C':
+		tempNavigationKey = 13;
+		break;
+	default:
+		break;
+	}
+	navigationKey = '0';
+
+
+	return String(tempNavigationKey);
 }
 String getRfidCheck(){
 	bool tempAbortCheck = abortCheck;
@@ -161,9 +194,10 @@ void setup(){
 	// Route to load style.css file
 	server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send(SPIFFS, "/style.css", "text/css");
-	});/*
-	server.on("/tempBtn", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getTempBtn().c_str());
+	});
+	server.on("/navigation", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getNavigation().c_str());
+		page = 2;
 	});
 	// route to abort the transaction processes and return to index
 	server.on("/abort", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -174,9 +208,7 @@ void setup(){
 	});
 	server.on("/passcodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeCheck().c_str());
-	});
-	server.on("/lastName", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getLastName().c_str());
+		page = 1;
 	});
 	server.on("/witdrawCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getBalanceCheck().c_str());
@@ -184,11 +216,11 @@ void setup(){
 	server.on("/balanceCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getWithdrawCheck().c_str());
 	});
-	
+	/*
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
 	});
-
+	
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getHumidity().c_str());
 	});
@@ -203,18 +235,37 @@ void setup(){
 }
 
 void loop(){
-	/*
+	/**/
 	char customKey = customKeypad.getKey();
-  
   	if (customKey){
-		if(dummyTempPasscode.length() < 4){
-			dummyTempPasscode += customKey;
-			Serial.println(dummyTempPasscode);
-		}if(dummyTempPasscode == dummyPasscode){
-			passcodeCheck = 1;
-			Serial.println("loc1");
-		}
+			switch (page)
+		  	{
+		  	case 1:
+				if(dummyTempPasscode.length() < 4){
+					dummyTempPasscode += customKey;
+					Serial.println(dummyTempPasscode);
+				}if(dummyTempPasscode == dummyPasscode){
+					passcodeCheck = 1;
+					Serial.println("loc1");
+				}
+			  	break;
+		  	case 2:
+				navigationKey = customKey;
+			  	break;
+		  	}
+	
   	}
-	delay(200);
-	*/
+
+
+	switch (customKey)
+	{
+	case 'A':
+		/* code */
+		break;
+	
+	default:
+		break;
+	}
+
+	
 }
