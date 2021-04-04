@@ -9,25 +9,22 @@
 </head>
 
 <body>
-        <!--
-        <span class="menuBox">Withdraw</span>
-        -->
+    <!--
+    <span class="menuBox">Withdraw</span>
+    -->
 
-  
-        <span class="menuBox left1">1| Saldo controleren</span>
-        <span class="menuBox left2">4| Geld opnemen</span>
-        <span class="menuBox left3">7|</span>
-        <span class="menuBox left4">*|</span>
-  
-        <span class="menuBox right1">OKE |A</span>
-        <span class="menuBox right2">LEEG |B</span>
-        <span class="menuBox right3">TERUG |C</span>
-        <span class="menuBox right4">AFSLUITEN |D</span>
+    <span class="menuBox left1">1| Saldo controleren</span>
+    <span class="menuBox left2">4| Geld opnemen</span>
+    <span class="menuBox left3">7|</span>
+    <span class="menuBox left4">*|</span>
 
-
-        
-        
-        <h1 id="menuText2">Please make a selection.</h1>
+    <span class="menuBox right1">OKE |A</span>
+    <span class="menuBox right2">LEEG |B</span>
+    <span class="menuBox right3">TERUG |C</span>
+    <span class="menuBox right4">AFSLUITEN |D</span>
+    
+    
+    <h1 id="menuText2">Please make a selection.</h1>
         
         
      
@@ -40,10 +37,10 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 switch(this.responseText){
-                    case 1:
+                    case '1':
                         location.replace("/balance");
                         break;
-                    case 4:
+                    case '4':
                         location.replace("/withdraw");
                         break;
                 }
@@ -51,8 +48,8 @@
         };
         xhttp.open("GET", "/navigation", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -64,7 +61,7 @@
         };
         xhttp.open("GET", "/abort", true);
         xhttp.send();
-    }, 1000);
+    }, 200);
 /*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -107,28 +104,3 @@
 </script>
 
 </html>
-
-<!--
-    .wrapper{
-      width: 100%;
-    }
-    .leftTab{
-	display: inline-block;
-	background-color: #008CBA;
-	color: white;
-      
-      
-    border: none;
-    border-radius: 0px 32px 32px 0px;
-    padding: 16px 40px;
-    font-size: 30px;
-    margin: 2px;
-    margin-top: 250px;
-	float: left;
-	}
-    .left1{
-      position: absolute;
-      left: 0px;
-      top: 0%;
-    }
--->

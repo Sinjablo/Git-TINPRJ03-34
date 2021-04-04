@@ -58,7 +58,7 @@ AsyncWebServer server(80);
 char navigationKey;
 bool abortCheck = false;
 bool rfidCheck = false;
-int passcodeCheck = 0;
+char loginCommand = '0';
 String lastName = "Vuijk";
 
 //--------------------------------------String return functions for the webserver to switch pages
@@ -69,18 +69,17 @@ String getAbortCheck(){
 	return String(tempAbortCheck);
 }
 String getNavigation(){
-	/*
-
-	String tempNavigationKey;
+	
+	int tempNavigationKey;
 	switch (navigationKey)
 	{
-	case 1:
+	case '1':
 		tempNavigationKey = 1;
 		break;
-	case 4:
+	case '4':
 		tempNavigationKey = 4;
 		break;
-	case 7:
+	case '7':
 		tempNavigationKey = 7;
 		break;
 	case '*':
@@ -95,16 +94,13 @@ String getNavigation(){
 	case 'C':
 		tempNavigationKey = 13;
 		break;
-	default:
+    default:
+		tempNavigationKey = 0;
 		break;
 	}
+  	Serial.println(tempNavigationKey);
 	navigationKey = '0';
-	Serial.println(tempNavigationKey);
-	if(tempNavigationKey == NULL){
-		tempNavigationKey = 0;
-	}
-	*/
-	int tempNavigationKey = 0;
+	//int tempNavigationKey = 0;
 
 	return String(tempNavigationKey);
 }
@@ -114,14 +110,40 @@ String getRfidCheck(){
 	return String(tempAbortCheck);
 	
 }
-String getPasscodeCheck(){
-	Serial.println("loc2");
-	int tempPasscodeCheck = passcodeCheck;
-	passcodeCheck = 0;
+String getLoginCommand(){
+	char tempPasscodeCheck = loginCommand;
+	loginCommand = '0';
 	return String(tempPasscodeCheck);
 }
-/*
+String getPasscodeLenght(){
+	Serial.println('loc1');
+	String passcodeLenght;
 
+	switch (dummyTempPasscode.length())
+	{
+	case 1:
+		passcodeLenght = '*';
+		Serial.println(passcodeLenght);
+		break;
+	case 2:
+		passcodeLenght = '**';
+		Serial.println(passcodeLenght);
+		break;
+	case 3:
+		passcodeLenght = '***';
+		Serial.println(passcodeLenght);
+		break;
+	case 4:
+		passcodeLenght = '****';
+		Serial.println(passcodeLenght);
+		break;
+	default:
+		passcodeLenght = ' ';
+		break;
+	}
+	return(passcodeLenght);
+}
+/*
 // ONLY FOR START-UP I THINK
 String processor(const String &var){
 	Serial.println(var);
@@ -189,15 +211,15 @@ void setup(){
 	server.on("/rfidCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getRfidCheck().c_str());		
 	});
-	server.on("/passcodeCheck", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getPasscodeCheck().c_str());
+	server.on("/loginCommand", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getLoginCommand().c_str());
 		page = 1;
 	});
-  /*
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
 	});
 	
+  /*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getHumidity().c_str());
 	});
@@ -212,25 +234,31 @@ void setup(){
 }
 
 void loop(){
-	/**/
 	char customKey = customKeypad.getKey();
   	if (customKey){
 			switch (page)
 		  	{
 		  	case 1:
-				if(dummyTempPasscode.length() < 4){
+			  	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
+				if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
+					loginCommand = customKey;
+					if(customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode){
+						loginCommand = '1';
+						dummyPasscode = ' ';
+					}
+				}if(dummyTempPasscode.length() < 4){
 					dummyTempPasscode += customKey;
 					Serial.println(dummyTempPasscode);
-				}if(dummyTempPasscode == dummyPasscode){
-					passcodeCheck = 1;
-					Serial.println("loc1");
 				}
 			  	break;
 		  	case 2:
-				navigationKey = customKey;
+				  navigationKey = customKey;
 			  	break;
 		  	}
-	
+		if(customKey == 'D'){
+			abortCheck = true;
+		}
   	}
+
 	
 }

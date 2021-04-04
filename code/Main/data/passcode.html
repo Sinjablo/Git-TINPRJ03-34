@@ -9,16 +9,16 @@
 </head>
 
 <body>
-    <h1>Please enter your passcode down below</h1>
+    <h1>Voer Uw pincode in A.U.B.</h1>
     
     <p>
         <span class="sensor-labels">Humidity</span>
         <span id="humidity">%PASSCODE%</span>
     </p>
-    <span class="menuBox right1">OK |A</span>
-        <span class="menuBox right2">CLEAR |B</span>
-        <span class="menuBox right3">CANCEL |C</span>
-        <span class="menuBox right4">ABORT |D</span>
+    <span class="menuBox right1">OKE |A</span>
+        <span class="menuBox right2">LEEG |B</span>
+        <span class="menuBox right3">TERUG |C</span>
+        <span class="menuBox right4">AFSLUITEN |D</span>
     <!--
         <p>
             <span class="sensor-labels">Pressure</span>
@@ -35,14 +35,22 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/mainMenu");
+                switch(this.responseText){
+                    case '1':
+                        location.replace('/mainMenu');
+                        break;
+                    case 'B':
+
+                        break;
+                    case 'C':
+                        loction.replace('/index');
+                        break;
                 }
             }
         };
-        xhttp.open("GET", "/passcodeCheck", true);
+        xhttp.open("GET", "/loginCommand", true);
         xhttp.send();
-    }, 1000);
+    }, 200);
     
     setInterval(function () {
             var xhttp = new XMLHttpRequest();
@@ -55,8 +63,8 @@
             };
             xhttp.open("GET", "/abort", true);
             xhttp.send();
-        }, 1000);
-    /*
+    }, 200);
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -66,8 +74,8 @@
         };
         xhttp.open("GET", "/passcodeLenght", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+    /*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         
