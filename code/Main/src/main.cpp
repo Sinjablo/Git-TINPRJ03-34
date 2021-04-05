@@ -60,6 +60,7 @@ bool abortCheck = false;
 bool rfidCheck = false;
 char loginCommand = '0';
 String lastName = "Vuijk";
+String passcodeLenght;
 
 //--------------------------------------String return functions for the webserver to switch pages
 
@@ -116,29 +117,22 @@ String getLoginCommand(){
 	return String(tempPasscodeCheck);
 }
 String getPasscodeLenght(){
-	Serial.println('loc1');
-	String passcodeLenght;
-
 	switch (dummyTempPasscode.length())
 	{
 	case 1:
-		passcodeLenght = '*';
-		Serial.println(passcodeLenght);
+		passcodeLenght = "*";
 		break;
 	case 2:
-		passcodeLenght = '**';
-		Serial.println(passcodeLenght);
+		passcodeLenght = "**";
 		break;
 	case 3:
-		passcodeLenght = '***';
-		Serial.println(passcodeLenght);
+		passcodeLenght = "***";
 		break;
 	case 4:
-		passcodeLenght = '****';
-		Serial.println(passcodeLenght);
+		passcodeLenght = "****";
 		break;
 	default:
-		passcodeLenght = ' ';
+		passcodeLenght = " ";
 		break;
 	}
 	return(passcodeLenght);
@@ -244,9 +238,11 @@ void loop(){
 					loginCommand = customKey;
 					if(customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode){
 						loginCommand = '1';
-						dummyPasscode = ' ';
+						dummyTempPasscode = "";
+					}else if(customKey == 'B'){
+						dummyTempPasscode = "";
 					}
-				}if(dummyTempPasscode.length() < 4){
+				}else if(dummyTempPasscode.length() < 4){
 					dummyTempPasscode += customKey;
 					Serial.println(dummyTempPasscode);
 				}
