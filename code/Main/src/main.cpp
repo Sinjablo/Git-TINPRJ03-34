@@ -67,6 +67,9 @@ String passcodeLenght;
 String getAbortCheck(){
 	bool tempAbortCheck = abortCheck;
 	abortCheck = false;
+	if(tempAbortCheck == true){
+		dummyTempPasscode = "";
+	}
 	return String(tempAbortCheck);
 }
 String getNavigation(){
@@ -99,7 +102,6 @@ String getNavigation(){
 		tempNavigationKey = 0;
 		break;
 	}
-  	Serial.println(tempNavigationKey);
 	navigationKey = '0';
 	//int tempNavigationKey = 0;
 
@@ -116,26 +118,9 @@ String getLoginCommand(){
 	loginCommand = '0';
 	return String(tempPasscodeCheck);
 }
+
 String getPasscodeLenght(){
-	switch (dummyTempPasscode.length())
-	{
-	case 1:
-		passcodeLenght = "*";
-		break;
-	case 2:
-		passcodeLenght = "**";
-		break;
-	case 3:
-		passcodeLenght = "***";
-		break;
-	case 4:
-		passcodeLenght = "****";
-		break;
-	default:
-		passcodeLenght = " ";
-		break;
-	}
-	return(passcodeLenght);
+	return String(dummyTempPasscode.length());
 }
 /*
 // ONLY FOR START-UP I THINK
@@ -230,31 +215,32 @@ void setup(){
 void loop(){
 	char customKey = customKeypad.getKey();
   	if (customKey){
-			switch (page)
-		  	{
-		  	case 1:
-			  	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
-				if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
-					loginCommand = customKey;
-					if(customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode){
-						loginCommand = '1';
-						dummyTempPasscode = "";
-					}else if(customKey == 'B'){
-						dummyTempPasscode = "";
-					}
-				}else if(dummyTempPasscode.length() < 4){
-					dummyTempPasscode += customKey;
-					Serial.println(dummyTempPasscode);
+		
+		switch (page)
+		{
+		case 1:
+		  	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
+			if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
+				loginCommand = customKey;
+				if(customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode){
+					loginCommand = '1';
+					dummyTempPasscode = "";
+				}else if(customKey == 'B'){
+					dummyTempPasscode = "";
 				}
-			  	break;
-		  	case 2:
-				  navigationKey = customKey;
-			  	break;
-		  	}
+			}else if(dummyTempPasscode.length() < 4){
+				dummyTempPasscode += customKey;
+				Serial.println(dummyTempPasscode);
+			}
+		  	break;
+		case 2:
+			  navigationKey = customKey;
+		  	break;
+		}
 		if(customKey == 'D'){
 			abortCheck = true;
 		}
   	}
 
-	
+	delay(1);
 }
