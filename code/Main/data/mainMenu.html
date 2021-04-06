@@ -9,30 +9,25 @@
 </head>
 
 <body>
-    <h1>PAGE 2!!!</h1>
-    <p>GPIO state<strong> %STATE%</strong></p>
-    <p>
-        <a href="/on"><button class="button">ON</button></a>
-        <a href="/off"><button class="button button2">OFF</button></a>
-    </p>
-    <p>
-        <span class="sensor-labels">Testing</span>
-        <span id="temperature">%TEMPERATURE%</span>
-
-    </p>
     <!--
-
-        <p>
-            <span class="sensor-labels">Humidity</span>
-            <span id="humidity">%HUMIDITY%</span>
-            <sup class="units">&#37;</sup>
-        </p>
-        <p>
-            <span class="sensor-labels">Pressure</span>
-            <span id="pressure">%PRESSURE%</span>
-            <sup class="units">hPa</sup>
-        </p>
+    <span class="menuBox">Withdraw</span>
     -->
+
+    <span class="menuBox left1">1| Saldo controleren</span>
+    <span class="menuBox left2">4| Geld opnemen</span>
+    <span class="menuBox left3">7|</span>
+    <span class="menuBox left4">*|</span>
+
+    <span class="menuBox right1">OKE |A</span>
+    <span class="menuBox right2">LEEG |B</span>
+    <span class="menuBox right3">TERUG |C</span>
+    <span class="menuBox right4">AFSLUITEN |D</span>
+    
+    
+    <h1 id="menuText2">Please make a selection.</h1>
+        
+        
+     
         
 </body>
 <script>
@@ -41,21 +36,20 @@
         /**/
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                //document.getElementById("temperature").innerHTML = this.responseText;
-                if(this.responseText == 1){
-                    //document.getElementById("temperature").innerHTML = "Hallo";
-                    location.replace("/index");
-                }else{
-                    document.getElementById("temperature").innerHTML = "nee bedankt.";
+                switch(this.responseText){
+                    case '1':
+                        location.replace("/balance");
+                        break;
+                    case '4':
+                        location.replace("/withdraw");
+                        break;
                 }
-                
             }
         };
-        
-        xhttp.open("GET", "/temperature", true);
+        xhttp.open("GET", "/navigation", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -67,19 +61,35 @@
         };
         xhttp.open("GET", "/abort", true);
         xhttp.send();
-    }, 1000);
-    /*
+    }, 200);
+/*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("humidity").innerHTML = this.responseText;
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
             }
         };
-        xhttp.open("GET", "/humidity", true);
+        xhttp.open("GET", "/balanceCheck", true);
         xhttp.send();
-    }, 10000);
+    }, 1000);
 
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
+            }
+        };
+        xhttp.open("GET", "/withdrawCheck", true);
+        xhttp.send();
+    }, 1000);
+    
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {

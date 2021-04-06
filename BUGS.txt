@@ -1,0 +1,2 @@
+WDT bug on passcode.html OR getPasscodeLength
+keypad presses registreed niet 

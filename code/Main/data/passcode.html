@@ -9,12 +9,16 @@
 </head>
 
 <body>
-    <h1>Please enter your passcode down below</h1>
+    <h1>Voer Uw pincode in A.U.B.</h1>
     
     <p>
-        <span class="sensor-labels">Humidity</span>
-        <span id="humidity">%PASSCODE%</span>
+        <span class="sensor-labels">Passcode:</span>
+        <span id="passcode"></span>
     </p>
+    <span class="menuBox right1">OKE |A</span>
+        <span class="menuBox right2">LEEG |B</span>
+        <span class="menuBox right3">|C</span>
+        <span class="menuBox right4">AFSLUITEN |D</span>
     <!--
         <p>
             <span class="sensor-labels">Pressure</span>
@@ -25,20 +29,73 @@
         
 </body>
 <script>
+    
+
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
-        /**/
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/PLACE_HOLDER");
+                switch(this.responseText){
+                    case '1':
+                        location.replace('/mainMenu');
+                        break;
+                    case 'B':
+
+                        break;
+                    case 'C':
+                        loction.replace('/index');
+                        break;
+                    default:
+                        break;
                 }
             }
         };
-        xhttp.open("GET", "/PasscodeCheck", true);
+        xhttp.open("GET", "/loginCommand", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+    
+    setInterval(function () {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    if(this.responseText == true){
+                        location.replace("/index");
+                    }
+                }
+            };
+            xhttp.open("GET", "/abort", true);
+            xhttp.send();
+    }, 200);
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("passcode").innerHTML = this.responseText;
+                switch(this.responseText){
+                    case '1':
+                        document.getElementById("passcode").innerHTML = "*";
+                        break;
+                    case '2':
+                        document.getElementById("passcode").innerHTML = "**";
+                        break;
+                    case '3':
+                        document.getElementById("passcode").innerHTML = "***";
+                        break;
+                    case '4':
+                        document.getElementById("passcode").innerHTML = "****";
+                        break;
+                    default:
+                        document.getElementById("passcode").innerHTML = " ";
+                        break;
+                }
+            }
+        };
+        xhttp.open("GET", "/passcodeLenght", true);
+        xhttp.send();
+    }, 200);
+    
+    /*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -48,21 +105,22 @@
         };
         xhttp.open("GET", "/passcodeLenght", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
+        
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == true){
-                    location.replace("/index");
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
                 }
             }
         };
-        xhttp.open("GET", "/abort", true);
+        xhttp.open("GET", "/tempBtn", true);
         xhttp.send();
     }, 1000);
-
+    */
 </script>
 
 </html>
