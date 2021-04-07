@@ -61,6 +61,7 @@ using namespace std;
 //dummy variables:
 String dummyPasscode = "7777";
 String dummyTempPasscode;
+String dummyRekeningnummer = "NL21HAHA010032003";
 String x;
 char g;
 const int tempBtn = 4;
@@ -159,8 +160,9 @@ String processor(const String &var){
 
 void verifieer_pincode(String pincode, String rekeningnummer){
     
-    WiFiClient client = server.available();
+    //WiFiClient client = server.available();
  
+<<<<<<< HEAD
     HTTPClient http;
     String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
     Serial.println(url);
@@ -173,6 +175,20 @@ void verifieer_pincode(String pincode, String rekeningnummer){
     Serial.println(payload);
     http.end();
     delay(1000);
+=======
+        HTTPClient http;
+        String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
+        Serial.println(url);
+        
+        http.begin(url);
+       
+        //GET method
+        int httpCode = http.GET();
+        String payload = http.getString();
+        Serial.println(payload);
+        http.end(); 
+        delay(1000);
+>>>>>>> e1de1a964da9e030b7d19e7616a405f84a2beefa
   
 }
 
@@ -264,7 +280,8 @@ void loop(){
 				}
 			}else if(dummyTempPasscode.length() < 4){
 				dummyTempPasscode += customKey;
-				Serial.println(dummyTempPasscode);
+				verifieer_pincode(dummyTempPasscode, dummyRekeningnummer);
+				//Serial.println(dummyTempPasscode);
 			}
 		  	break;
 		case 2:
