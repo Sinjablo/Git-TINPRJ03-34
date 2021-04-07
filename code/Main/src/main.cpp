@@ -1,5 +1,6 @@
 #include <arduino.h>
 #include <stdio.h>
+#include <WiFi.h> 
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
@@ -9,7 +10,7 @@
 #include <string>
 #include <keypad.h>
 #include <HTTPClient.h>
-#include <ESP32WiFi.h> 
+
 
 
 // Replace with your network credentials
@@ -156,25 +157,24 @@ String processor(const String &var){
 
 }*/
 
-void verifieer_pincode(String pincode, String rekeningnummer)
-  {
+void verifieer_pincode(String pincode, String rekeningnummer){
     
     WiFiClient client = server.available();
  
-        HTTPClient http;
-        String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
-        Serial.println(url);
-        
-        http.begin(url);
-       
-        //GET method
-        int httpCode = http.GET();
-        String payload = http.getString();
-        Serial.println(payload);
-        http.end();
-        delay(1000);
+    HTTPClient http;
+    String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
+    Serial.println(url);
+    
+    http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String payload = http.getString();
+    Serial.println(payload);
+    http.end();
+    delay(1000);
   
-  }
+}
 
 void setup(){
 	// Serial port for debugging purposes
@@ -275,6 +275,7 @@ void loop(){
 			abortCheck = true;
 		}
   	}
+	
 
 	delay(1);
 }
