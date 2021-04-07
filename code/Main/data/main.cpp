@@ -147,11 +147,7 @@ String getPasscodeLenght(){
 }
 
 String getAccountNumber(){
-	String x = "NL04BOEB34254g54";
-	return String(x);
-}
-String getBalance(){
-	int x = 6547;
+	int x = 543;
 	return String(x);
 }
 /*
@@ -258,9 +254,6 @@ void setup(){
 	
 	server.on("/accountNumber", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getAccountNumber().c_str());
-	});
-	server.on("/getBalance", HTTP_GET, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/plain", getBalance().c_str());
 	});
   /*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {

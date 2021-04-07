@@ -109,3 +109,29 @@ html {
 		border-radius: 32px 0px 0px 32px;
 		background-color: #f44336;
 	}
+  #midWrapper{
+    width: 100%
+  }
+  #midTables{
+    background-color: #C44536;
+    width: 70%;
+    height: 270px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    float: center;
+  }
+  #balanceTable{
+    font-family: arial;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .balanceTR:nth-child(even){
+    background-color: #135358;
+  }
+  .balanceTH{
+    
+    border: 1px solid #162020;
+    padding: 8px;
+    text-align: center;
+  }

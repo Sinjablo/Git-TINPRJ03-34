@@ -9,68 +9,66 @@
 </head>
 
 <body>
-    <h1>PAGE 2!!!</h1>
-    <p>GPIO state<strong> %STATE%</strong></p>
-    <p>
-        <a href="/on"><button class="button">ON</button></a>
-        <a href="/off"><button class="button button2">OFF</button></a>
-    </p>
-    <p>
-        <span class="sensor-labels">Testing</span>
-        <span id="temperature">%TEMPERATURE%</span>
+    <!--
+    <span class="menuBox">Withdraw</span>
+    -->
 
-    </p>
-    <!---->
-   
+    <span class="menuBox left1">1|</span>
+    <span class="menuBox left2">4|</span>
+    <span class="menuBox left3">7|</span>
+    <span class="menuBox left4">*|</span>
 
-        <p>
-            <span class="sensor-labels">Humidity</span>
-            <span id="humidity">%HUMIDITY%</span>
-            <sup class="units">&#37;</sup>
-        </p>
-        <p>
-            <span class="sensor-labels">Pressure</span>
-            <span id="pressure">%PRESSURE%</span>
-            <sup class="units">hPa</sup>
-        </p>
-
+    <span class="menuBox right1">|A</span>
+    <span class="menuBox right2">TERUG |B</span>
+    <span class="menuBox right3">|C</span>
+    <span class="menuBox right4">AFSLUITEN |D</span>
     
+    
+    <h1 id="menuText2">Geld overzicht:</h1>
+
+    <div id="midWrapper">
+        <div id="midTables">
+            <table id="balanceTable">
+                <tr class="balanceTR">
+                    <th class="balanceTH">Account nummer</th>
+                    <th class="balanceTH">Balans</th>
+                </tr>
+                
+                <tr class="balanceTR">
+                    <td class="balanceTH" id="accountNumber">%ACCOUNTNUMBER%</td>
+                    <td class="balanceTH" id="balance">%BALANCE%</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+        
+        
+     
         
 </body>
 <script>
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == true){
-                    location.replace("/index");
-                }
-            }
-        };
-        xhttp.open("GET", "/abort", true);
-        xhttp.send();
-    }, 1000);
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
         /**/
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                //document.getElementById("temperature").innerHTML = this.responseText;
-                if(this.responseText == 1){
-                    //document.getElementById("temperature").innerHTML = "Hallo";
-                    location.replace("/index");
-                }else{
-                    document.getElementById("temperature").innerHTML = "nee bedankt.";
+                switch(this.responseText){
+                    case '1':
+                        location.replace("/balance");
+                        break;
+                    case '4':
+                        location.replace("/withdraw");
+                        break;
+                    case '12':
+                        location.replace("/mainMenu");
                 }
-                
             }
         };
-        
-        xhttp.open("GET", "/temperature", true);
+        xhttp.open("GET", "/navigation", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -82,30 +80,58 @@
         };
         xhttp.open("GET", "/abort", true);
         xhttp.send();
-    }, 1000);
-    /*
+    }, 200);
+/*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("humidity").innerHTML = this.responseText;
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
             }
         };
-        xhttp.open("GET", "/humidity", true);
+        xhttp.open("GET", "/balanceCheck", true);
         xhttp.send();
-    }, 10000);
+    }, 1000);
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("pressure").innerHTML = this.responseText;
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
             }
         };
-        xhttp.open("GET", "/pressure", true);
+        xhttp.open("GET", "/withdrawCheck", true);
         xhttp.send();
-    }, 10000);
+    }, 1000);
+    
     */
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("accountNumber").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/accountNumber", true);
+        xhttp.send();
+    }, 500);
+
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("balance").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/getBalance", true);
+        xhttp.send();
+    }, 500);
+    
 </script>
 
 </html>
