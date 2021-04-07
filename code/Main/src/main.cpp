@@ -8,12 +8,14 @@
 #include <iostream>
 #include <string>
 #include <keypad.h>
+#include <HTTPClient.h>
+#include <ESP32WiFi.h> 
 
 
 // Replace with your network credentials
 
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
@@ -23,6 +25,18 @@ const char *password = "MaJaNe14245.";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
+
+const char *ssid = "VielvoyeResidence24GHz";
+const char *password = "Oli/5iN-dR=88#VRGHZ#24";
+
+//Access point credentials
+
+const char* host = "http://192.168.178.73"; //IPv4 adress hosting laptop/server
+String get_host = "http://192.168.178.73"; //same as above
+
+String pincode;
+String rekeningnummer;
+String sleutel = "de3w2jbn7eif1nw9e";
 
 //--------- Setup keypad----
 const byte ROWS = 4; 
@@ -141,6 +155,26 @@ String processor(const String &var){
 	}
 
 }*/
+
+void verifieer_pincode(String pincode, String rekeningnummer)
+  {
+    
+    WiFiClient client = server.available();
+ 
+        HTTPClient http;
+        String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
+        Serial.println(url);
+        
+        http.begin(url);
+       
+        //GET method
+        int httpCode = http.GET();
+        String payload = http.getString();
+        Serial.println(payload);
+        http.end();
+        delay(1000);
+  
+  }
 
 void setup(){
 	// Serial port for debugging purposes
