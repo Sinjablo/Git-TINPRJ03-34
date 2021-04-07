@@ -14,8 +14,8 @@
 
 // Replace with your network credentials
 
-//const char *ssid = "ASUS1424";
-//const char *password = "MaJaNe14245.";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
@@ -26,8 +26,8 @@
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
 
-const char *ssid = "VielvoyeResidence24GHz";
-const char *password = "Oli/5iN-dR=88#VRGHZ#24";
+//const char *ssid = "VielvoyeResidence24GHz";
+//const char *password = "Oli/5iN-dR=88#VRGHZ#24";
 
 //Access point credentials
 
@@ -157,23 +157,27 @@ String processor(const String &var){
 
 }*/
 
-void verifieer_pincode(String pincode, String rekeningnummer)
+bool verifieer_pincode(String pincode, String rekeningnummer)
   {
     
     //WiFiClient client = server.available();
- 
-        HTTPClient http;
-        String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
-        Serial.println(url);
-        
-        http.begin(url);
-       
-        //GET method
-        int httpCode = http.GET();
-        String payload = http.getString();
-        Serial.println(payload);
-        http.end(); 
-        delay(1000);
+		
+    HTTPClient http;
+    String url = get_host+"/verificatie.php?"+"sltl="+sleutel+"&mgrkn="+rekeningnummer+"&mgpc="+pincode;
+    Serial.println(url);
+    
+    http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String payload = http.getString();
+    Serial.println(payload);
+    http.end(); 
+	if(payload == "1"){
+		return true;
+	}else{
+		return false;
+	}
   
   }
 
@@ -257,7 +261,8 @@ void loop(){
 		  	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
 			if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
 				loginCommand = customKey;
-				if(customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode){
+				if(customKey == 'A' && dummyTempPasscode.length() == 4 && verifieer_pincode(dummyTempPasscode, dummyRekeningnummer) == true){
+					//customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode
 					loginCommand = '1';
 					dummyTempPasscode = "";
 				}else if(customKey == 'B'){
@@ -265,8 +270,7 @@ void loop(){
 				}
 			}else if(dummyTempPasscode.length() < 4){
 				dummyTempPasscode += customKey;
-				verifieer_pincode(dummyTempPasscode, dummyRekeningnummer);
-				//Serial.println(dummyTempPasscode);
+				Serial.println(dummyTempPasscode);
 			}
 		  	break;
 		case 2:
