@@ -16,14 +16,14 @@
 
 // Replace with your network credentials
 
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
 //const char *ssid = "Tesla IoT";
 //const char *password = "fsL6HgjN";
 
-//const char *ssid = "LaptopieVanSander";
-//const char *password = "KrijgsheerSander";
+const char *ssid = "LaptopieVanSander";
+const char *password = "KrijgsheerSander";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
@@ -33,8 +33,8 @@ const char *password = "MaJaNe14245.";
 
 //Access point credentials
 
-const char* host = "http://192.168.178.73"; //IPv4 adress hosting laptop/server
-String get_host = "http://192.168.178.73"; //same as above
+const char* host = "http://145.137.14.230"; //IPv4 adress hosting laptop/server
+String get_host = "http://145.137.14.230"; //same as above
 
 String userPasscode = "7777";
 String key = "de3w2jbn7eif1nw9e";
@@ -69,7 +69,8 @@ using namespace std;
 //dummy variables:
 String dummyPasscode = "7777";
 String dummyTempPasscode;
-String dummyRekeningnummer = "NL21HAHA010032003";
+String dummyRekeningnummer;
+String xa = "";
 String x;
 char g;
 const int tempBtn = 4;
@@ -131,9 +132,9 @@ String getNavigation(){
 	return String(tempNavigationKey);
 }
 String getRfidCheck(){
-	bool tempAbortCheck = abortCheck;
-	abortCheck = false;
-	return String(tempAbortCheck);
+	bool tempRfidCheck = rfidCheck;
+	rfidCheck = false;
+	return String(tempRfidCheck);
 	
 }
 String getLoginCommand(){
@@ -284,9 +285,9 @@ void setup(){
 void loop(){
 	char customKey = customKeypad.getKey();
   	if (customKey){
-		
 		switch (page){
 			case 1:	//------------------Check for a RFID card & read it out
+				Serial.println("loc1");
 				// Look for new cards
 				if (!mfrc522.PICC_IsNewCardPresent()){
 					return;
@@ -296,15 +297,26 @@ void loop(){
 					return;
 				}
 				// Dump debug info about the card; PICC_HaltA() is automatically called
+				
 				byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
 				Serial.println("Scanned PICC's UID:");
+				xa = "";
 				for (int i = 0; i < mfrc522.uid.size; i++){
 					readCard[i] = mfrc522.uid.uidByte[i];
-					Serial.print(readCard[i], HEX);
+					xa += readCard[i];
+					//Serial.print(readCard[i], HEX);
 				}
 				Serial.println("");
+				Serial.println(xa);
+				if(xa != ""){
+					rfidCheck = true;
+				}
+				if(xa == "183122152"){
+					dummyRekeningnummer = "NL21HAHA010032003";
+				}
 				mfrc522.PICC_HaltA();
 				mfrc522.PCD_StopCrypto1();
+				break;
 
 			case 2:	//--------------------Take the keypad input for the passcode
 				// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
@@ -333,33 +345,56 @@ void loop(){
 		}
   	}
 	
+	// // Look for new cards
+	// if (!mfrc522.PICC_IsNewCardPresent()){
+	// 	return;
+	// }
+	// // Select one of the cards
+	// if (!mfrc522.PICC_ReadCardSerial()){
+	// 	return;
+	// }
+	// // Dump debug info about the card; PICC_HaltA() is automatically called
+	// byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
+	// String xa;
+	// Serial.println("Scanned PICC's UID:");
+	// for (int i = 0; i < mfrc522.uid.size; i++){
+	// 	readCard[i] = mfrc522.uid.uidByte[i];
+	// 	xa += readCard[i];
+	// 	Serial.print(readCard[i], HEX);
+	// }
+
+	// Serial.println("");
+	// Serial.println(xa);
+	// mfrc522.PICC_HaltA();
+	// mfrc522.PCD_StopCrypto1();
+
+	Serial.println("loc1");
 	// Look for new cards
 	if (!mfrc522.PICC_IsNewCardPresent()){
 		return;
 	}
-
 	// Select one of the cards
 	if (!mfrc522.PICC_ReadCardSerial()){
 		return;
 	}
-
 	// Dump debug info about the card; PICC_HaltA() is automatically called
-	//mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid));
+	
 	byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
-	//String UIDString = "";
-	char UIDChar[7];
 	Serial.println("Scanned PICC's UID:");
-	// for (int i = 0; i < mfrc522.uid.size; i++){
-	// 	readCard[i] = mfrc522.uid.uidByte[i];
-	// 	Serial.print(readCard[i], HEX);
-	// }
+	xa = "";
 	for (int i = 0; i < mfrc522.uid.size; i++){
-		//readCard[i] = mfrc522.uid.uidByte[i];
+		readCard[i] = mfrc522.uid.uidByte[i];
+		xa += readCard[i];
 		//Serial.print(readCard[i], HEX);
-		UIDChar[i] += mfrc522.uid.uidByte[i];
 	}
-	Serial.println(UIDChar);
 	Serial.println("");
+	Serial.println(xa);
+	if(xa != ""){
+		rfidCheck = true;
+	}
+	if(xa == "183122152"){
+		dummyRekeningnummer = "NL21HAHA010032003";
+	}
 	mfrc522.PICC_HaltA();
 	mfrc522.PCD_StopCrypto1();
 

@@ -36,15 +36,13 @@
             if (this.readyState == 4 && this.status == 200) {
                 if(this.responseText == 1){
                     location.replace("/passcode");
-                }else{
-                    document.getElementById("temperature").innerHTML = "nee bedankt.";
                 }
             }
         };
         
         xhttp.open("GET", "/rfidCheck", true);
         xhttp.send();
-    }, 1000);
+    }, 200);
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
