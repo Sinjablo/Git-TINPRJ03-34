@@ -135,3 +135,6 @@ html {
     padding: 8px;
     text-align: center;
   }
+  .bg{
+    background-image: url("background.jpg");
+  }
