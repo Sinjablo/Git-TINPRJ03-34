@@ -54,12 +54,6 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 switch(this.responseText){
-                    case '1':
-                        location.replace("/balance");
-                        break;
-                    case '4':
-                        location.replace("/withdraw");
-                        break;
                     case '12':
                         location.replace("/mainMenu");
                 }

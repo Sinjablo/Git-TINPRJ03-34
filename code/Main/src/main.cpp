@@ -19,11 +19,11 @@
 //const char *ssid = "ASUS1424";
 //const char *password = "MaJaNe14245.";
 
-//const char *ssid = "Tesla IoT";
-//const char *password = "fsL6HgjN";
+const char *ssid = "Tesla IoT";
+const char *password = "fsL6HgjN";
 
-const char *ssid = "LaptopieVanSander";
-const char *password = "KrijgsheerSander";
+//const char *ssid = "LaptopieVanSander";
+//const char *password = "KrijgsheerSander";
 
 //const char *ssid = "lenovolaptop";
 //const char *password = "jarno123";
@@ -155,25 +155,6 @@ String getBalance(){
 	int x = 6547;
 	return String(x);
 }
-/*
-// ONLY FOR START-UP I THINK
-String processor(const String &var){
-	Serial.println(var);
-	if (var == "STATE")
-	{
-		if (digitalRead(ledPin))
-		{
-			ledState = "ON";
-		}
-		else
-		{
-			ledState = "OFF";
-		}
-		Serial.print(ledState);
-		return ledState;
-	}
-
-}*/
 
 bool verifieer_pincode(String passcode, String accountNumber){
     
@@ -287,7 +268,6 @@ void loop(){
   	if (customKey){
 		switch (page){
 			case 1:	//------------------Check for a RFID card & read it out
-				Serial.println("loc1");
 				// Look for new cards
 				if (!mfrc522.PICC_IsNewCardPresent()){
 					return;
@@ -338,6 +318,15 @@ void loop(){
 				break;
 			case 3:	//---------------- take keypad input for navigation
 				navigationKey = customKey;
+				Serial.print("navKey: ");
+				Serial.println(navigationKey);
+				if(navigationKey == '4'){
+					page = 4;
+				}
+				break;
+			case 4://-----------------
+				navigationKey = customKey;
+
 				break;
 		}
 		if(customKey == 'D'){
@@ -345,30 +334,6 @@ void loop(){
 		}
   	}
 	
-	// // Look for new cards
-	// if (!mfrc522.PICC_IsNewCardPresent()){
-	// 	return;
-	// }
-	// // Select one of the cards
-	// if (!mfrc522.PICC_ReadCardSerial()){
-	// 	return;
-	// }
-	// // Dump debug info about the card; PICC_HaltA() is automatically called
-	// byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
-	// String xa;
-	// Serial.println("Scanned PICC's UID:");
-	// for (int i = 0; i < mfrc522.uid.size; i++){
-	// 	readCard[i] = mfrc522.uid.uidByte[i];
-	// 	xa += readCard[i];
-	// 	Serial.print(readCard[i], HEX);
-	// }
-
-	// Serial.println("");
-	// Serial.println(xa);
-	// mfrc522.PICC_HaltA();
-	// mfrc522.PCD_StopCrypto1();
-
-	Serial.println("loc1");
 	// Look for new cards
 	if (!mfrc522.PICC_IsNewCardPresent()){
 		return;
@@ -400,3 +365,26 @@ void loop(){
 
 	delay(1);
 }
+
+// // Look for new cards
+	// if (!mfrc522.PICC_IsNewCardPresent()){
+	// 	return;
+	// }
+	// // Select one of the cards
+	// if (!mfrc522.PICC_ReadCardSerial()){
+	// 	return;
+	// }
+	// // Dump debug info about the card; PICC_HaltA() is automatically called
+	// byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
+	// String xa;
+	// Serial.println("Scanned PICC's UID:");
+	// for (int i = 0; i < mfrc522.uid.size; i++){
+	// 	readCard[i] = mfrc522.uid.uidByte[i];
+	// 	xa += readCard[i];
+	// 	Serial.print(readCard[i], HEX);
+	// }
+
+	// Serial.println("");
+	// Serial.println(xa);
+	// mfrc522.PICC_HaltA();
+	// mfrc522.PCD_StopCrypto1();

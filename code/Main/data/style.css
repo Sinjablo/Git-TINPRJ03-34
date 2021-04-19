@@ -109,6 +109,12 @@ html {
 		border-radius: 32px 0px 0px 32px;
 		background-color: #f44336;
 	}
+
+  .withdrawBox1{
+	position: absolute;
+	bottom: 0px;
+	left: 33%
+  }
   #midWrapper{
     width: 100%
   }
@@ -135,6 +141,14 @@ html {
     padding: 8px;
     text-align: center;
   }
-  .bg{
-    background-image: url("background.jpg");
-  }
+  #Nibba_colum_mid_top{
+    background-color: #C44536;
+    width: 550px;
+    height: 350px;
+
+    margin: auto;
+    top: 50%;
+    bottom: 50%;
+    width: 50%;
+
+}

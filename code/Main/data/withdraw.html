@@ -6,33 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="data:,">
     <link rel="stylesheet" type="text/css" href="style.css">
-    <style>
-        body{   
-            background-image: url("background.jpg");
-        }
-    </style>
 </head>
 
 <body>
     <!--
     <span class="menuBox">Withdraw</span>
     -->
-    <div class="bg"></div>
-    <span class="menuBox left1">1| €10</span>
-    <span class="menuBox left2">4| €30</span>
-    <span class="menuBox left3">7| €70</span>
+    <span class="menuBox left1">1| $10</span>
+    <span class="menuBox left2">4| $30</span>
+    <span class="menuBox left3">7| $70</span>
     <span class="menuBox left4">*| Gepast</span>
 
-    <span class="menuBox right1">|A</span>
+    <div id="Nibba_colum_mid_top">
+        <h1 id="caption"></h1>
+        <h2 id=amount></h2>
+        <p id ="correct">Is dit correct?</p>
+    </div>
+
+
+    <span class="menuBox right1">OKE |A</span>
     <span class="menuBox right2">TERUG |B</span>
-    <span class="menuBox right3">|C</span>
+    <span class="menuBox right3">ANNULEER |C</span>
     <span class="menuBox right4">AFSLUITEN |D</span>
           
         
-     
-        
 </body>
 <script>
+    var state = 0;
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         /**/
@@ -40,13 +40,19 @@
             if (this.readyState == 4 && this.status == 200) {
                 switch(this.responseText){
                     case '1':
-                        location.replace("/balance");
+                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                        document.getElementById("amount").innerHTML = "$10";
+                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        state = 1;
                         break;
-                    case '4':
-                        location.replace("/withdraw");
-                        break;
+                        case '11':
+                            if(state == 1){
+                            document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+
+                            }
                     case '12':
                         location.replace("/mainMenu");
+                        break;
                 }
             }
         };
