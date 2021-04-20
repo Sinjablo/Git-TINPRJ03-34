@@ -20,7 +20,7 @@
     <div id="Nibba_colum_mid_top">
         <h1 id="caption"></h1>
         <h2 id=amount></h2>
-        <p id ="correct">Is dit correct?</p>
+        <p id="correct"></p>
     </div>
 
 
@@ -45,18 +45,33 @@
                         document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
                         state = 1;
                         break;
-                        case '11':
-                            if(state == 1){
+                    case '4':
+                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                        document.getElementById("amount").innerHTML = "$30";
+                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        break;
+                    case '7':
+                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                        document.getElementById("amount").innerHTML = "$70";
+                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        break;
+                    case '11':
+                        if(state == 1){
                             document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
-
-                            }
+                        }
+                        break;
                     case '12':
                         location.replace("/mainMenu");
                         break;
+                    case '13':
+                        document.getElementById("caption").innerHTML = "";
+                        document.getElementById("amount").innerHTML = "";
+                        document.getElementById("correct").innerHTML = "";
+                        break;        
                 }
             }
         };
-        xhttp.open("GET", "/navigation", true);
+        xhttp.open("GET", "/withdrawlNav", true);
         xhttp.send();
     }, 200);
     
@@ -72,7 +87,7 @@
         xhttp.open("GET", "/abort", true);
         xhttp.send();
     }, 200);
-/*
+
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -82,10 +97,10 @@
                 }
             }
         };
-        xhttp.open("GET", "/balanceCheck", true);
+        xhttp.open("GET", "/withdrawAmount", true);
         xhttp.send();
-    }, 1000);
-
+    }, 200);
+/*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {

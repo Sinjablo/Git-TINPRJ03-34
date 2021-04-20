@@ -79,6 +79,7 @@ const int tempBtn = 4;
 AsyncWebServer server(80);
 
 //Variables
+bool withdrawSelection = false;
 // variables to return to the GUI website
 char navigationKey;
 bool abortCheck = false;
@@ -244,6 +245,11 @@ void setup(){
 	server.on("/getBalance", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getBalance().c_str());
 	});
+	server.on("/withdrawlNav", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getNavigation().c_str());
+		//Serial.println("withdrawamount");
+		page = 4;
+	});
   /*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getHumidity().c_str());
@@ -263,77 +269,107 @@ void setup(){
 	mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
 }
 
-void loop(){
-	char customKey = customKeypad.getKey();
-  	if (customKey){
-		switch (page){
-			case 1:	//------------------Check for a RFID card & read it out
-				// Look for new cards
-				if (!mfrc522.PICC_IsNewCardPresent()){
-					return;
-				}
-				// Select one of the cards
-				if (!mfrc522.PICC_ReadCardSerial()){
-					return;
-				}
-				// Dump debug info about the card; PICC_HaltA() is automatically called
-				
-				byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
-				Serial.println("Scanned PICC's UID:");
-				xa = "";
-				for (int i = 0; i < mfrc522.uid.size; i++){
-					readCard[i] = mfrc522.uid.uidByte[i];
-					xa += readCard[i];
-					//Serial.print(readCard[i], HEX);
-				}
-				Serial.println("");
-				Serial.println(xa);
-				if(xa != ""){
-					rfidCheck = true;
-				}
-				if(xa == "183122152"){
-					dummyRekeningnummer = "NL21HAHA010032003";
-				}
-				mfrc522.PICC_HaltA();
-				mfrc522.PCD_StopCrypto1();
-				break;
-
-			case 2:	//--------------------Take the keypad input for the passcode
-				// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
-				if (customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
-					loginCommand = customKey;
-					if (customKey == 'A' && dummyTempPasscode.length() == 4 && verifieer_pincode(dummyTempPasscode, dummyRekeningnummer) == true){
-						//customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode
-						loginCommand = '1';
-						dummyTempPasscode = "";
-					}
-					else if (customKey == 'B'){
-						dummyTempPasscode = "";
-					}
-				}
-				else if (dummyTempPasscode.length() < 4){
-					dummyTempPasscode += customKey;
-					Serial.println(dummyTempPasscode);
-				}
-				break;
-			case 3:	//---------------- take keypad input for navigation
-				navigationKey = customKey;
-				Serial.print("navKey: ");
-				Serial.println(navigationKey);
-				if(navigationKey == '4'){
-					page = 4;
-				}
-				break;
-			case 4://-----------------
-				navigationKey = customKey;
-
-				break;
-		}
-		if(customKey == 'D'){
-			abortCheck = true;
-		}
-  	}
+void rfidReader(){
+	// Look for new cards
+	if (!mfrc522.PICC_IsNewCardPresent()){
+		return;
+	}
+	// Select one of the cards
+	if (!mfrc522.PICC_ReadCardSerial()){
+		return;
+	}
+	// Dump debug info about the card; PICC_HaltA() is automatically called
 	
+	byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
+	Serial.println("Scanned PICC's UID:");
+	xa = "";
+	for (int i = 0; i < mfrc522.uid.size; i++){
+		readCard[i] = mfrc522.uid.uidByte[i];
+		xa += readCard[i];
+		//Serial.print(readCard[i], HEX);
+	}
+	Serial.println("");
+	Serial.println(xa);
+	if(xa != ""){
+		rfidCheck = true;
+	}
+	if(xa == "183122152"){
+		dummyRekeningnummer = "NL21HAHA010032003";
+	}
+	mfrc522.PICC_HaltA();
+	mfrc522.PCD_StopCrypto1();
+}
+
+void passcodeChecker(char customKey){
+	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
+	if (customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
+		loginCommand = customKey;
+		if (customKey == 'A' && dummyTempPasscode.length() == 4 && verifieer_pincode(dummyTempPasscode, dummyRekeningnummer) == true){
+			//customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode
+			loginCommand = '1';
+			dummyTempPasscode = "";
+		}
+		else if (customKey == 'B'){
+			dummyTempPasscode = "";
+		}
+	}
+	else if (dummyTempPasscode.length() < 4){
+		dummyTempPasscode += customKey;
+		Serial.println(dummyTempPasscode);
+	}
+}
+
+void navigationInput(char customKey){
+	navigationKey = customKey;
+	Serial.println("case3");
+	Serial.print("navKey: ");
+	Serial.println(navigationKey);
+	if(navigationKey == '4'){
+		page = 4;
+	}
+}
+
+void withdrawlMenu(char customKey){
+	Serial.println("case 4");
+	if(withdrawSelection == false){
+		navigationKey = customKey;
+		if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
+			withdrawSelection = true;
+			Serial.println("1,2,4*");
+		}
+	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
+		navigationKey = customKey;
+		if(customKey == 'C'){
+		withdrawSelection = false;
+		}
+	}
+}
+
+
+void loop(){
+	if(page == 1){
+		rfidReader();
+	}else{
+		char customKey = customKeypad.getKey();
+  		if (customKey){
+			switch (page){
+				case 2:	//--------------------Take the keypad input for the passcode
+					passcodeChecker(customKey);
+					break;
+				case 3:	//---------------- take keypad input for navigation
+					navigationInput(customKey);
+					break;
+				case 4://-----------------withdraw menu
+					withdrawlMenu(customKey);
+					break;
+			}
+			if(customKey == 'D'){
+				abortCheck = true;
+			}
+  		}
+	}
+	 
+
 	// Look for new cards
 	if (!mfrc522.PICC_IsNewCardPresent()){
 		return;
@@ -388,3 +424,88 @@ void loop(){
 	// Serial.println(xa);
 	// mfrc522.PICC_HaltA();
 	// mfrc522.PCD_StopCrypto1();
+
+/*
+char customKey = customKeypad.getKey();
+  	if (customKey){
+		switch (page){
+			case 1:	//------------------Check for a RFID card & read it out
+				// Look for new cards
+				if (!mfrc522.PICC_IsNewCardPresent()){
+					return;
+				}
+				// Select one of the cards
+				if (!mfrc522.PICC_ReadCardSerial()){
+					return;
+				}
+				// Dump debug info about the card; PICC_HaltA() is automatically called
+				
+				byte readCard[7]; // This is our byte array to store UID mind that there are 4 and 7 bytes long UID
+				Serial.println("Scanned PICC's UID:");
+				xa = "";
+				for (int i = 0; i < mfrc522.uid.size; i++){
+					readCard[i] = mfrc522.uid.uidByte[i];
+					xa += readCard[i];
+					//Serial.print(readCard[i], HEX);
+				}
+				Serial.println("");
+				Serial.println(xa);
+				if(xa != ""){
+					rfidCheck = true;
+				}
+				if(xa == "183122152"){
+					dummyRekeningnummer = "NL21HAHA010032003";
+				}
+				mfrc522.PICC_HaltA();
+				mfrc522.PCD_StopCrypto1();
+				break;
+
+			case 2:	//--------------------Take the keypad input for the passcode
+				// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
+				if (customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
+					loginCommand = customKey;
+					if (customKey == 'A' && dummyTempPasscode.length() == 4 && verifieer_pincode(dummyTempPasscode, dummyRekeningnummer) == true){
+						//customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode
+						loginCommand = '1';
+						dummyTempPasscode = "";
+					}
+					else if (customKey == 'B'){
+						dummyTempPasscode = "";
+					}
+				}
+				else if (dummyTempPasscode.length() < 4){
+					dummyTempPasscode += customKey;
+					Serial.println(dummyTempPasscode);
+				}
+				break;
+			case 3:	//---------------- take keypad input for navigation
+				navigationKey = customKey;
+				Serial.println("case3");
+				Serial.print("navKey: ");
+				Serial.println(navigationKey);
+				if(navigationKey == '4'){
+					page = 4;
+				}
+				break;
+			case 4://-----------------withdraw menu
+				Serial.println("case 4");
+				if(withdrawSelection == false){
+					navigationKey = customKey;
+					if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
+						withdrawSelection = true;
+						Serial.println("1,2,4*");
+					}
+				}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
+					navigationKey = customKey;
+					if(customKey == 'C'){
+					withdrawSelection = false;
+					}
+				}
+
+				break;
+		}
+		if(customKey == 'D'){
+			abortCheck = true;
+		}
+  	}
+*/
