@@ -84,6 +84,7 @@ String rekeningNummer;
 String uid;
 String passcode;
 String tempPasscode;
+int endSession;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -239,6 +240,12 @@ void setup(){
 	server.on("/loginCommand", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getLoginCommand().c_str());
 		page = 2;
+		// endSession += 1;
+		// Serial.println(endSession);
+		// if(endSession == 15){
+		// 	endSession = 0;
+		// 	abortCheck = true;
+		// }
 	});
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
@@ -336,6 +343,7 @@ void rfidReader(){
 
 void passcodeChecker(char customKey){
 	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
+	
 	if (customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
 		loginCommand = customKey;
 		if (customKey == 'A' && passcode.length() == 4 && verifieer_pincode(passcode, rekeningNummer) == true){
