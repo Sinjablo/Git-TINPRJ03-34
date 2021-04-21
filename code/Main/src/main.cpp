@@ -16,11 +16,11 @@
 
 // Replace with your network credentials
 
-//const char *ssid = "ASUS1424";
-//const char *password = "MaJaNe14245.";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
-const char *ssid = "Tesla IoT";
-const char *password = "fsL6HgjN";
+//const char *ssid = "Tesla IoT";
+//const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -43,16 +43,22 @@ String key = "de3w2jbn7eif1nw9e";
 const byte ROWS = 4; 
 const byte COLS = 4; 
 
+// char hexaKeys[ROWS][COLS] = {
+//   {'1', '2', '3', 'A'},
+//   {'4', '5', '6', 'B'},
+//   {'7', '8', '9', 'C'},
+//   {'*', '0', '#', 'D'}
+// };
 char hexaKeys[ROWS][COLS] = {
-  {'1', '2', '3', 'A'},
-  {'4', '5', '6', 'B'},
-  {'7', '8', '9', 'C'},
-  {'*', '0', '#', 'D'}
+  {'1', '4', '*', '7'},
+  {'2', '5', '0', '8'},
+  {'3', '6', '#', '9'},
+  {'A', 'B', 'D', 'C'}
 };
 //byte rowPins[ROWS] = {23, 22, 3, 21}; 
 //byte colPins[COLS] = {19, 18, 16, 17};
-byte rowPins[ROWS] = {22, 3, 5, 17}; 
 byte colPins[COLS] = {16, 4, 15, 2};
+byte rowPins[ROWS] = {22, 3, 5, 17}; 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
 //----------End keypad setUp
 //----------Setup RFID reader-------
@@ -390,35 +396,36 @@ void withdrawlMenu(char customKey){
 }
 
 void loop(){
-	if(page == 1){
-		if (mfrc522.PICC_IsNewCardPresent()){
-		rfidReader();
-		rfidCheck = true;
-		}
-	}else{
-		char customKey = customKeypad.getKey();
-  		if (customKey){
-			switch (page){
-				case 2:	//--------------------Take the keypad input for the passcode
-					passcodeChecker(customKey);
-					break;
-				case 3:	//---------------- take keypad input for navigation
-					navigationInput(customKey);
-					break;
-				case 4://-----------------withdraw menu
-					withdrawlMenu(customKey);
-					break;
-			}
-			if(customKey == 'D'){
-				abortCheck = true;
-			}
-  		}
-	}
-	// Serial.println(rekeningNummer.length());
-	// Serial.println(rekeningNummer);
-	// if(rekeningNummer.length() < 1){
-	// 	abortCheck = true;
+	// if(page == 1){
+	// 	if (mfrc522.PICC_IsNewCardPresent()){
+	// 	rfidReader();
+	// 	rfidCheck = true;
+	// 	}
+	// }else{
+	// 	char customKey = customKeypad.getKey();
+  	// 	if (customKey){
+	// 		switch (page){
+	// 			case 2:	//--------------------Take the keypad input for the passcode
+	// 				passcodeChecker(customKey);
+	// 				break;
+	// 			case 3:	//---------------- take keypad input for navigation
+	// 				navigationInput(customKey);
+	// 				break;
+	// 			case 4://-----------------withdraw menu
+	// 				withdrawlMenu(customKey);
+	// 				break;
+	// 		}
+	// 		if(customKey == 'D'){
+	// 			abortCheck = true;
+	// 		}
+  	// 	}
 	// }
+	char customKey = customKeypad.getKey();
+	if(customKey){
+		Serial.println(customKey);
+	}
+
+
 	delay(1);
 }
 
