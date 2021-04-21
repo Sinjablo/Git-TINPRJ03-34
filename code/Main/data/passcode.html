@@ -29,10 +29,14 @@
         
 </body>
 <script>  
-
+    //var time = 0;
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
+            // time++;
+            // if(time == 100){
+            //     location.replace('/index');
+            // }
             if (this.readyState == 4 && this.status == 200) {
                 switch(this.responseText){
                     case '1':

@@ -33,8 +33,8 @@ const char *password = "fsL6HgjN";
 
 //Access point credentials
 
-const char* host = "http://145.137.14.230"; //IPv4 adress hosting laptop/server
-String get_host = "http://145.137.14.230"; //same as above
+const char* host = "http://145.137.12.76"; //IPv4 adress hosting laptop/server
+String get_host = "http://145.137.12.76"; //same as above
 
 String userPasscode = "7777";
 String key = "de3w2jbn7eif1nw9e";
@@ -100,7 +100,9 @@ String getAbortCheck(){
 	bool tempAbortCheck = abortCheck;
 	abortCheck = false;
 	if(tempAbortCheck == true){
-		dummyTempPasscode = "";
+		passcode = "";
+		rekeningNummer = "";
+		uid = "";
 	}
 	return String(tempAbortCheck);
 }
@@ -151,12 +153,11 @@ String getLoginCommand(){
 }
 
 String getPasscodeLenght(){
-	return String(dummyTempPasscode.length());
+	return String(passcode.length());
 }
 
 String getAccountNumber(){
-	String x = "NL04BOEB34254g54";
-	return String(x);
+	return String(rekeningNummer);
 }
 String getBalance(){
 	int x = 6547;
@@ -239,13 +240,15 @@ void setup(){
 	});
 	server.on("/loginCommand", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getLoginCommand().c_str());
+		if(page == 1){
+			endSession = 0;
+		}
 		page = 2;
-		// endSession += 1;
-		// Serial.println(endSession);
-		// if(endSession == 15){
-		// 	endSession = 0;
-		// 	abortCheck = true;
-		// }
+		endSession += 1;
+		if(endSession == 18){
+			endSession = 0;
+			abortCheck = true;
+		}
 	});
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
@@ -283,9 +286,7 @@ void setup(){
 
 void rfidReader(){
 	// Look for new cards
-	// if (!mfrc522.PICC_IsNewCardPresent()){
-	// 	return;
-	// }
+
 	// Select one of the cards
 	if (!mfrc522.PICC_ReadCardSerial()){
 		return;
@@ -319,7 +320,7 @@ void rfidReader(){
 	
   	Serial.print("Rekening Nummer: ");
   	for (uint8_t i = 0; i < 16; i++){
-  	  rekeningNummer += readBuffer[i];
+  	  rekeningNummer += (char)readBuffer[i];
   	}
 
 	mfrc522.PICC_HaltA();
@@ -343,7 +344,8 @@ void rfidReader(){
 
 void passcodeChecker(char customKey){
 	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
-	
+
+
 	if (customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
 		loginCommand = customKey;
 		if (customKey == 'A' && passcode.length() == 4 && verifieer_pincode(passcode, rekeningNummer) == true){
@@ -412,7 +414,11 @@ void loop(){
 			}
   		}
 	}
-	 
+	// Serial.println(rekeningNummer.length());
+	// Serial.println(rekeningNummer);
+	// if(rekeningNummer.length() < 1){
+	// 	abortCheck = true;
+	// }
 	delay(1);
 }
 
