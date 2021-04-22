@@ -32,49 +32,52 @@
         
 </body>
 <script>
-    var state = 0;
+/*
+    var status;
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
-        /**/
+        
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    case '1':
-                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
-                        document.getElementById("amount").innerHTML = "$10";
-                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
-                        state = 1;
-                        break;
-                    case '4':
-                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
-                        document.getElementById("amount").innerHTML = "$30";
-                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
-                        break;
-                    case '7':
-                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
-                        document.getElementById("amount").innerHTML = "$70";
-                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
-                        break;
-                    case '11':
-                        if(state == 1){
-                            document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
-                        }
-                        break;
-                    case '12':
-                        location.replace("/mainMenu");
-                        break;
-                    case '13':
-                        document.getElementById("caption").innerHTML = "";
-                        document.getElementById("amount").innerHTML = "";
-                        document.getElementById("correct").innerHTML = "";
-                        break;        
-                }
+                status = this.response;
             }
         };
         xhttp.open("GET", "/withdrawlNav", true);
         xhttp.send();
-    }, 100);
+    }, 200);
     
+    switch (status) {
+            case '1':
+                document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                document.getElementById("amount").innerHTML = "$10";
+                document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                state = 1;
+                break;
+            case '4':
+                document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                document.getElementById("amount").innerHTML = "$30";
+                document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                break;
+            case '7':
+                document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                document.getElementById("amount").innerHTML = "$70";
+                document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                break;
+            case '11':
+                if (state == 1) {
+                    document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                }
+                break;
+            case '12':
+                location.replace("/mainMenu");
+                break;
+            case '13':
+                document.getElementById("caption").innerHTML = "";
+                document.getElementById("amount").innerHTML = "";
+                document.getElementById("correct").innerHTML = "";
+                break;
+        }*/
+
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -126,6 +129,50 @@
         xhttp.send();
     }, 500);
     */
+   /**/
+   setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                switch(this.responseText){
+                    case '1':
+                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                        document.getElementById("amount").innerHTML = "$10";
+                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        state = 1;
+                        break;
+                    case '4':
+                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                        document.getElementById("amount").innerHTML = "$30";
+                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        break;
+                    case '7':
+                        document.getElementById("caption").innerHTML = "U heeft de volgende hoeveelheid geselecteerd:";
+                        document.getElementById("amount").innerHTML = "$70";
+                        document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        break;
+                    case '11':
+                        if(state == 1){
+                            document.getElementById("correct").innerHTML = "Is de hoeveelheid correct?";
+                        }
+                        break;
+                    case '12':
+                        location.replace("/mainMenu");
+                        break;
+                    case '13':
+                        document.getElementById("caption").innerHTML = "";
+                        document.getElementById("amount").innerHTML = "";
+                        document.getElementById("correct").innerHTML = "";
+                        break;        
+                }
+            }
+            yield();
+        };
+        xhttp.open("GET", "/withdrawlNav", true);
+        xhttp.send();
+    }, 200);
+   
 </script>
 
 </html>

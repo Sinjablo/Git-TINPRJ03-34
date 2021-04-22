@@ -16,11 +16,11 @@
 
 // Replace with your network credentials
 
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
-//const char *ssid = "Tesla IoT";
-//const char *password = "fsL6HgjN";
+const char *ssid = "Tesla IoT";
+const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -33,8 +33,8 @@ const char *password = "MaJaNe14245.";
 
 //Access point credentials
 
-const char* host = "http://145.137.12.76"; //IPv4 adress hosting laptop/server
-String get_host = "http://145.137.12.76"; //same as above
+const char* host = "http://145.24.222.170"; //IPv4 adress hosting laptop/server
+String get_host = "http://145.24.222.170"; //same as above
 
 String userPasscode = "7777";
 String key = "de3w2jbn7eif1nw9e";
@@ -91,6 +91,7 @@ String uid;
 String passcode;
 String tempPasscode;
 int endSession;
+long loopTime = 0;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -396,36 +397,34 @@ void withdrawlMenu(char customKey){
 }
 
 void loop(){
-	// if(page == 1){
-	// 	if (mfrc522.PICC_IsNewCardPresent()){
-	// 	rfidReader();
-	// 	rfidCheck = true;
-	// 	}
-	// }else{
-	// 	char customKey = customKeypad.getKey();
-  	// 	if (customKey){
-	// 		switch (page){
-	// 			case 2:	//--------------------Take the keypad input for the passcode
-	// 				passcodeChecker(customKey);
-	// 				break;
-	// 			case 3:	//---------------- take keypad input for navigation
-	// 				navigationInput(customKey);
-	// 				break;
-	// 			case 4://-----------------withdraw menu
-	// 				withdrawlMenu(customKey);
-	// 				break;
-	// 		}
-	// 		if(customKey == 'D'){
-	// 			abortCheck = true;
-	// 		}
-  	// 	}
-	// }
-	char customKey = customKeypad.getKey();
-	if(customKey){
-		Serial.println(customKey);
+	loopTime = millis();
+
+	if(page == 1){
+		if (mfrc522.PICC_IsNewCardPresent()){
+		rfidReader();
+		rfidCheck = true;
+		}
+	}else{
+		char customKey = customKeypad.getKey();
+  		if (customKey){
+			switch (page){
+				case 2:	//--------------------Take the keypad input for the passcode
+					passcodeChecker(customKey);
+					break;
+				case 3:	//---------------- take keypad input for navigation
+					navigationInput(customKey);
+					break;
+				case 4://-----------------withdraw menu
+					withdrawlMenu(customKey);
+					break;
+			}
+			if(customKey == 'D'){
+				abortCheck = true;
+			}
+  		}
 	}
-
-
-	delay(1);
+	loopTime = millis()-loopTime;
+	Serial.println(loopTime);
+	yield();
 }
 
