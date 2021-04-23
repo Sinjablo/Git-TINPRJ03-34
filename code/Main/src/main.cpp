@@ -84,6 +84,7 @@ const int tempBtn = 4;
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
+
 //Variables
 bool withdrawSelection = false;
 String rekeningNummer;
@@ -92,6 +93,7 @@ String passcode;
 String tempPasscode;
 int endSession;
 long loopTime = 0;
+String balance;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -101,15 +103,60 @@ char loginCommand = '0';
 String lastName = "Vuijk";
 String passcodeLenght;
 
+bool verifieer_pincode(String passcode, String accountNumber){
+    
+    //WiFiClient client = server.available();
+		
+    HTTPClient http;
+    String url = get_host+"/verificatie.php?"+"sltl="+key+"&mgrkn="+accountNumber+"&mgpc="+passcode;
+    Serial.println(url);
+    
+    http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String payload = http.getString();
+    Serial.println(payload);
+    http.end(); 
+	if(payload == "1"){
+		return true;
+	}else{
+		return false;
+	}
+  
+}
+
+String getBalans(){
+    
+    //WiFiClient client = server.available();
+    HTTPClient http;
+	Serial.print("pincode: ");
+	Serial.println(passcode);
+    String url = get_host+"/balansS.php?"+"sltl="+key+"&mgrkn="+rekeningNummer+"&mgpc="+passcode;
+    Serial.println(url);
+    
+    http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String balance = http.getString();
+    Serial.println(balance);
+    http.end(); 
+	return balance;
+  
+}
+
 //--------------------------------------String return functions for the webserver to switch pages
 
 String getAbortCheck(){
 	bool tempAbortCheck = abortCheck;
 	abortCheck = false;
 	if(tempAbortCheck == true){
+		Serial.println("Abortus has been commited");
 		passcode = "";
 		rekeningNummer = "";
 		uid = "";
+		balance = "";
 	}
 	return String(tempAbortCheck);
 }
@@ -167,32 +214,10 @@ String getAccountNumber(){
 	return String(rekeningNummer);
 }
 String getBalance(){
-	int x = 6547;
-	return String(x);
+	return String(getBalans());
 }
 
-bool verifieer_pincode(String passcode, String accountNumber){
-    
-    //WiFiClient client = server.available();
-		
-    HTTPClient http;
-    String url = get_host+"/verificatie.php?"+"sltl="+key+"&mgrkn="+accountNumber+"&mgpc="+passcode;
-    Serial.println(url);
-    
-    http.begin(url);
-    
-    //GET method
-    int httpCode = http.GET();
-    String payload = http.getString();
-    Serial.println(payload);
-    http.end(); 
-	if(payload == "1"){
-		return true;
-	}else{
-		return false;
-	}
-  
-}
+
 
 void setup(){
 	// Serial port for debugging purposes
@@ -358,7 +383,6 @@ void passcodeChecker(char customKey){
 		if (customKey == 'A' && passcode.length() == 4 && verifieer_pincode(passcode, rekeningNummer) == true){
 			//customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode
 			loginCommand = '1';
-			passcode = "";
 		}
 		else if (customKey == 'B'){
 			passcode = "";
@@ -424,7 +448,7 @@ void loop(){
   		}
 	}
 	loopTime = millis()-loopTime;
-	Serial.println(loopTime);
+	//Serial.println(loopTime);
 	yield();
 }
 
