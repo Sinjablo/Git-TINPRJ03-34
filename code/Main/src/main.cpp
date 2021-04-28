@@ -16,11 +16,11 @@
 
 // Replace with your network credentials
 
-//const char *ssid = "ASUS1424";
-//const char *password = "MaJaNe14245.";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
-const char *ssid = "Tesla IoT";
-const char *password = "fsL6HgjN";
+// const char *ssid = "Tesla IoT";
+// const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -68,7 +68,6 @@ const int SS_PIN = 21; // Slave select pin
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance
 //-------------end rfid setup
 
-int page;
 
 using namespace std;  
 
@@ -86,14 +85,16 @@ AsyncWebServer server(80);
 
 
 //Variables
+int page = 1;
 bool withdrawSelection = false;
 String rekeningNummer;
 String uid;
 String passcode;
 String tempPasscode;
 int endSession;
-long loopTime = 0;
+long sessionTime = 0;
 String balance;
+bool timerRunning = false;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -146,17 +147,19 @@ String getBalans(){
   
 }
 
-//--------------------------------------String return functions for the webserver to switch pages
+#pragma region 	// String return functions for the webserver to switch pages
 
 String getAbortCheck(){
 	bool tempAbortCheck = abortCheck;
 	abortCheck = false;
 	if(tempAbortCheck == true){
-		Serial.println("Abortus has been commited");
+		page = 1;
 		passcode = "";
 		rekeningNummer = "";
 		uid = "";
 		balance = "";
+		timerRunning = false;
+		Serial.println("Abortus has been commited");
 	}
 	return String(tempAbortCheck);
 }
@@ -216,10 +219,9 @@ String getAccountNumber(){
 String getBalance(){
 	return String(getBalans());
 }
+#pragma endregion
 
-
-
-void setup(){
+void setup(){	// void setup
 	// Serial port for debugging purposes
 	Serial.begin(115200);
 	pinMode(tempBtn, OUTPUT);
@@ -272,15 +274,15 @@ void setup(){
 	});
 	server.on("/loginCommand", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getLoginCommand().c_str());
-		if(page == 1){
-			endSession = 0;
-		}
 		page = 2;
-		endSession += 1;
-		if(endSession == 18){
-			endSession = 0;
-			abortCheck = true;
-		}
+		// if(page == 1){
+		// 	endSession = 0;
+		// }
+		// endSession += 1;
+		// if(endSession == 18){
+		// 	endSession = 0;
+		// 	abortCheck = true;
+		// }
 	});
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
@@ -315,6 +317,8 @@ void setup(){
 	mfrc522.PCD_Init(); // Init MFRC522
 	mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
 }
+
+#pragma region  // Functions for the diffrent pages
 
 void rfidReader(){
 	// Look for new cards
@@ -374,7 +378,7 @@ void rfidReader(){
   	Serial.println(F("\n**End Reading**\n"));
 }
 
-void passcodeChecker(char customKey){
+void passcodeChecker(char customKey){	
 	// check for input, check if passcode is 4 digits, check if 'A' has been pressed, check if password is correct, send lenght of passcode to passcodeLenght
 
 
@@ -419,18 +423,45 @@ void withdrawlMenu(char customKey){
 		}
 	}
 }
+#pragma endregion
 
-void loop(){
-	loopTime = millis();
+void timerControl(){	// function to abort if the user has been inactive for too long
+	
+	Serial.print("time: ");
+	Serial.println(millis()-sessionTime);
+	switch(page){
+		case 2:
+			if(millis()-sessionTime > 10000){
+				abortCheck = true;
+				timerRunning = false;
+				page = 1;
+			}
+			break;
+		default:
+			if(millis()-sessionTime > 45000){
+				abortCheck = true;
+				timerRunning = false;
+				page = 1;
+			}
+	}
+	
+}
+
+void loop(){	//void main
 
 	if(page == 1){
 		if (mfrc522.PICC_IsNewCardPresent()){
 		rfidReader();
 		rfidCheck = true;
+		sessionTime = millis();
+		Serial.println("--------------------------------------------------------------loc1");
+		delay(200);
 		}
 	}else{
+		timerControl();	//function to start timer && check the spend time
 		char customKey = customKeypad.getKey();
   		if (customKey){
+			sessionTime = millis();	//resets the inactivity timer
 			switch (page){
 				case 2:	//--------------------Take the keypad input for the passcode
 					passcodeChecker(customKey);
@@ -447,8 +478,5 @@ void loop(){
 			}
   		}
 	}
-	loopTime = millis()-loopTime;
-	//Serial.println(loopTime);
 	yield();
 }
-
