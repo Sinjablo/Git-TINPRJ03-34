@@ -16,11 +16,11 @@
 
 // Replace with your network credentials
 
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+// const char *ssid = "ASUS1424";
+// const char *password = "MaJaNe14245.";
 
-// const char *ssid = "Tesla IoT";
-// const char *password = "fsL6HgjN";
+const char *ssid = "Tesla IoT";
+const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -275,14 +275,6 @@ void setup(){	// void setup
 	server.on("/loginCommand", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getLoginCommand().c_str());
 		page = 2;
-		// if(page == 1){
-		// 	endSession = 0;
-		// }
-		// endSession += 1;
-		// if(endSession == 18){
-		// 	endSession = 0;
-		// 	abortCheck = true;
-		// }
 	});
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
@@ -458,7 +450,7 @@ void loop(){	//void main
 		delay(200);
 		}
 	}else{
-		timerControl();	//function to start timer && check the spend time
+		//timerControl();	//function to start timer && check the spend time
 		char customKey = customKeypad.getKey();
   		if (customKey){
 			sessionTime = millis();	//resets the inactivity timer
