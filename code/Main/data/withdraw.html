@@ -22,6 +22,8 @@
         <h2 id=amount></h2>
         <p id="paragraph1"></p>
         <p id="paragraph2"></p>
+        <p id="paragraph3"></p>
+        <p id="paragraph4"></p>
     </div>
 
 
@@ -72,12 +74,40 @@
                         if(withdrawStep == 1){
                             document.getElementById("caption").innerHTML = "U heeft: $"+amountSelected+" geselecteerd.";
                             document.getElementById("amount").innerHTML = "Hoe wilt u het hebben?";
-                            document.getElementById("paragraph1").innerHTML = "1| 1x $10";
-                            document.getElementById("paragraph2").innerHTML = "4| 2x $5";
-                            document.getElementById("tab1").innerHTML = "1| "
-                            document.getElementById("tab2").innerHTML = "4| "
-                            document.getElementById("tab3").innerHTML = "|" 
-                            document.getElementById("tab4").innerHTML = "|"
+                            switch (amountSelected){
+                                case 10:
+                                    document.getElementById("paragraph1").innerHTML = "1| 1x $10";
+                                    document.getElementById("paragraph2").innerHTML = "4| 2x $5";
+                                    document.getElementById("paragraph3").innerHTML = "";
+                                    document.getElementById("paragraph4").innerHTML = "";
+                                    document.getElementById("tab1").innerHTML = "1| "
+                                    document.getElementById("tab2").innerHTML = "4| "
+                                    document.getElementById("tab3").innerHTML = "|" 
+                                    document.getElementById("tab4").innerHTML = "|"
+                                    break;
+                                case 50:
+                                    document.getElementById("paragraph1").innerHTML = "1| 1x $50";
+                                    document.getElementById("paragraph2").innerHTML = "4| 2x $20, 1x $10";
+                                    document.getElementById("paragraph3").innerHTML = "7| 5x $10";
+                                    document.getElementById("paragraph4").innerHTML = "*| 10x $5";
+                                    document.getElementById("tab1").innerHTML = "1| "
+                                    document.getElementById("tab2").innerHTML = "4| "
+                                    document.getElementById("tab3").innerHTML = "7|" 
+                                    document.getElementById("tab4").innerHTML = "*|"
+                                    break;
+                                case 70:
+                                    document.getElementById("paragraph1").innerHTML = "1| 1x $10";
+                                    document.getElementById("paragraph2").innerHTML = "4| 2x $5";
+                                    document.getElementById("paragraph3").innerHTML = "7| ";
+                                    document.getElementById("paragraph4").innerHTML = "*| ";
+                                    document.getElementById("tab1").innerHTML = "1| "
+                                    document.getElementById("tab2").innerHTML = "4| "
+                                    document.getElementById("tab3").innerHTML = "|" 
+                                    document.getElementById("tab4").innerHTML = "|"
+                                    break;
+
+                            }
+                            
                         }
                         break;
                     case '12':
