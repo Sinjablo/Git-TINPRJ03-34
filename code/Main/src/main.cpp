@@ -16,11 +16,11 @@
 
 // Replace with your network credentials
 
-// const char *ssid = "ASUS1424";
-// const char *password = "MaJaNe14245.";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
-const char *ssid = "Tesla IoT";
-const char *password = "fsL6HgjN";
+//const char *ssid = "Tesla IoT";
+//const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -86,7 +86,7 @@ AsyncWebServer server(80);
 
 //Variables
 int page = 1;
-bool withdrawSelection = false;
+int withdrawStep = 0;
 String rekeningNummer;
 String uid;
 String passcode;
@@ -95,6 +95,8 @@ int endSession;
 long sessionTime = 0;
 String balance;
 bool timerRunning = false;
+int pincodeTimeOut = 10000;
+int generalTimeOut = 30000;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -159,6 +161,7 @@ String getAbortCheck(){
 		uid = "";
 		balance = "";
 		timerRunning = false;
+		withdrawStep = 0;
 		Serial.println("Abortus has been commited");
 	}
 	return String(tempAbortCheck);
@@ -402,16 +405,17 @@ void navigationInput(char customKey){
 
 void withdrawlMenu(char customKey){
 	Serial.println("case 4");
-	if(withdrawSelection == false){
-		navigationKey = customKey;
-		if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
-			withdrawSelection = true;
+	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
+		if(withdrawStep == 0 || withdrawStep == 1){
+			navigationKey = customKey;
+			withdrawStep++;
 			Serial.println("1,2,4*");
 		}
 	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
 		navigationKey = customKey;
+		Serial.println("Triggered1");
 		if(customKey == 'C'){
-		withdrawSelection = false;
+		withdrawStep = 0;
 		}
 	}
 }
@@ -423,14 +427,14 @@ void timerControl(){	// function to abort if the user has been inactive for too 
 	Serial.println(millis()-sessionTime);
 	switch(page){
 		case 2:
-			if(millis()-sessionTime > 10000){
+			if(millis()-sessionTime > pincodeTimeOut){
 				abortCheck = true;
 				timerRunning = false;
 				page = 1;
 			}
 			break;
 		default:
-			if(millis()-sessionTime > 45000){
+			if(millis()-sessionTime > generalTimeOut){
 				abortCheck = true;
 				timerRunning = false;
 				page = 1;
@@ -463,6 +467,7 @@ void loop(){	//void main
 					break;
 				case 4://-----------------withdraw menu
 					withdrawlMenu(customKey);
+					vTaskDelay(10);
 					break;
 			}
 			if(customKey == 'D'){
