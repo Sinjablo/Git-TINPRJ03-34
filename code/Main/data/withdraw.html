@@ -135,9 +135,11 @@
                         break;
                     case '10':
                         if(withdrawStep == 0){
-
                         }else{
-                            combination += "10";
+                            combination += "10"; 
+                            console.log("loc0");
+                            withdrawOptions();
+                            console.log("loc1");
                         }
                         break
                     case '12':
@@ -202,7 +204,6 @@
         xhttp.send();
     }, 1000);
     
-    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -215,80 +216,6 @@
     }, 500);
     */  
 
-   /*
-   setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    case '1':
-                        document.getElementById("caption").innerHTML = "U heeft &euro;10 geselecteerd";
-                        document.getElementById("paragraph1").innerHTML = "Is de hoeveelheid correct?";
-                        withdrawStep = 1;
-                        amountSelected = 10;
-                        break;
-                    case '4':
-                        document.getElementById("caption").innerHTML = "U heeft &euro;30 geselecteerd";
-                        document.getElementById("paragraph1").innerHTML = "Is de hoeveelheid correct?";
-                        withdrawStep = 1;
-                        amountSelected = 30;
-                        break;
-                    case '7':
-                        document.getElementById("caption").innerHTML = "U heeft &euro;70 geselecteerd";
-                        document.getElementById("paragraph1").innerHTML = "Is de hoeveelheid correct?";
-                        withdrawStep = 1;
-                        amountSelected = 70;
-                        break;
-                    case '11':
-                        if(withdrawStep == 1){
-                            document.getElementById("caption").innerHTML = "U heeft &euro;"+amountSelected+" geselecteerd.";
-                            document.getElementById("amount").innerHTML = "Hoe wilt u het hebben?";
-                            switch (amountSelected){
-                                case 10:
-                                    document.getElementById("tab1").innerHTML = "1| 1x &euro;10";
-                                    document.getElementById("tab2").innerHTML = "4| 2x &euro;5 ";
-                                    document.getElementById("tab3").innerHTML = "|";
-                                    document.getElementById("tab4").innerHTML = "|";
-                                    break;
-                                case 30:
-                                    document.getElementById("tab1").innerHTML = "1| 1x &euro;20, 1x &euro;10";
-                                    document.getElementById("tab2").innerHTML = "7| 1x &euro;20, 2x &euro;5";
-                                    document.getElementById("tab3").innerHTML = "4| 3x &euro;10";
-                                    document.getElementById("tab4").innerHTML = "*| 6x &euro;5";
-                                    break;
-                                case 70:
-                                    document.getElementById("tab1").innerHTML = "1| 1x &euro;50, 1x &euro;20"
-                                    document.getElementById("tab2").innerHTML = "4| 1x &euro;50, 2x &euro;10"
-                                    document.getElementById("tab3").innerHTML = "7| 3x &euro;20, 1x &euro;10" 
-                                    document.getElementById("tab4").innerHTML = "*| 10x &euro;70"
-                                    break;
-                            }     
-                        }
-                        break;
-                    case '12':
-                        withdrawStep = 0;
-                        location.replace("/mainMenu");
-                        break;
-                    case '13':
-                        document.getElementById("caption").innerHTML = "";
-                        document.getElementById("amount").innerHTML = "";
-                        document.getElementById("paragraph1").innerHTML = "";
-                        document.getElementById("paragraph2").innerHTML = "";
-                        document.getElementById("tab1").innerHTML = "1| &euro;10"
-                        document.getElementById("tab2").innerHTML = "4| &euro;30"
-                        document.getElementById("tab3").innerHTML = "7| &euro;70" 
-                        document.getElementById("tab4").innerHTML = "*| Gepast"
-                        break;        
-                }
-            }
-            yield();
-            vTaskDelay(10);
-        };
-        xhttp.open("GET", "/withdrawlNav", true);
-        xhttp.send();
-    }, 200);
-    */
 </script>
 
 </html>

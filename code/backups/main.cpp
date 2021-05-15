@@ -12,12 +12,10 @@
 #include <ESP32WiFi.h> 
 #include <SPI.h>
 #include <MFRC522.h>
-#include <iterator>
-#include <map>
 
 
-using namespace std; 
 // Replace with your network credentials
+
 const char *ssid = "ASUS1424";
 const char *password = "MaJaNe14245.";
 
@@ -70,6 +68,9 @@ const int SS_PIN = 21; // Slave select pin
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance
 //-------------end rfid setup
 
+
+using namespace std;  
+
 //dummy variables:
 String dummyPasscode = "7777";
 String dummyTempPasscode;
@@ -78,7 +79,6 @@ String xa = "";
 String x;
 char g;
 const int tempBtn = 4;
-String tester = "120205";
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
@@ -98,7 +98,6 @@ bool timerRunning = false;
 int pincodeTimeOut = 10000;
 int generalTimeOut = 30000;
 int noteArray[6];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
-String billCombinationSelection;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -107,22 +106,6 @@ bool rfidCheck = false;
 char loginCommand = '0';
 String lastName = "Vuijk";
 String passcodeLenght;
-
-std::map<String, String> billCombinations{	
-	{"11", "110000"},
-	{"14", "205000"},
-	{"17", "000000"},
-	{"1*", "000000"},
-	{"31", "120110"},
-	{"34", "120205"},
-	{"37", "310000"},
-	{"3*", "605000"},
-	{"71", "150120"},
-	{"74", "150210"},
-	{"77", "320110"},
-	{"7*", "710000"}
-};
-
 
 bool verifieer_pincode(String passcode, String accountNumber){
     
@@ -448,13 +431,6 @@ void navigationInput(char customKey){
 	}
 }
 
-void billSelection(){
-	//Serial.println(atoi(((String)billCombinations[comb].charAt(1)).c_str()));
-
-	Serial.println(atoi(((String)billCombinations[billCombinationSelection].charAt(1)).c_str()));
-
-}
-
 void withdrawlMenu(char customKey){
 	Serial.println("case 4");
 	Serial.print("customKey: ");
@@ -468,30 +444,19 @@ void withdrawlMenu(char customKey){
 				case '1':
 					if(withdrawStep == 0){
 						noteArray[0] = 10;
-						billCombinationSelection += "1";
 					}else{
-						billCombinationSelection += "1";
 					}
 					break;
 				case '4':
 					if(withdrawStep == 0){
 						noteArray[0] = 30;
-						billCombinationSelection += "3";
 					}else{		
-						billCombinationSelection += "4";
 					}
 					break;
 				case '7':
 					if(withdrawStep == 0){
 						noteArray[0] = 70;
-						billCombinationSelection += "7";
 					}else{						
-						billCombinationSelection += "7";
-					}
-					break;
-				case '*':
-					if(withdrawStep != 0){
-						billCombinationSelection += "*";
 					}
 					break;
 			}
@@ -502,11 +467,9 @@ void withdrawlMenu(char customKey){
 		navigationKey = customKey;
 		if(withdrawStep == 2 && customKey == 'A'){
 			Serial.println("Loc0");
-			billSelection();
-			//geldOpnemen();
+			geldOpnemen();
 			Serial.println("Loc1");
 		}else if(customKey == 'B' || customKey == 'C'){
-			billCombinationSelection = "";
 			withdrawStep = 0;
 		}
 	}
@@ -566,64 +529,6 @@ void loop(){	//void main
 				abortCheck = true;
 			}
   		}
-	
-	
 	}
 	yield();
-
-	//int t = atoi(((String)tester.charAt(1)).c_str());
-	//String comb = "11";
-	//Serial.println(billCombinations[comb]);
-	//Serial.println(atoi(((String)billCombinations[comb].charAt(1)).c_str()));
-
 }
-
-// int t = atoi(((String)tester.charAt(1)).c_str()); // to transform char at a location to a int
-
-
-
-/*
-void withdrawlMenu(char customKey){
-	Serial.println("case 4");
-	Serial.print("customKey: ");
-	Serial.println(customKey);
-	Serial.print("Withdraw step: ");
-	Serial.println(withdrawStep);
-	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
-		if(withdrawStep == 0 || withdrawStep == 1){
-			navigationKey = customKey;
-			switch (customKey){
-				case '1':
-					if(withdrawStep == 0){
-						noteArray[0] = 10;
-					}else{
-					}
-					break;
-				case '4':
-					if(withdrawStep == 0){
-						noteArray[0] = 30;
-					}else{		
-					}
-					break;
-				case '7':
-					if(withdrawStep == 0){
-						noteArray[0] = 70;
-					}else{						
-					}
-					break;
-			}
-			withdrawStep++;
-			Serial.println("1,2,4*");
-		}
-	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
-		navigationKey = customKey;
-		if(withdrawStep == 2 && customKey == 'A'){
-			Serial.println("Loc0");
-			geldOpnemen();
-			Serial.println("Loc1");
-		}else if(customKey == 'B' || customKey == 'C'){
-			withdrawStep = 0;
-		}
-	}
-}
-*/
