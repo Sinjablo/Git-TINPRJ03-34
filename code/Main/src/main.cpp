@@ -97,6 +97,7 @@ String balance;
 bool timerRunning = false;
 int pincodeTimeOut = 10000;
 int generalTimeOut = 30000;
+int noteArray[6];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
 
 // variables to return to the GUI website
 char navigationKey;
@@ -149,6 +150,32 @@ String getBalans(){
   
 }
 
+String geldOpnemen(){
+    
+    //WiFiClient client = server.available();
+    HTTPClient http;
+	Serial.print("pincode: ");
+	Serial.println(passcode);
+    String url = get_host+"/opnemen.php?"+"sltl="+key+"&mgrkn="+rekeningNummer+"&mgpc="+passcode+"&bdg="+noteArray[0];
+    Serial.println(url);
+    
+    http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String balance = http.getString();
+    Serial.println(balance);
+    http.end(); 
+	return balance;
+  
+}
+
+void noteArrayClear(){
+	for(int i = 0; i < 7; i++){
+		noteArray[i] = NULL;
+	}
+}
+
 #pragma region 	// String return functions for the webserver to switch pages
 
 String getAbortCheck(){
@@ -162,6 +189,7 @@ String getAbortCheck(){
 		balance = "";
 		timerRunning = false;
 		withdrawStep = 0;
+		noteArrayClear();
 		Serial.println("Abortus has been commited");
 	}
 	return String(tempAbortCheck);
@@ -405,17 +433,44 @@ void navigationInput(char customKey){
 
 void withdrawlMenu(char customKey){
 	Serial.println("case 4");
+	Serial.print("customKey: ");
+	Serial.println(customKey);
+	Serial.print("Withdraw step: ");
+	Serial.println(withdrawStep);
 	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
 		if(withdrawStep == 0 || withdrawStep == 1){
 			navigationKey = customKey;
+			switch (customKey){
+				case '1':
+					if(withdrawStep == 0){
+						noteArray[0] = 10;
+					}else{
+					}
+					break;
+				case '4':
+					if(withdrawStep == 0){
+						noteArray[0] = 30;
+					}else{		
+					}
+					break;
+				case '7':
+					if(withdrawStep == 0){
+						noteArray[0] = 70;
+					}else{						
+					}
+					break;
+			}
 			withdrawStep++;
 			Serial.println("1,2,4*");
 		}
 	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
 		navigationKey = customKey;
-		Serial.println("Triggered1");
-		if(customKey == 'C'){
-		withdrawStep = 0;
+		if(withdrawStep == 2 && customKey == 'A'){
+			Serial.println("Loc0");
+			geldOpnemen();
+			Serial.println("Loc1");
+		}else if(customKey == 'B' || customKey == 'C'){
+			withdrawStep = 0;
 		}
 	}
 }
