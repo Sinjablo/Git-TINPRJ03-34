@@ -187,11 +187,11 @@ String geldOpnemen(){
   
 }
 
-void noteArrayClear(){
-	for(int i = 0; i < 7; i++){
-		noteArray[i] = NULL;
-	}
-}
+// void noteArrayClear(){
+// 	for(int i = 0; i < 6; i++){
+// 		noteArray[i] = 0;
+// 	}
+// }
 
 #pragma region 	// String return functions for the webserver to switch pages
 
@@ -206,7 +206,7 @@ String getAbortCheck(){
 		balance = "";
 		timerRunning = false;
 		withdrawStep = 0;
-		noteArrayClear();
+		//noteArrayClear();
 		Serial.println("Abortus has been commited");
 	}
 	return String(tempAbortCheck);
@@ -450,13 +450,54 @@ void navigationInput(char customKey){
 
 void billSelection(){
 	//Serial.println(atoi(((String)billCombinations[comb].charAt(1)).c_str()));
+	int noteArrayConstructorStep = 0;
+	String billConstructor = "";
+	
+	//Serial.println(atoi(((String)billCombinations[billCombinationSelection].charAt(1)).c_str()));
 
-	Serial.println(atoi(((String)billCombinations[billCombinationSelection].charAt(1)).c_str()));
+	for(int i = 0; i < 6; i++){
+		if(noteArrayConstructorStep == 0 || noteArrayConstructorStep == 3){
+			int combNumber = atoi(((String)billCombinations[billCombinationSelection].charAt(i)).c_str());
+			switch (i){
+				case 0:
+					Serial.println("Loc0");
+					noteArray[1] = combNumber;
+					break;
+				case 3:
+					Serial.println("Loc3");
+					noteArray[3] = combNumber; 
+					break;
+			}
+			noteArrayConstructorStep++;
+		}else if(noteArrayConstructorStep == 1 || noteArrayConstructorStep == 4){
+			billConstructor += billCombinations[billCombinationSelection].charAt(i);
+			noteArrayConstructorStep++;
+			Serial.println("Loc1");
+		}else{
+			billConstructor += billCombinations[billCombinationSelection].charAt(i);
+			switch (i){
+			case 2:
+				Serial.println("Loc2");
+				noteArray[2] = atoi(((String)billConstructor).c_str());
+				billConstructor = "";
+				break;
+			case 5:
+				Serial.println("Loc4");
+				noteArray[4] = atoi(((String)billConstructor).c_str());
+				billConstructor = "";
+				break;
+			}
+			noteArrayConstructorStep++;
+		}
+	}
+	for(int i = 0; i < 5; i++){
+		Serial.println(noteArray[i]);
+	}
 
 }
 
 void withdrawlMenu(char customKey){
-	Serial.println("case 4");
+	//Serial.println("case 4");
 	Serial.print("customKey: ");
 	Serial.println(customKey);
 	Serial.print("Withdraw step: ");
@@ -496,15 +537,11 @@ void withdrawlMenu(char customKey){
 					break;
 			}
 			withdrawStep++;
-			Serial.println("1,2,4*");
 		}
 	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
 		navigationKey = customKey;
 		if(withdrawStep == 2 && customKey == 'A'){
-			Serial.println("Loc0");
 			billSelection();
-			//geldOpnemen();
-			Serial.println("Loc1");
 		}else if(customKey == 'B' || customKey == 'C'){
 			billCombinationSelection = "";
 			withdrawStep = 0;
