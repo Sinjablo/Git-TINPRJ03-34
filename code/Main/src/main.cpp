@@ -14,6 +14,8 @@
 #include <MFRC522.h>
 #include <iterator>
 #include <map>
+#include "Adafruit_Thermal.h"	//printer
+#include "SoftwareSerial.h"		//printer
 
 
 using namespace std; 
@@ -63,12 +65,17 @@ byte colPins[COLS] = {16, 4, 15, 2};
 byte rowPins[ROWS] = {22, 3, 5, 17}; 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
 //----------End keypad setUp
+
 //----------Setup RFID reader-------
 const int RST_PIN = 13; // Reset pin
 const int SS_PIN = 21; // Slave select pin
  
 MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance
 //-------------end rfid setup
+
+//-------------setup printer----
+
+//end printer setup
 
 //dummy variables:
 String dummyPasscode = "7777";
@@ -269,12 +276,12 @@ String getBalance(){
 }
 #pragma endregion
 
+
 void setup(){	// void setup
 	// Serial port for debugging purposes
 	Serial.begin(115200);
 	pinMode(tempBtn, OUTPUT);
 
-	
 
 	// Initialize SPIFFS
 	if (!SPIFFS.begin())
@@ -299,6 +306,7 @@ void setup(){	// void setup
 	server.serveStatic("/mainMenu", SPIFFS, "mainMenu.html");
 	server.serveStatic("/balance", SPIFFS, "balance.html");
 	server.serveStatic("/withdraw", SPIFFS, "withdraw.html");
+	server.serveStatic("/receipt", SPIFFS, "receipt.html");
 
 	// Route for root / web page
 	server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -327,7 +335,6 @@ void setup(){	// void setup
 	server.on("/passcodeLenght", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getPasscodeLenght().c_str());
 	});
-	
 	server.on("/accountNumber", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getAccountNumber().c_str());
 	});
@@ -338,6 +345,13 @@ void setup(){	// void setup
 		request->send_P(200, "text/plain", getNavigation().c_str());
 		//Serial.println("withdrawamount");
 		page = 4;
+	});
+	server.on("/receipt", HTTP_GET, [](AsyncWebServerRequest *request) {
+		Serial.println("page0");
+		request->send_P(200, "text/plain", getNavigation().c_str());
+		//Serial.println("withdrawamount");
+		page = 5;
+		Serial.println("page");
 	});
   /*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -362,7 +376,7 @@ void setup(){	// void setup
 
 void rfidReader(){
 	// Look for new cards
-
+	
 	// Select one of the cards
 	if (!mfrc522.PICC_ReadCardSerial()){
 		return;
@@ -460,11 +474,9 @@ void billSelection(){
 			int combNumber = atoi(((String)billCombinations[billCombinationSelection].charAt(i)).c_str());
 			switch (i){
 				case 0:
-					Serial.println("Loc0");
 					noteArray[1] = combNumber;
 					break;
 				case 3:
-					Serial.println("Loc3");
 					noteArray[3] = combNumber; 
 					break;
 			}
@@ -472,17 +484,14 @@ void billSelection(){
 		}else if(noteArrayConstructorStep == 1 || noteArrayConstructorStep == 4){
 			billConstructor += billCombinations[billCombinationSelection].charAt(i);
 			noteArrayConstructorStep++;
-			Serial.println("Loc1");
 		}else{
 			billConstructor += billCombinations[billCombinationSelection].charAt(i);
 			switch (i){
 			case 2:
-				Serial.println("Loc2");
 				noteArray[2] = atoi(((String)billConstructor).c_str());
 				billConstructor = "";
 				break;
 			case 5:
-				Serial.println("Loc4");
 				noteArray[4] = atoi(((String)billConstructor).c_str());
 				billConstructor = "";
 				break;
@@ -548,6 +557,27 @@ void withdrawlMenu(char customKey){
 		}
 	}
 }
+
+void receiptMenu(char customKey){
+	Serial.println("Loc1");
+	switch (customKey){
+		case 'A':
+			/* receipt constructor, 
+			printer, 
+			dispense money */
+			Serial.println("Loc2");
+			geldOpnemen();
+			Serial.println("Loc3");
+			break;
+
+		case 'B':
+			//dispense money
+			Serial.println("Loc4");
+			geldOpnemen();
+			Serial.println("Loc5");
+			break;
+	}
+}
 #pragma endregion
 
 void timerControl(){	// function to abort if the user has been inactive for too long
@@ -598,13 +628,16 @@ void loop(){	//void main
 					withdrawlMenu(customKey);
 					vTaskDelay(10);
 					break;
+				case 5://-------------receipt menu
+					Serial.println("Loc0");
+					receiptMenu(customKey);
+					Serial.println("Loc6");
+					break;
 			}
 			if(customKey == 'D'){
 				abortCheck = true;
 			}
   		}
-	
-	
 	}
 	yield();
 

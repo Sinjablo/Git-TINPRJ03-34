@@ -94,6 +94,7 @@
             document.getElementById("tab2").innerHTML = "4|"
             document.getElementById("tab3").innerHTML = "7|" 
             document.getElementById("tab4").innerHTML = "*|"
+            withdrawStep = 2;
 
         }
     }
@@ -142,6 +143,11 @@
                             console.log("loc1");
                         }
                         break
+                    case '11':
+                        if(withdrawStep == 2){
+                            location.replace("/receipt");
+                        }
+                        break;
                     case '12':
                         withdrawStep = 0;
                         location.replace("/mainMenu");
