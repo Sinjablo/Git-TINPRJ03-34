@@ -59,7 +59,6 @@
         c7:"3x &euro;20, 1x &euro;10",
         c10:"7x &euro;10"
     }
-    
 
     function withdrawOptions(){
         if(withdrawStep == 0){
@@ -136,14 +135,13 @@
                         break;
                     case '10':
                         if(withdrawStep == 0){
+                            location.replace("/customWithdraw")
                         }else{
                             combination += "10"; 
-                            console.log("loc0");
                             withdrawOptions();
-                            console.log("loc1");
                         }
-                        break
-                    case '11':
+                        break;
+                        case '11':
                         if(withdrawStep == 2){
                             location.replace("/receipt");
                         }
@@ -153,6 +151,8 @@
                         location.replace("/mainMenu");
                         break;
                     case '13':
+                        customAmount = false;
+                        customAmountPage = false;
                         document.getElementById("caption").innerHTML = "";
                         document.getElementById("amount").innerHTML = "";
                         document.getElementById("paragraph1").innerHTML = "";
@@ -162,14 +162,14 @@
                         document.getElementById("tab3").innerHTML = "7| &euro;70" 
                         document.getElementById("tab4").innerHTML = "*| Gepast"
                         withdrawStep = 0;
-                        break;        
+                        break;
                 }
             }
         };
         xhttp.open("GET", "/withdrawlNav", true);
         xhttp.send();
     }, 200);
-
+    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {

@@ -12,8 +12,8 @@
     <h1>Voer Uw pincode in A.U.B.</h1>
     
     <p>
-        <span >Passcode:</span>
-        <span id="passcode"></span>
+        <span if="passcode1">Passcode:</span>
+        <span id="passcode2"></span>
     </p>
     <span class="menuBox right1">OKE |A</span>
         <span class="menuBox right2">LEEG |B</span>
@@ -29,24 +29,36 @@
         
 </body>
 <script>  
+    var starHidden = false;
     //var time = 0;
+    function hideStars(){
+        document.getElementById("passcode1").innerHTML = "";
+        document.getElementById("passcode2").innerHTML = "";
+    }
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
-            // time++;
-            // if(time == 100){
-            //     location.replace('/index');
-            // }
             if (this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
                 switch(this.responseText){
                     case '1':
                         location.replace('/mainMenu');
                         break;
-                    case 'B':
-
+                    case '-1':
+                        starHidden = true;
+                        hideStars();
                         break;
-                    case 'C':
-                        loction.replace('/index');
+                    case '-2':
+                        starHidden = true;
+                        hideStars();
+                        break;
+                    case '-3':
+                        starHidden = true;
+                        hideStars();
+                        break;
+                    case '-4':
+                        starHidden = true;
+                        hideStars();
                         break;
                     default:
                         break;
@@ -75,22 +87,24 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 //document.getElementById("passcode").innerHTML = this.responseText;
-                switch(this.responseText){
-                    case '1':
-                        document.getElementById("passcode").innerHTML = "*";
-                        break;
-                    case '2':
-                        document.getElementById("passcode").innerHTML = "**";
-                        break;
-                    case '3':
-                        document.getElementById("passcode").innerHTML = "***";
-                        break;
-                    case '4':
-                        document.getElementById("passcode").innerHTML = "****";
-                        break;
-                    default:
-                        document.getElementById("passcode").innerHTML = " ";
-                        break;
+                if(starHidden == false){
+                    switch(this.responseText){
+                        case '1':
+                            document.getElementById("passcode2").innerHTML = "*";
+                            break;
+                        case '2':
+                            document.getElementById("passcode2").innerHTML = "**";
+                            break;
+                        case '3':
+                            document.getElementById("passcode2").innerHTML = "***";
+                            break;
+                        case '4':
+                            document.getElementById("passcode2").innerHTML = "****";
+                            break;
+                        default:
+                            document.getElementById("passcode2").innerHTML = " ";
+                            break;
+                    }
                 }
             }
         };

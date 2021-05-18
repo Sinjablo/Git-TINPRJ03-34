@@ -106,6 +106,7 @@ int pincodeTimeOut = 10000;
 int generalTimeOut = 30000;
 int noteArray[6];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
 String billCombinationSelection;
+boolean wrongInput = false;
 
 // variables to return to the GUI website
 char navigationKey;
@@ -114,6 +115,7 @@ bool rfidCheck = false;
 char loginCommand = '0';
 String lastName = "Vuijk";
 String passcodeLenght;
+String customAmount = "";
 
 std::map<String, String> billCombinations{	
 	{"11", "110000"},
@@ -131,7 +133,7 @@ std::map<String, String> billCombinations{
 };
 
 
-bool verifieer_pincode(String passcode, String accountNumber){
+int verifieer_pincode(String passcode, String accountNumber){
     
     //WiFiClient client = server.available();
 		
@@ -144,13 +146,11 @@ bool verifieer_pincode(String passcode, String accountNumber){
     //GET method
     int httpCode = http.GET();
     String payload = http.getString();
+	Serial.print("payload: ");
     Serial.println(payload);
     http.end(); 
-	if(payload == "1"){
-		return true;
-	}else{
-		return false;
-	}
+	int intPayload = atoi(((String)payload).c_str());
+	return intPayload;
   
 }
 
@@ -213,7 +213,7 @@ String getAbortCheck(){
 		balance = "";
 		timerRunning = false;
 		withdrawStep = 0;
-		//noteArrayClear();
+		customAmount = "";
 		Serial.println("Abortus has been commited");
 	}
 	return String(tempAbortCheck);
@@ -263,17 +263,19 @@ String getLoginCommand(){
 	loginCommand = '0';
 	return String(tempPasscodeCheck);
 }
-
 String getPasscodeLenght(){
 	return String(passcode.length());
 }
-
 String getAccountNumber(){
 	return String(rekeningNummer);
 }
 String getBalance(){
 	return String(getBalans());
 }
+String getCustomAmount(){
+	return String(customAmount);
+}
+
 #pragma endregion
 
 
@@ -306,6 +308,7 @@ void setup(){	// void setup
 	server.serveStatic("/mainMenu", SPIFFS, "mainMenu.html");
 	server.serveStatic("/balance", SPIFFS, "balance.html");
 	server.serveStatic("/withdraw", SPIFFS, "withdraw.html");
+	server.serveStatic("/customWithdraw", SPIFFS, "customWithdraw.html");
 	server.serveStatic("/receipt", SPIFFS, "receipt.html");
 
 	// Route for root / web page
@@ -343,16 +346,20 @@ void setup(){	// void setup
 	});
 	server.on("/withdrawlNav", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getNavigation().c_str());
-		//Serial.println("withdrawamount");
 		page = 4;
 	});
-	server.on("/receipt", HTTP_GET, [](AsyncWebServerRequest *request) {
-		Serial.println("page0");
-		request->send_P(200, "text/plain", getNavigation().c_str());
-		//Serial.println("withdrawamount");
+	server.on("/customAmount", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getCustomAmount().c_str());
 		page = 5;
-		Serial.println("page");
 	});
+	server.on("/customWithdrawlNav", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getNavigation().c_str());
+	});
+	server.on("/receiptNav", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getNavigation().c_str());
+		page = 6;
+	});
+
   /*
 	server.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getHumidity().c_str());
@@ -438,9 +445,25 @@ void passcodeChecker(char customKey){
 
 	if (customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D' || customKey == '*' || customKey == '#'){
 		loginCommand = customKey;
-		if (customKey == 'A' && passcode.length() == 4 && verifieer_pincode(passcode, rekeningNummer) == true){
+		if (customKey == 'A' && passcode.length() == 4){
 			//customKey == 'A' && dummyTempPasscode.length() == 4 && dummyTempPasscode == dummyPasscode
-			loginCommand = '1';
+			switch (verifieer_pincode(passcode, rekeningNummer)){
+				case 1:
+					loginCommand = '1';
+					break;
+				case -1:
+					loginCommand = '-1';
+					break;
+				case -2:
+					loginCommand = '-2';
+					break;
+				case -3:
+					loginCommand = '-3';
+					break;
+				case -4:
+					loginCommand = '-4';
+					break;
+			}
 		}
 		else if (customKey == 'B'){
 			passcode = "";
@@ -457,9 +480,6 @@ void navigationInput(char customKey){
 	Serial.println("case3");
 	Serial.print("navKey: ");
 	Serial.println(navigationKey);
-	if(navigationKey == '4'){
-		page = 4;
-	}
 }
 
 void billSelection(){
@@ -502,7 +522,6 @@ void billSelection(){
 	for(int i = 0; i < 5; i++){
 		Serial.println(noteArray[i]);
 	}
-
 }
 
 void withdrawlMenu(char customKey){
@@ -558,23 +577,62 @@ void withdrawlMenu(char customKey){
 	}
 }
 
+void customAmountMenu(char customKey){
+
+	if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
+		navigationKey = customKey;
+		int customAmountLenght = customAmount.length()-1;
+		if(customKey == 'A'){
+			Serial.println("key: A");
+			Serial.println(customAmount.charAt(customAmountLenght));
+			if(wrongInput == true){
+				Serial.println("wrong input yeye");
+				customAmount = "";
+				wrongInput = false;
+				return;
+			}
+			if(customAmount.charAt(customAmountLenght) == '5' || customAmount.charAt(customAmountLenght) == '0'){
+
+			}else{
+				customAmount = "Zorg dat het bedrag eindigt op een 5 of 0.";
+				wrongInput = true;
+			}
+			
+		}
+		switch (customKey)
+		{
+			case 'B':
+				customAmount = "";
+				wrongInput = false;
+				break;
+			case 'C':
+				customAmount = customAmount.substring(0, customAmount.length()-1);
+				break;
+		}
+	}else if(customKey != '*' && customKey != '#'){
+		customAmount += customKey;
+		Serial.println(customAmount);
+	}
+}
+
+void dispenseMoney(){
+
+	abortCheck = true;
+}
+
 void receiptMenu(char customKey){
-	Serial.println("Loc1");
 	switch (customKey){
 		case 'A':
 			/* receipt constructor, 
 			printer, 
 			dispense money */
-			Serial.println("Loc2");
 			geldOpnemen();
-			Serial.println("Loc3");
+			dispenseMoney();
 			break;
-
 		case 'B':
 			//dispense money
-			Serial.println("Loc4");
 			geldOpnemen();
-			Serial.println("Loc5");
+			dispenseMoney();
 			break;
 	}
 }
@@ -628,10 +686,11 @@ void loop(){	//void main
 					withdrawlMenu(customKey);
 					vTaskDelay(10);
 					break;
-				case 5://-------------receipt menu
-					Serial.println("Loc0");
+				case 5:
+					customAmountMenu(customKey);
+					break;
+				case 6://-------------receipt menu
 					receiptMenu(customKey);
-					Serial.println("Loc6");
 					break;
 			}
 			if(customKey == 'D'){
@@ -641,59 +700,4 @@ void loop(){	//void main
 	}
 	yield();
 
-	//int t = atoi(((String)tester.charAt(1)).c_str());
-	//String comb = "11";
-	//Serial.println(billCombinations[comb]);
-	//Serial.println(atoi(((String)billCombinations[comb].charAt(1)).c_str()));
-
 }
-
-// int t = atoi(((String)tester.charAt(1)).c_str()); // to transform char at a location to a int
-
-
-
-/*
-void withdrawlMenu(char customKey){
-	Serial.println("case 4");
-	Serial.print("customKey: ");
-	Serial.println(customKey);
-	Serial.print("Withdraw step: ");
-	Serial.println(withdrawStep);
-	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
-		if(withdrawStep == 0 || withdrawStep == 1){
-			navigationKey = customKey;
-			switch (customKey){
-				case '1':
-					if(withdrawStep == 0){
-						noteArray[0] = 10;
-					}else{
-					}
-					break;
-				case '4':
-					if(withdrawStep == 0){
-						noteArray[0] = 30;
-					}else{		
-					}
-					break;
-				case '7':
-					if(withdrawStep == 0){
-						noteArray[0] = 70;
-					}else{						
-					}
-					break;
-			}
-			withdrawStep++;
-			Serial.println("1,2,4*");
-		}
-	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
-		navigationKey = customKey;
-		if(withdrawStep == 2 && customKey == 'A'){
-			Serial.println("Loc0");
-			geldOpnemen();
-			Serial.println("Loc1");
-		}else if(customKey == 'B' || customKey == 'C'){
-			withdrawStep = 0;
-		}
-	}
-}
-*/

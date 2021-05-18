@@ -12,37 +12,67 @@
     <!--
     <span class="menuBox">Withdraw</span>
     -->
+    <span class="menuBox left1" id="tab1">|</span>
+    <span class="menuBox left2" id="tab2">|</span>
+    <span class="menuBox left3" id="tab3">|</span>
+    <span class="menuBox left4" id="tab4">|</span>
 
-    <span class="menuBox left1">1| </span>
-    <span class="menuBox left2">4| </span>
-    <span class="menuBox left3">7|</span>
-    <span class="menuBox left4">*|</span>
+    <div id="Nibba_colum_mid_top">
+        <h1 id="caption"></h1>
+        <h2 id=amount>Voer uw gewenste waarden in.</h2>
+        <p id="paragraph1">Laat uw bedrag eindigen op een 5 A.U.B.</p>
+        <p id="customAmount"></p>
+        <p id="paragraph3"></p>
+        <p id="paragraph4"></p>
+    </div>
 
-    <span class="menuBox right1">JA |A</span>
-    <span class="menuBox right2">NEE |B</span>
-    <span class="menuBox right3">|C</span>
+
+    <span class="menuBox right1">OKE |A</span>
+    <span class="menuBox right2">TERUG |B</span>
+    <span class="menuBox right3">VERWIJDER |C</span>
     <span class="menuBox right4">AFSLUITEN |D</span>
-    
-    
-    <h1 id="menuText2">Wilt U een bonnetje?</h1>
-        
-        
-     
+          
         
 </body>
 <script>
+
+    /**/
+    var withdrawStep = 0;
+    var amountSelected = 0;
+    var combination;
+    //var customAmount = false;
+    var customAmountPage = false;
+    
+
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
-        /**/
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                if(this.response == '11' || this.response == '12'){
-                    document.getElementById("menuText2").innerHTML = "Vergeet niet uw geld.";
+                switch(this.responseText){
+                        case '11':
+                        if(withdrawStep == 2){
+                            location.replace("/receipt");
+                        }
+                        break;
+                    case '12':
+                        location.replace("/withdraw");
+                        break;
                 }
             }
         };
-        xhttp.open("GET", "/receiptNav", true);
+        xhttp.open("GET", "/customWithdrawlNav", true);
         xhttp.send();
+    }, 200);
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("customAmount").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/customAmount", true);
+        xhttp.send(); 
     }, 200);
 
     setInterval(function () {
@@ -58,50 +88,19 @@
         xhttp.send();
     }, 200);
 /*
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    
-                }
-            }
-        };
-        xhttp.open("GET", "/receipt", true);
-        xhttp.send();
-    }, 200);
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    case '1':
-                        location.replace("/balance");
-                        break;
-                    case '4':
-                        location.replace("/withdraw");
-                        break;
-                }
-            }
-        };
-        xhttp.open("GET", "/receipt", true);
-        xhttp.send();
-    }, 200);
-
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 if(this.responseText == 1){
                     location.replace("/mainMenu");
+                    
                 }
             }
         };
-        xhttp.open("GET", "/balanceCheck", true);
+        xhttp.open("GET", "/withdrawAmount", true);
         xhttp.send();
-    }, 1000);
+    }, 200);
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -116,18 +115,18 @@
         xhttp.send();
     }, 1000);
     
-    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("pressure").innerHTML = this.responseText;
+                document.getElementById("accountNumber").innerHTML = this.responseText;
             }
         };
-        xhttp.open("GET", "/pressure", true);
+        xhttp.open("GET", "/accountNumber", true);
         xhttp.send();
-    }, 10000);
-    */
+    }, 500);
+    */  
+
 </script>
 
 </html>

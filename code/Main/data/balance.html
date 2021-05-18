@@ -75,6 +75,25 @@
         xhttp.open("GET", "/abort", true);
         xhttp.send();
     }, 200);
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("accountNumber").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", "/accountNumber", true);
+    xhttp.send();
+        
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("balance").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", "/getBalance", true);
+    xhttp.send();
+
 /*
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -114,23 +133,7 @@
     }, 500);
     */
     
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("accountNumber").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("GET", "/accountNumber", true);
-    xhttp.send();
-        
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("balance").innerHTML = this.responseText;
-        }
-    };
-    xhttp.open("GET", "/getBalance", true);
-    xhttp.send();
+    
     
 </script>
 
