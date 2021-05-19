@@ -2,6 +2,7 @@
 
 const int motorForward = 5;
 const int motorBackward = 4;
+int i;
 
 
 void setup() {
@@ -17,15 +18,26 @@ void setup() {
 }
 
 void loop() {
+  delay(1000);
   Serial.println("Hoeveel briefjes wil je?");
   while (Serial.available() == 0) {
     // Wait for User to Input Data
   }
-  int i = Serial.parseInt();
-  Serial.print("Er worden nu ");
-  Serial.print(i);
-  Serial.println(" briefjes uitgeworpen.");
+  i = Serial.parseInt();
+  if (i == 0) {
+    Serial.println("Okay, dan niet.");
+  } else {
+    Serial.print("Er worden nu ");
+    Serial.print(i);
+    Serial.println(" briefjes uitgeworpen.");
+  }
 
+  geldPrinten(i);
+
+}
+
+
+int geldPrinten(int i){
   while (i != 0) {
     digitalWrite(motorForward, HIGH);
     delay(2000);
