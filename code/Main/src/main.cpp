@@ -132,7 +132,6 @@ std::map<String, String> billCombinations{
 	{"7*", "710000"}
 };
 
-
 int verifieer_pincode(String passcode, String accountNumber){
     
     //WiFiClient client = server.available();
@@ -192,6 +191,24 @@ String geldOpnemen(){
     http.end(); 
 	return balance;
   
+}
+
+int aantalBriefjes(String briefWaarde, String medewerker, String medewerkerWachtwoord){
+	HTTPClient http;
+	Serial.print("pincode: ");
+	Serial.println(passcode);
+    String url = get_host+"/briefjes.php?"+"sltl="+key+"&brfj="+briefWaarde+"&mdw="+medewerker+"&mdwww="+medewerkerWachtwoord;
+    Serial.println(url);
+    
+    http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String briefAantal = http.getString();
+    Serial.println(briefAantal);
+    http.end(); 
+	int briefAantalInt = atoi(((String)briefAantal).c_str());
+	return briefAantalInt;
 }
 
 // void noteArrayClear(){
@@ -592,12 +609,15 @@ void customAmountMenu(char customKey){
 				return;
 			}
 			if(customAmount.charAt(customAmountLenght) == '5' || customAmount.charAt(customAmountLenght) == '0'){
+				if(customAmount.charAt(customAmountLenght) == '5' && aantalBriefjes("5", "ATM001", "ILoveMinderjarigen") == 0){
+					customAmount = "Helaas zijn de 5$ biljetten momenteel op, probeer later weer.";
+					wrongInput = true;
+				}
 
 			}else{
 				customAmount = "Zorg dat het bedrag eindigt op een 5 of 0.";
 				wrongInput = true;
 			}
-			
 		}
 		switch (customKey)
 		{
@@ -609,7 +629,7 @@ void customAmountMenu(char customKey){
 				customAmount = customAmount.substring(0, customAmount.length()-1);
 				break;
 		}
-	}else if(customKey != '*' && customKey != '#'){
+	}else if(customKey != '*' && customKey != '#' && wrongInput != true){
 		customAmount += customKey;
 		Serial.println(customAmount);
 	}
@@ -699,5 +719,6 @@ void loop(){	//void main
   		}
 	}
 	yield();
-
 }
+	// int ui = aantalBriefjes("5", "ATM001", "ILoveMinderjarigen");
+	// Serial.println(ui);
