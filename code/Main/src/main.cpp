@@ -104,7 +104,7 @@ String balance;
 bool timerRunning = false;
 int pincodeTimeOut = 10000;
 int generalTimeOut = 30000;
-int noteArray[6];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
+int noteArray[9];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
 String billCombinationSelection;
 boolean wrongInput = false;
 
