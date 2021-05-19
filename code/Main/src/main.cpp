@@ -536,7 +536,10 @@ void billSelection(){
 			noteArrayConstructorStep++;
 		}
 	}
-	for(int i = 0; i < 5; i++){
+	for(int i = 5; i < 9; i++){
+		noteArray[i] = 0;
+	}
+	for(int i = 0; i < 9; i++){
 		Serial.println(noteArray[i]);
 	}
 }
