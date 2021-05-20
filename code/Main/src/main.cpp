@@ -597,6 +597,18 @@ void withdrawlMenu(char customKey){
 	}
 }
 
+void customAmountBillConstructor(int customAmountInt, String customAmount, int customAmountLenght){
+/*
+check if last nr. = five
+
+
+
+
+*/
+
+}
+
+
 void customAmountMenu(char customKey){
 
 	if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
@@ -615,6 +627,9 @@ void customAmountMenu(char customKey){
 				if(customAmount.charAt(customAmountLenght) == '5' && aantalBriefjes("5", "ATM001", "ILoveMinderjarigen") == 0){
 					customAmount = "Helaas zijn de 5$ biljetten momenteel op, probeer later weer.";
 					wrongInput = true;
+				}else{
+					int customAmountInt = atoi(((String)billCombinations[billCombinationSelection].charAt(i)).c_str());
+					customAmountBillConstructor(customAmountInt, customAmount, customAmountLenght);
 				}
 
 			}else{
