@@ -605,17 +605,35 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 	Serial.println("customAmountBillConstructor");
 	int customAmountMaster = customAmountInt;	// a copy of the amount of money chosen
 	int customAmount = customAmountMaster;
-	customNoteArray01[0] = customAmount;
-	customNoteArray02[0] = customAmount;
-	customNoteArray03[0] = customAmount;
-	customNoteArray04[0] = customAmount;
 	int locationArray01 = 1;
 	int locationArray02 = 1;
 	int locationArray03 = 1;
 	int locationArray04 = 1;
+	for(int i = 0; i < 9; i ++){
+		customNoteArray01[i] = 0;
+	}
+	for(int i = 0; i < 9; i ++){
+		customNoteArray02[i] = 0;
+	}
+	for(int i = 0; i < 9; i ++){
+		customNoteArray03[i] = 0;
+	}
+	for(int i = 0; i < 9; i ++){
+		customNoteArray04[i] = 0;
+	}
+	customNoteArray01[0] = customAmount;
+	customNoteArray02[0] = customAmount;
+	customNoteArray03[0] = customAmount;
+	customNoteArray04[0] = customAmount;
 	int divideCalculation;	// int to store calculations in.
 	boolean endsOn5 = false;	// boolean is true when custom amount ends on 5
 	int billOptions[3] = {50, 20, 10};	// the diffrent bills which can be selected
+	Serial.print("temp algo 2: ");
+	for(int i = 0; i < 9; i++){
+		Serial.print(customNoteArray02[i]);
+		Serial.print(" ");
+	}
+	Serial.println(" ");
 	if(customAmountStr.charAt(customAmountLenght) == '5'){		// checks if the custom amount ends on a 5, so yes, removes the 5 and adds it to the array
 		customNoteArray01[locationArray01] = 1;
 		customNoteArray01[locationArray01 + 1] = 5;
@@ -663,6 +681,7 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 			}else{
 				customNoteArray02[locationArray02] = 2;
 				customNoteArray02[locationArray02 + 1] = 5;
+				locationArray02 += 2;
 			}
 			half1 -= 5;
 			half2 -= 5;
@@ -673,51 +692,73 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 		// step 1:
 		boolean firstRun = false;
 		int biggestBillUsed;
+		Serial.print("step1: ");
 		for(int i = 0; i < 3 != 0; i++){
 			divideCalculation = half1 / billOptions[i];
-			if(divideCalculation >= 1){
+			if(divideCalculation >= 1){	
 				Serial.print(billOptions[i]);
 				Serial.println(" divider");
 				if(firstRun == false){
-					Serial.println("loc0");
 					biggestBillUsed = i;
 					firstRun = true;
 				}
-				Serial.println("loc01");
 				customNoteArray02[locationArray02] = divideCalculation;
 				customNoteArray02[locationArray02 + 1] = billOptions[i];
 				half1 -= billOptions[i] * divideCalculation;
 				locationArray02 += 2;
-				Serial.println("loc2");
 			}
 		}
 
 		// step 2:
+		Serial.println("step2: ");
+		for(int i = 1; i < 3; i++){
+			boolean inArray = false;
+			Serial.print("for run: ");
+			Serial.println(i);
+			divideCalculation = half2 / billOptions[biggestBillUsed + i];
+			if(divideCalculation >= 1){
+				Serial.print(billOptions[i]);
+				Serial.println(" divider");
+				//check if bill is in array. yes -> add to that location, no -> make new entry
+				for(int u = 1; u < 9; u++){
+					if(u % 2 == 0 && customNoteArray02[u] == billOptions[biggestBillUsed + i]){
+						int tempBillAmount = customNoteArray02[u - 1];
+						tempBillAmount += divideCalculation;
+						customNoteArray02[u - 1] = tempBillAmount;
+						half2 -= billOptions[biggestBillUsed + i] * divideCalculation;
+						inArray = true;
+					}
+				}
+				if(inArray == false){
+					Serial.print("divide calc: ");
+					Serial.println(divideCalculation);
+					customNoteArray02[locationArray02] = divideCalculation;
+					customNoteArray02[locationArray02 + 1] = billOptions[biggestBillUsed + i];
+					half2 -= billOptions[biggestBillUsed + i] * divideCalculation;
+					locationArray02 += 2;
+				}
+			}
+		}
 
-		// WORK HERE
-
-		Serial.println("loc3");
 		// constructs the fourth array with bills, all 10's.
 		customAmount = customAmountMaster;
 		divideCalculation = customAmount / billOptions[2];
 		customNoteArray04[locationArray04] = divideCalculation;
 		customNoteArray04[locationArray04 + 1] = billOptions[2];
 		locationArray04 += 2;
-		Serial.println("loc4");
 	}
 	for(int i = locationArray01; i < 9; i ++){
 		customNoteArray01[i] = 0;
 	}
 	for(int i = locationArray02; i < 9; i ++){
-		customNoteArray04[i] = 0;
+		customNoteArray02[i] = 0;
 	}
 	for(int i = locationArray03; i < 9; i ++){
-		customNoteArray04[i] = 0;
+		customNoteArray03[i] = 0;
 	}
 	for(int i = locationArray04; i < 9; i ++){
 		customNoteArray04[i] = 0;
 	}
-	Serial.println("loc5");
 	Serial.print("algo 1: ");
 	for(int i = 0; i < 9; i++){
 		Serial.print(customNoteArray01[i]);
