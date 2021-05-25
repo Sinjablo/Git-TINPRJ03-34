@@ -20,11 +20,11 @@
 
 using namespace std; 
 // Replace with your network credentials
-// const char *ssid = "ASUS1424";
-// const char *password = "MaJaNe14245.";
+ const char *ssid = "ASUS1424";
+ const char *password = "MaJaNe14245.";
 
-const char *ssid = "Tesla IoT";
-const char *password = "fsL6HgjN";
+//const char *ssid = "Tesla IoT";
+//const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -105,6 +105,10 @@ bool timerRunning = false;
 int pincodeTimeOut = 10000;
 int generalTimeOut = 30000;
 int noteArray[9];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
+int customNoteArray01[9];
+int customNoteArray02[9];
+int customNoteArray03[9];
+int customNoteArray04[9];
 String billCombinationSelection;
 boolean wrongInput = false;
 
@@ -597,12 +601,148 @@ void withdrawlMenu(char customKey){
 	}
 }
 
-void customAmountBillConstructor(int customAmountInt, String customAmount, int customAmountLenght){
+void customAmountBillConstructor(int customAmountInt, String customAmountStr, int customAmountLenght){
+	Serial.println("customAmountBillConstructor");
+	int customAmountMaster = customAmountInt;	// a copy of the amount of money chosen
+	int customAmount = customAmountMaster;
+	customNoteArray01[0] = customAmount;
+	customNoteArray02[0] = customAmount;
+	customNoteArray03[0] = customAmount;
+	customNoteArray04[0] = customAmount;
+	int locationArray01 = 1;
+	int locationArray02 = 1;
+	int locationArray03 = 1;
+	int locationArray04 = 1;
+	int divideCalculation;	// int to store calculations in.
+	boolean endsOn5 = false;	// boolean is true when custom amount ends on 5
+	int billOptions[3] = {50, 20, 10};	// the diffrent bills which can be selected
+	if(customAmountStr.charAt(customAmountLenght) == '5'){		// checks if the custom amount ends on a 5, so yes, removes the 5 and adds it to the array
+		customNoteArray01[locationArray01] = 1;
+		customNoteArray01[locationArray01 + 1] = 5;
+		customNoteArray02[locationArray02] = 1;
+		customNoteArray02[locationArray02 + 1] = 5;
+		customNoteArray03[locationArray03] = 1;
+		customNoteArray03[locationArray03 + 1] = 5;
+		customNoteArray04[locationArray04] = 1;
+		customNoteArray04[locationArray04 + 1] = 5;
+		customAmountMaster -= 5;
+		locationArray01 += 2;
+		locationArray02 += 2;
+		locationArray03 += 2;
+		locationArray04 += 2;
+		endsOn5 = true;
+	}
+
+	if(customAmountMaster != 0){	
+		// constructs the first array with bills, least amount of bills.
+		customAmount = customAmountMaster;
+		for(int i = 0; i < 3; i++){		
+			divideCalculation = customAmount / billOptions[i];
+			if(divideCalculation >= 1){
+				Serial.println(billOptions[i]+" divide");
+				customNoteArray01[locationArray01] = divideCalculation;
+				customNoteArray01[locationArray01 + 1] = billOptions[i];
+				customAmount -= billOptions[i] * divideCalculation;
+				locationArray01 += 2;
+			}
+		}
+		
+		// constructs the second array with bills. works in 2 steps:
+		// step 1: divides the amount, and gives the first half in as little as possible notes
+		// step 2: gives the second half completely in the notes that are next in line to the biggest note from step 1, if we get stuck -> onto the next note.
+		Serial.println("algo02");
+		customAmount = customAmountMaster;
+		int half1 = customAmount / 2;
+		int half2 = half1;
+		Serial.print("half1: ");
+		Serial.println(half1);
+		if(half1 % 10 == 5){
+			if(endsOn5 == true){
+				Serial.println("Ends on 5");
+				customNoteArray02[locationArray02 - 2] = 3;
+			}else{
+				customNoteArray02[locationArray02] = 2;
+				customNoteArray02[locationArray02 + 1] = 5;
+			}
+			half1 -= 5;
+			half2 -= 5;
+			Serial.print("half1: ");
+			Serial.println(half1);
+		}
+
+		// step 1:
+		boolean firstRun = false;
+		int biggestBillUsed;
+		for(int i = 0; i < 3 != 0; i++){
+			divideCalculation = half1 / billOptions[i];
+			if(divideCalculation >= 1){
+				Serial.print(billOptions[i]);
+				Serial.println(" divider");
+				if(firstRun == false){
+					Serial.println("loc0");
+					biggestBillUsed = i;
+					firstRun = true;
+				}
+				Serial.println("loc01");
+				customNoteArray02[locationArray02] = divideCalculation;
+				customNoteArray02[locationArray02 + 1] = billOptions[i];
+				half1 -= billOptions[i] * divideCalculation;
+				locationArray02 += 2;
+				Serial.println("loc2");
+			}
+		}
+
+		// step 2:
+
+		// WORK HERE
+
+		Serial.println("loc3");
+		// constructs the fourth array with bills, all 10's.
+		customAmount = customAmountMaster;
+		divideCalculation = customAmount / billOptions[2];
+		customNoteArray04[locationArray04] = divideCalculation;
+		customNoteArray04[locationArray04 + 1] = billOptions[2];
+		locationArray04 += 2;
+		Serial.println("loc4");
+	}
+	for(int i = locationArray01; i < 9; i ++){
+		customNoteArray01[i] = 0;
+	}
+	for(int i = locationArray02; i < 9; i ++){
+		customNoteArray04[i] = 0;
+	}
+	for(int i = locationArray03; i < 9; i ++){
+		customNoteArray04[i] = 0;
+	}
+	for(int i = locationArray04; i < 9; i ++){
+		customNoteArray04[i] = 0;
+	}
+	Serial.println("loc5");
+	Serial.print("algo 1: ");
+	for(int i = 0; i < 9; i++){
+		Serial.print(customNoteArray01[i]);
+		Serial.print(" ");
+	}
+	Serial.println(" ");
+	Serial.print("algo 2: ");
+	for(int i = 0; i < 9; i++){
+		Serial.print(customNoteArray02[i]);
+		Serial.print(" ");
+	}
+	Serial.println(" ");
+	Serial.print("algo 3: ");
+	for(int i = 0; i < 9; i++){
+		Serial.print(customNoteArray03[i]);
+		Serial.print(" ");
+	}
+	Serial.println(" ");
+	Serial.print("algo 4: ");
+	for(int i = 0; i < 9; i++){
+		Serial.print(customNoteArray04[i]);
+		Serial.print(" ");
+	}
+	Serial.println(" ");
 /*
-check if last nr. = five
-
-
-
 
 */
 
@@ -628,7 +768,9 @@ void customAmountMenu(char customKey){
 					customAmount = "Helaas zijn de 5$ biljetten momenteel op, probeer later weer.";
 					wrongInput = true;
 				}else{
-					int customAmountInt = atoi(((String)billCombinations[billCombinationSelection].charAt(i)).c_str());
+					int customAmountInt = atoi(((String)customAmount).c_str());
+					Serial.print("customAmountInt: ");
+					Serial.println(customAmountInt);
 					customAmountBillConstructor(customAmountInt, customAmount, customAmountLenght);
 				}
 
