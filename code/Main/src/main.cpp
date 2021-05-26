@@ -109,8 +109,11 @@ int customNoteArray01[9];
 int customNoteArray02[9];
 int customNoteArray03[9];
 int customNoteArray04[9];
+int billsAvailable[4];	// 0 = 5, 1 = 10, 2 = 20, 3 = 50
 String billCombinationSelection;
 boolean wrongInput = false;
+String currency = "&euro;";
+String billCombinationString = "";
 
 // variables to return to the GUI website
 char navigationKey;
@@ -134,6 +137,13 @@ std::map<String, String> billCombinations{
 	{"74", "150210"},
 	{"77", "320110"},
 	{"7*", "710000"}
+};
+
+std::map<int, int> billsAvailableIndex{	
+	{5, 0},
+	{10, 1},
+	{20, 2},
+	{50, 3}
 };
 
 int verifieer_pincode(String passcode, String accountNumber){
@@ -297,6 +307,16 @@ String getCustomAmount(){
 	return String(customAmount);
 }
 
+String getMenuTest(){
+	//String billsSelected;
+
+	//&euro;10
+	//billsSelected = "1 x &euro;20, 2x &euro;10";
+
+
+	return String(billCombinationString);
+}
+
 #pragma endregion
 
 
@@ -378,6 +398,12 @@ void setup(){	// void setup
 	});
 	server.on("/receiptNav", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getNavigation().c_str());
+		page = 6;
+	});
+
+
+	server.on("/menuTest", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getMenuTest().c_str());
 		page = 6;
 	});
 
@@ -652,6 +678,7 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 	}
 
 	if(customAmountMaster != 0){	
+		#pragma region	//algorithem 1
 		// constructs the first array with bills, least amount of bills.
 		customAmount = customAmountMaster;
 		for(int i = 0; i < 3; i++){		
@@ -664,7 +691,8 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 				locationArray01 += 2;
 			}
 		}
-		
+		#pragma endregion 
+		#pragma region	//algorithem 2
 		// constructs the second array with bills. works in 2 steps:
 		// step 1: divides the amount, and gives the first half in as little as possible notes
 		// step 2: gives the second half completely in the notes that are next in line to the biggest note from step 1, if we get stuck -> onto the next note.
@@ -739,13 +767,36 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 				}
 			}
 		}
+		#pragma endregion
+		
+		#pragma region	//algorithem 3
 
+		customAmount = customAmountMaster;
+
+		#pragma endregion
+		
+		#pragma region	//algorithem 4
 		// constructs the fourth array with bills, all 10's.
 		customAmount = customAmountMaster;
-		divideCalculation = customAmount / billOptions[2];
-		customNoteArray04[locationArray04] = divideCalculation;
-		customNoteArray04[locationArray04 + 1] = billOptions[2];
-		locationArray04 += 2;
+		while(customAmount != 0){
+			for(int i = 2; i > -1; i--){
+				divideCalculation = customAmount / billOptions[i];
+				if(divideCalculation >= 1){
+					if(divideCalculation < 11){
+						customNoteArray04[locationArray04] = divideCalculation;
+						customNoteArray04[locationArray04 + 1] = billOptions[i];
+						locationArray04 += 2;
+						customAmount -= divideCalculation * billOptions[i];
+					}
+				}
+			}
+		}
+		#pragma endregion
+
+
+		// customNoteArray04[locationArray04] = divideCalculation;
+		// customNoteArray04[locationArray04 + 1] = billOptions[2];
+		// locationArray04 += 2;
 	}
 	for(int i = locationArray01; i < 9; i ++){
 		customNoteArray01[i] = 0;
@@ -789,6 +840,53 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 
 }
 
+void billsInMachine(){
+	String bills[4] = {"5", "10", "20", "50"};
+	for(int i = 0; i < 4; i++){
+		billsAvailable[i] = aantalBriefjes(bills[i], "ATM001", "ILoveMinderjarigen");
+	}
+}
+
+void billArrayStringConstructor(int billArray[9]){
+	//&euro;10
+
+	//String tempArrayString;
+	int increament = 2;
+	if(billArray[0] == 0){
+		billCombinationString = "";
+	}else{
+		for(int i = 1; i < 9; i += increament){
+			if(billArray[i] == 0){
+				break;
+			}
+			String billAmount = String(billArray[i]);
+			String value = String(billArray[i+1]);
+			billCombinationString += billAmount+" x "+currency+value+" ";
+		}
+	}
+	Serial.println(billCombinationString);
+
+}
+
+void billArrayChecker(int billArray[9]){	// function to check if the bills selected are available.
+
+	int increament = 2;
+	Serial.println(billArray[0]);
+	for(int i = 1; i < 9; i += increament){
+		//String value = String(billArray[i+1]);
+		if(billArray[i] == 0){
+			break;
+		}else if(billsAvailable[billsAvailableIndex[billArray[i+1]]] < billArray[i]){
+			Serial.print("Er zijn te weinig briefjes van: ");
+			Serial.println(billArray[i+1]);
+			billArray[0] = 0;
+			break;
+		}
+	}
+	Serial.println(billArray[0]);
+	billArrayStringConstructor(billArray);
+	return;
+}
 
 void customAmountMenu(char customKey){
 
@@ -812,7 +910,12 @@ void customAmountMenu(char customKey){
 					int customAmountInt = atoi(((String)customAmount).c_str());
 					Serial.print("customAmountInt: ");
 					Serial.println(customAmountInt);
+					billsInMachine();
 					customAmountBillConstructor(customAmountInt, customAmount, customAmountLenght);
+					billArrayChecker(customNoteArray01);
+					//billArrayChecker(customNoteArray02);
+					//billArrayChecker(customNoteArray03);
+					//billArrayChecker(customNoteArray04);
 				}
 
 			}else{
@@ -825,6 +928,7 @@ void customAmountMenu(char customKey){
 			case 'B':
 				customAmount = "";
 				wrongInput = false;
+				withdrawStep = 0;
 				break;
 			case 'C':
 				customAmount = customAmount.substring(0, customAmount.length()-1);

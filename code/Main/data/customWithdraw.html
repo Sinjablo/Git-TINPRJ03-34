@@ -42,7 +42,7 @@
     var combination;
     //var customAmount = false;
     var customAmountPage = false;
-    
+    var filled = 0;
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -74,6 +74,23 @@
         xhttp.open("GET", "/customAmount", true);
         xhttp.send(); 
     }, 200);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                //document.getElementById("testing").innerHTML = "7| "+this.responseText;
+                //console.log("text: ");
+                //console.log(this.responseText);
+                if(this.responseText != ""){
+                    console.log("Not empty");
+                }
+            }
+        };
+        xhttp.open("GET", "/menuTest", true);
+        xhttp.send();
+    }, 200);
+
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
