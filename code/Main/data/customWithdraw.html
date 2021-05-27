@@ -20,7 +20,7 @@
     <div id="Nibba_colum_mid_top">
         <h1 id="caption"></h1>
         <h2 id=amount>Voer uw gewenste waarden in.</h2>
-        <p id="paragraph1">Laat uw bedrag eindigen op een 5 A.U.B.</p>
+        <p id="paragraph1">Laat uw bedrag eindigen op een 0 of 5 A.U.B.</p>
         <p id="customAmount"></p>
         <p id="paragraph3"></p>
         <p id="paragraph4"></p>
@@ -43,6 +43,7 @@
     //var customAmount = false;
     var customAmountPage = false;
     var filled = 0;
+    //var location = 0;
 
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
@@ -79,11 +80,24 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                //document.getElementById("testing").innerHTML = "7| "+this.responseText;
-                //console.log("text: ");
-                //console.log(this.responseText);
                 if(this.responseText != ""){
                     console.log("Not empty");
+                    var location = 0;
+                    location = this.responseText.charAt(0);
+                    switch (location) {
+                        case "1":
+                            document.getElementById("tab1").innerHTML = this.responseText;
+                            break;
+                        case "4":
+                            document.getElementById("tab2").innerHTML = this.responseText;
+                            break;
+                        case "7":
+                            document.getElementById("tab3").innerHTML = this.responseText;          
+                            break;
+                        case "*":
+                            document.getElementById("tab4").innerHTML = this.responseText;   
+                            break;
+                    }
                 }
             }
         };
