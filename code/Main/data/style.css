@@ -1,5 +1,5 @@
 html {
-      font-family: Arial;
+  font-family: 'Times New Roman', serif;
   	display: inline-block;
       margin: 0px auto;
       text-align: center;
@@ -35,8 +35,8 @@ html {
     }
     .menuBox{
       display: inline-block;
-      background-color: #008CBA;
-      color: white;
+      background-color: rgb(226, 186, 76);;
+      color: rgb(0, 0, 0);
       
       
       border: none;
@@ -50,36 +50,37 @@ html {
 		font-size: 32pt;
 	}
 	#menuText2{
-		font-size: 30pt;
-		color: black;
+    font-family: 'Times New Roman', serif;
+		font-size: 50pt;
+		color: rgb(226, 186, 76);
 	}
     .left1{
       position: absolute;
       left: 0px;
       top: 12.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: #008CBA;
+	  background-color: rgb(226, 186, 76);
     }
     .left2{
       position: absolute;
       left: 0px;
       top: 37.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: #008CBA;
+	  background-color: rgb(226, 186, 76);
     }
     .left3{
       position: absolute;
       left: 0px;
       top: 62.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: #008CBA;
+	  background-color: rgb(226, 186, 76);
     }
     .left4{
       position: absolute;
       left: 0px;
       top: 87.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: #008CBA;
+	  background-color: rgb(226, 186, 76);
     }
 	.right1{
 		position: absolute;
