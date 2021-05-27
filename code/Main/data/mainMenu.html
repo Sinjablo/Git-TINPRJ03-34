@@ -25,7 +25,7 @@
     <span class="menuBox left1">1| Saldo controleren</span>
     <span class="menuBox left2">4| Geld opnemen</span>
     <span id="testing" class="menuBox left3">7|</span>
-    <span class="menuBox left4">*|</span>
+    <span id="testing1" class="menuBox left4">*|</span>
 
     <span class="menuBox right1">|A</span>
     <span class="menuBox right2">|B</span>
@@ -71,11 +71,17 @@
         xhttp.open("GET", "/abort", true);
         xhttp.send();
     }, 200);
+/*    
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("testing").innerHTML = "7| "+this.responseText;
+                if(this.responseText.charAt(0) == "7"){
+                    document.getElementById("testing").innerHTML = this.responseText;
+                }else{
+                    document.getElementById("testing1").innerHTML = this.responseText;
+
+                }
                 console.log("text: ");
                 console.log(this.responseText);
             }
@@ -83,7 +89,7 @@
         xhttp.open("GET", "/menuTest", true);
         xhttp.send();
     }, 200);
-/*
+
     setInterval(function () {
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {

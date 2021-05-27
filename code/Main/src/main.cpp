@@ -20,11 +20,11 @@
 
 using namespace std; 
 // Replace with your network credentials
- const char *ssid = "ASUS1424";
- const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
-//const char *ssid = "Tesla IoT";
-//const char *password = "fsL6HgjN";
+const char *ssid = "Tesla IoT";
+const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -113,7 +113,8 @@ int billsAvailable[4];	// 0 = 5, 1 = 10, 2 = 20, 3 = 50
 String billCombinationSelection;
 boolean wrongInput = false;
 String currency = "&euro;";
-String billCombinationString = "";
+String billCombinationString[4];
+int CustomBillCombinationReturned = 0;
 
 //Motoren geld dispenser
 const int motorForward5 = 26;
@@ -318,13 +319,29 @@ String getCustomAmount(){
 }
 
 String getMenuTest(){
-	//String billsSelected;
+	String returnString;
+	switch (CustomBillCombinationReturned){
+	case 1:
+		returnString = billCombinationString[0];
+		CustomBillCombinationReturned++;
+		break;
+	case 2:
+		returnString = billCombinationString[1];
+		CustomBillCombinationReturned++;
+		break;
+	case 3:
+		returnString = billCombinationString[2];
+		CustomBillCombinationReturned++;
+		break;
+	case 4:
+		returnString = billCombinationString[3];
+		CustomBillCombinationReturned = 0;
+		break;
+	default:
+		break;
+	}
 
-	//&euro;10
-	//billsSelected = "1 x &euro;20, 2x &euro;10";
-
-
-	return String(billCombinationString);
+	return String(returnString);
 }
 
 #pragma endregion
@@ -434,7 +451,6 @@ void setup(){	// void setup
 
 	server.on("/menuTest", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getMenuTest().c_str());
-		page = 6;
 	});
 
   /*
@@ -879,22 +895,44 @@ void billsInMachine(){
 
 void billArrayStringConstructor(int billArray[9]){
 	//&euro;10
-
+	String tab[4] = {
+		"1| ",
+		"4| ",
+		"7| ",
+		"*| "
+	};
 	//String tempArrayString;
 	int increament = 2;
-	if(billArray[0] == 0){
-		billCombinationString = "";
-	}else{
-		for(int i = 1; i < 9; i += increament){
-			if(billArray[i] == 0){
-				break;
-			}
-			String billAmount = String(billArray[i]);
-			String value = String(billArray[i+1]);
-			billCombinationString += billAmount+" x "+currency+value+" ";
+	for(int i = 0; i < 4; i++){
+		if(billArray[0] == 0){
+			billCombinationString[i] = "";
+		}else{
+			for(int u = 1; u < 9; u += increament){
+				if(billArray[u] == 0){
+					break;
+				}
+				if(billCombinationString[i] == ""){
+					billCombinationString[i] += tab[i];
+				}
+				String billAmount = String(billArray[u]);
+				String value = String(billArray[u+1]);
+				billCombinationString[i] += billAmount+" x "+currency+value+" ";
+			}	
 		}
 	}
-	Serial.println(billCombinationString);
+	// if(billArray[0] == 0){
+	// 	billCombinationString = "";
+	// }else{
+	// 	for(int u = 1; u < 9; u += increament){
+	// 		if(billArray[u] == 0){
+	// 			break;
+	// 		}
+	// 		String billAmount = String(billArray[i]);
+	// 		String value = String(billArray[i+1]);
+	// 		billCombinationString[i] += "7|"+billAmount+" x "+currency+value+" ";
+	// 	}
+	// }
+	Serial.println(billCombinationString[0]);
 
 }
 
