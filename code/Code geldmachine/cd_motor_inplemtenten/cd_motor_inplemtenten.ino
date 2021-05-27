@@ -6,10 +6,8 @@ const int motorForward20 = 8;
 const int motorBackward20 = 9;
 const int motorForward50 = 10;
 const int motorBackward50 = 11;
-int i;
 int noteArray[9] = {45, 1, 10, 0, 0, 0, 0, 0, 0};
 //int noteArray[9] = {45, 1, 10, 1, 5, 1, 20, 1, 50};
-String start = "hey";
 
 void setup() {
   pinMode(motorForward5, OUTPUT);
@@ -42,9 +40,8 @@ void loop() {
 }
 
 
-int dispenseMoney() {
-
-  for (i = 2; i < 9; i = i + 2) {
+void dispenseMoney() {
+  for (int i = 2; i < 9; i = i + 2) {
     if (noteArray[i] == 50) {
       dispense50(noteArray[i - 1]);
     } else if (noteArray[i] == 20) {

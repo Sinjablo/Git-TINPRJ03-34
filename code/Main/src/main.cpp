@@ -115,6 +115,16 @@ boolean wrongInput = false;
 String currency = "&euro;";
 String billCombinationString = "";
 
+//Motoren geld dispenser
+const int motorForward5 = 26;
+const int motorBackward5 = 27;
+const int motorForward10 = 28;
+const int motorBackward10 = 29;
+const int motorForward20 = 30;
+const int motorBackward20 = 31;
+const int motorForward50 = 32;
+const int motorBackward50 = 33;
+
 // variables to return to the GUI website
 char navigationKey;
 bool abortCheck = false;
@@ -325,6 +335,26 @@ void setup(){	// void setup
 	Serial.begin(115200);
 	pinMode(tempBtn, OUTPUT);
 
+	//motoren
+	pinMode(motorForward5, OUTPUT);
+	pinMode(motorBackward5, OUTPUT);
+  	pinMode(motorForward10, OUTPUT);
+  	pinMode(motorBackward10, OUTPUT);
+  	pinMode(motorForward20, OUTPUT);
+  	pinMode(motorBackward20, OUTPUT);
+  	pinMode(motorForward50, OUTPUT);
+  	pinMode(motorBackward50, OUTPUT);
+
+	//motoren resetten
+  	digitalWrite(motorBackward5, HIGH);
+  	digitalWrite(motorBackward10, HIGH);
+  	digitalWrite(motorBackward20, HIGH);
+  	digitalWrite(motorBackward50, HIGH);
+  	delay(200);
+  	digitalWrite(motorBackward5, LOW);
+  	digitalWrite(motorBackward10, LOW);
+  	digitalWrite(motorBackward20, LOW);
+  	digitalWrite(motorBackward50, LOW);
 
 	// Initialize SPIFFS
 	if (!SPIFFS.begin())
@@ -941,8 +971,67 @@ void customAmountMenu(char customKey){
 }
 
 void dispenseMoney(){
-
+  for (int i = 2; i < 9; i = i + 2) {
+    if (noteArray[i] == 50) {
+      dispense50(noteArray[i - 1]);
+    } else if (noteArray[i] == 20) {
+      dispense20(noteArray[i - 1]);
+    } else if (noteArray[i] == 10) {
+      dispense10(noteArray[i - 1]);
+    } else if (noteArray[i] == 5) {
+      dispense5(noteArray[i - 1]);
+    } else if (noteArray[i] == 0) {
+      break;
+    }
+    noteArray[i] = 0;
+    noteArray[i - 1] = 0;
+  }
 	abortCheck = true;
+}
+
+void dispense50(int value) {
+  for (value; value != 0; value--) {
+    Serial.println("50 word uitgeworpen");
+    digitalWrite(motorForward50, HIGH);
+    delay(1300);
+    digitalWrite(motorForward50, LOW);
+    digitalWrite(motorBackward50, HIGH);
+    delay(800);
+    digitalWrite(motorBackward50, LOW);
+  }
+}
+void dispense20(int value) {
+  for (value; value != 0; value--) {
+    Serial.println("20 word uitgeworpen");
+    digitalWrite(motorForward20, HIGH);
+    delay(1500);
+    digitalWrite(motorForward20, LOW);
+    digitalWrite(motorBackward20, HIGH);
+    delay(800);
+    digitalWrite(motorBackward20, LOW);
+  }
+}
+void dispense10(int value) {
+  for (value; value != 0; value--) {
+    Serial.println("10 word uitgeworpen");
+    digitalWrite(motorForward10, HIGH);
+    delay(1500);
+    digitalWrite(motorForward10, LOW);
+    digitalWrite(motorBackward10, HIGH);
+    delay(800);
+    digitalWrite(motorBackward10, LOW); 
+  }
+}
+void dispense5(int value) {
+  for (value; value != 0; value--) {
+    Serial.println("5 word uitgeworpen");
+    digitalWrite(motorForward5, HIGH);
+    delay(1300);
+    digitalWrite(motorForward5, LOW);
+    digitalWrite(motorBackward5, HIGH);
+    delay(600);
+    digitalWrite(motorBackward5, LOW);
+  }
 }
 
 void receiptMenu(char customKey){
