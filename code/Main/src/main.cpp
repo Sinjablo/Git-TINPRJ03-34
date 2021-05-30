@@ -20,11 +20,11 @@
 
 using namespace std; 
 // Replace with your network credentials
-//const char *ssid = "ASUS1424";
-//const char *password = "MaJaNe14245.";
+const char *ssid = "ASUS1424";
+const char *password = "MaJaNe14245.";
 
-const char *ssid = "Tesla IoT";
-const char *password = "fsL6HgjN";
+//const char *ssid = "Tesla IoT";
+//const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -104,17 +104,25 @@ String balance;
 bool timerRunning = false;
 int pincodeTimeOut = 10000;
 int generalTimeOut = 30000;
-int noteArray[9];	// 0: amount, 1: number of diffrent bills, 2: number of bill type #1, 3: value of bill type #1, 4: number if bill type #2, 5: value of bill type #2
-int customNoteArray01[9];
+int noteArray[9];	// array with amount of bills, and the value of what the user wants to withdraw. 0 = total value, 1 = amount of bills of value thats on the next place.
+//arrays with the amount and value of bills which the user can choose from to withdraw
+int customNoteArray01[9];	
 int customNoteArray02[9];
 int customNoteArray03[9];
-int customNoteArray04[9];
 int billsAvailable[4];	// 0 = 5, 1 = 10, 2 = 20, 3 = 50
 String billCombinationSelection;
 boolean wrongInput = false;
 String currency = "&euro;";
-String billCombinationString[4];
+String billCombinationString[3];	// a string array containing the combination of bills for the user to choose from
 int CustomBillCombinationReturned = 0;
+String CustomWithdrawOption;
+
+String leftTabs[4] = {
+		"1| ",
+		"4| ",
+		"7| ",
+		"*| "
+	};
 
 //Motoren geld dispenser
 const int motorForward5 = 26;
@@ -236,12 +244,6 @@ int aantalBriefjes(String briefWaarde, String medewerker, String medewerkerWacht
 	return briefAantalInt;
 }
 
-// void noteArrayClear(){
-// 	for(int i = 0; i < 6; i++){
-// 		noteArray[i] = 0;
-// 	}
-// }
-
 #pragma region 	// String return functions for the webserver to switch pages
 
 String getAbortCheck(){
@@ -321,26 +323,24 @@ String getCustomAmount(){
 String getMenuTest(){
 	String returnString;
 	switch (CustomBillCombinationReturned){
-	case 1:
-		returnString = billCombinationString[0];
-		CustomBillCombinationReturned++;
-		break;
-	case 2:
-		returnString = billCombinationString[1];
-		CustomBillCombinationReturned++;
-		break;
-	case 3:
-		returnString = billCombinationString[2];
-		CustomBillCombinationReturned++;
-		break;
-	case 4:
-		returnString = billCombinationString[3];
-		CustomBillCombinationReturned = 0;
-		break;
-	default:
-		break;
+		case 0:
+			returnString = billCombinationString[0];
+			CustomBillCombinationReturned++;
+			break;
+		case 1:
+			returnString = billCombinationString[1];
+			CustomBillCombinationReturned++;
+			break;
+		case 2:
+			returnString = billCombinationString[2];
+			CustomBillCombinationReturned = 0;
+			break;
 	}
-
+	if(CustomWithdrawOption != ""){
+		Serial.println("customWithdrawOption in get menu");
+		returnString = CustomWithdrawOption;
+		CustomWithdrawOption = "";
+	}
 	return String(returnString);
 }
 
@@ -449,7 +449,7 @@ void setup(){	// void setup
 	});
 
 
-	server.on("/menuTest", HTTP_GET, [](AsyncWebServerRequest *request) {
+	server.on("/customWithdrawOptions", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getMenuTest().c_str());
 	});
 
@@ -719,7 +719,10 @@ void withdrawlMenu(char customKey){
 					}
 					break;
 				case '*':
-					if(withdrawStep != 0){
+					if(withdrawStep == 0){
+						withdrawStep = 0;
+						return;
+					}else{
 						billCombinationSelection += "*";
 					}
 					break;
@@ -744,7 +747,6 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 	int locationArray01 = 1;
 	int locationArray02 = 1;
 	int locationArray03 = 1;
-	int locationArray04 = 1;
 	for(int i = 0; i < 9; i ++){
 		customNoteArray01[i] = 0;
 	}
@@ -754,13 +756,9 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 	for(int i = 0; i < 9; i ++){
 		customNoteArray03[i] = 0;
 	}
-	for(int i = 0; i < 9; i ++){
-		customNoteArray04[i] = 0;
-	}
 	customNoteArray01[0] = customAmount;
 	customNoteArray02[0] = customAmount;
 	customNoteArray03[0] = customAmount;
-	customNoteArray04[0] = customAmount;
 	int divideCalculation;	// int to store calculations in.
 	boolean endsOn5 = false;	// boolean is true when custom amount ends on 5
 	int billOptions[3] = {50, 20, 10};	// the diffrent bills which can be selected
@@ -777,13 +775,10 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 		customNoteArray02[locationArray02 + 1] = 5;
 		customNoteArray03[locationArray03] = 1;
 		customNoteArray03[locationArray03 + 1] = 5;
-		customNoteArray04[locationArray04] = 1;
-		customNoteArray04[locationArray04 + 1] = 5;
 		customAmountMaster -= 5;
 		locationArray01 += 2;
 		locationArray02 += 2;
 		locationArray03 += 2;
-		locationArray04 += 2;
 		endsOn5 = true;
 	}
 
@@ -878,14 +873,8 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 			}
 		}
 		#pragma endregion
-		
+
 		#pragma region	//algorithem 3
-
-		customAmount = customAmountMaster;
-
-		#pragma endregion
-		
-		#pragma region	//algorithem 4
 		// constructs the fourth array with bills, all 10's.
 		customAmount = customAmountMaster;
 		while(customAmount != 0){
@@ -893,9 +882,9 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 				divideCalculation = customAmount / billOptions[i];
 				if(divideCalculation >= 1){
 					if(divideCalculation < 11){
-						customNoteArray04[locationArray04] = divideCalculation;
-						customNoteArray04[locationArray04 + 1] = billOptions[i];
-						locationArray04 += 2;
+						customNoteArray03[locationArray03] = divideCalculation;
+						customNoteArray03[locationArray03 + 1] = billOptions[i];
+						locationArray03 += 2;
 						customAmount -= divideCalculation * billOptions[i];
 					}
 				}
@@ -917,9 +906,6 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 	for(int i = locationArray03; i < 9; i ++){
 		customNoteArray03[i] = 0;
 	}
-	for(int i = locationArray04; i < 9; i ++){
-		customNoteArray04[i] = 0;
-	}
 	Serial.print("algo 1: ");
 	for(int i = 0; i < 9; i++){
 		Serial.print(customNoteArray01[i]);
@@ -938,12 +924,6 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 		Serial.print(" ");
 	}
 	Serial.println(" ");
-	Serial.print("algo 4: ");
-	for(int i = 0; i < 9; i++){
-		Serial.print(customNoteArray04[i]);
-		Serial.print(" ");
-	}
-	Serial.println(" ");
 /*
 
 */
@@ -957,32 +937,25 @@ void billsInMachine(){
 	}
 }
 
-void billArrayStringConstructor(int billArray[9]){
+void billArrayStringConstructor(int billArray[9], int arrayNumber){
 	//&euro;10
-	String tab[4] = {
-		"1| ",
-		"4| ",
-		"7| ",
-		"*| "
-	};
+	
 	//String tempArrayString;
 	int increament = 2;
-	for(int i = 0; i < 4; i++){
-		if(billArray[0] == 0){
-			billCombinationString[i] = "";
-		}else{
-			for(int u = 1; u < 9; u += increament){
-				if(billArray[u] == 0){
-					break;
-				}
-				if(billCombinationString[i] == ""){
-					billCombinationString[i] += tab[i];
-				}
-				String billAmount = String(billArray[u]);
-				String value = String(billArray[u+1]);
-				billCombinationString[i] += billAmount+" x "+currency+value+" ";
-			}	
-		}
+	if(billArray[0] == 0){
+		billCombinationString[arrayNumber] = "";
+	}else{
+		for(int u = 1; u < 9; u += increament){
+			if(billArray[u] == 0){
+				break;
+			}
+			if(billCombinationString[arrayNumber] == ""){
+				billCombinationString[arrayNumber] += leftTabs[arrayNumber];
+			}
+			String billAmount = String(billArray[u]);
+			String value = String(billArray[u+1]);
+			billCombinationString[arrayNumber] += billAmount+" x "+currency+value+" ";
+		}	
 	}
 	// if(billArray[0] == 0){
 	// 	billCombinationString = "";
@@ -1000,7 +973,7 @@ void billArrayStringConstructor(int billArray[9]){
 
 }
 
-void billArrayChecker(int billArray[9]){	// function to check if the bills selected are available.
+void billArrayChecker(int billArray[9], int arrayNumber){	// function to check if the bills selected are available.
 
 	int increament = 2;
 	Serial.println(billArray[0]);
@@ -1016,18 +989,26 @@ void billArrayChecker(int billArray[9]){	// function to check if the bills selec
 		}
 	}
 	Serial.println(billArray[0]);
-	billArrayStringConstructor(billArray);
+	billArrayStringConstructor(billArray, arrayNumber);
 	return;
 }
 
 void customAmountMenu(char customKey){
 
+	Serial.print("customKey: ");
+	Serial.println(customKey);
+	Serial.print("Withdraw step: ");
+	Serial.println(withdrawStep);
 	if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
 		navigationKey = customKey;
 		int customAmountLenght = customAmount.length()-1;
 		if(customKey == 'A'){
 			Serial.println("key: A");
 			Serial.println(customAmount.charAt(customAmountLenght));
+			if(withdrawStep == 2){
+				Serial.println("option set to d");
+				CustomWithdrawOption = "d";
+			}
 			if(wrongInput == true){
 				Serial.println("wrong input yeye");
 				customAmount = "";
@@ -1038,19 +1019,19 @@ void customAmountMenu(char customKey){
 				if(customAmount.charAt(customAmountLenght) == '5' && aantalBriefjes("5", "ATM001", "ILoveMinderjarigen") == 0){
 					customAmount = "Helaas zijn de 5$ biljetten momenteel op, probeer later weer.";
 					wrongInput = true;
-				}else{
+				}else if(withdrawStep == 0){
 					int customAmountInt = atoi(((String)customAmount).c_str());
 					Serial.print("customAmountInt: ");
 					Serial.println(customAmountInt);
 					billsInMachine();
 					customAmountBillConstructor(customAmountInt, customAmount, customAmountLenght);
-					billArrayChecker(customNoteArray01);
-					//billArrayChecker(customNoteArray02);
-					//billArrayChecker(customNoteArray03);
-					//billArrayChecker(customNoteArray04);
+					billArrayChecker(customNoteArray01, 0);
+					billArrayChecker(customNoteArray02, 1);
+					billArrayChecker(customNoteArray03, 2);
+					withdrawStep = 1;
 				}
 
-			}else{
+			}else if(customAmount != ""){
 				customAmount = "Zorg dat het bedrag eindigt op een 5 of 0.";
 				wrongInput = true;
 			}
@@ -1061,14 +1042,67 @@ void customAmountMenu(char customKey){
 				customAmount = "";
 				wrongInput = false;
 				withdrawStep = 0;
+				for(int i = 0; i < 3; i++){
+					billCombinationString[i] = "";
+				}
 				break;
 			case 'C':
-				customAmount = customAmount.substring(0, customAmount.length()-1);
+				if(withdrawStep == 0){
+					customAmount = customAmount.substring(0, customAmount.length()-1);	//removes last number of the amount that has been input
+				}else{
+					customAmount = "";
+					withdrawStep = 0;
+					for(int i = 0; i < 3; i++){
+						billCombinationString[i] = leftTabs[i];
+					}
+					CustomWithdrawOption = "q";
+				}
 				break;
 		}
 	}else if(customKey != '*' && customKey != '#' && wrongInput != true){
-		customAmount += customKey;
-		Serial.println(customAmount);
+		if(withdrawStep == 1){
+			switch (customKey){
+				case '1':
+					Serial.println("array: 1");
+					for(int i = 0; i < 9; i++){
+						noteArray[i] = customNoteArray01[i];
+						Serial.print(noteArray[i]);
+					}
+					Serial.println("");
+					customAmount = billCombinationString[0].substring(2, billCombinationString[0].length());
+
+					break;
+				case '4':
+					Serial.println("array: 2");
+					for(int i = 0; i < 9; i++){
+						noteArray[i] = customNoteArray02[i];
+						Serial.print(noteArray[i]);
+					}
+					Serial.println("");
+					customAmount = billCombinationString[2].substring(2, billCombinationString[2].length());
+					break;
+				case '7':
+					Serial.println("array: 3");
+					for(int i = 0; i < 9; i++){
+						noteArray[i] = customNoteArray03[i];
+						Serial.print(noteArray[i]);
+					}
+					Serial.println("");
+					customAmount = billCombinationString[3].substring(2, billCombinationString[3].length());
+					break;
+				default:
+					break;
+			}
+			if(customKey == '1' || customKey == '4' || customKey == '7'){
+				for(int i = 0; i < 3; i++){
+					billCombinationString[i] = leftTabs[i];
+				}
+				withdrawStep = 2;
+			}
+		}else{
+			customAmount += customKey;
+			Serial.println(customAmount);
+		}
 	}
 }
 
@@ -1158,3 +1192,60 @@ void loop(){	//void main
 }
 	// int ui = aantalBriefjes("5", "ATM001", "ILoveMinderjarigen");
 	// Serial.println(ui);
+	/*
+	void withdrawlMenu(char customKey){
+	//Serial.println("case 4");
+	Serial.print("customKey: ");
+	Serial.println(customKey);
+	Serial.print("Withdraw step: ");
+	Serial.println(withdrawStep);
+	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
+		if(withdrawStep == 0 || withdrawStep == 1){
+			navigationKey = customKey;
+			switch (customKey){
+				case '1':
+					if(withdrawStep == 0){
+						noteArray[0] = 10;
+						billCombinationSelection += "1";
+					}else{
+						billCombinationSelection += "1";
+					}
+					break;
+				case '4':
+					if(withdrawStep == 0){
+						noteArray[0] = 30;
+						billCombinationSelection += "3";
+					}else{		
+						billCombinationSelection += "4";
+					}
+					break;
+				case '7':
+					if(withdrawStep == 0){
+						noteArray[0] = 70;
+						billCombinationSelection += "7";
+					}else{						
+						billCombinationSelection += "7";
+					}
+					break;
+				case '*':
+					if(withdrawStep == 0){
+						withdrawStep = 0;
+						return;
+					}else{
+						billCombinationSelection += "*";
+					}
+					break;
+			}
+			withdrawStep++;
+		}
+	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
+		navigationKey = customKey;
+		if(withdrawStep == 2 && customKey == 'A'){
+			billSelection();
+		}else if(customKey == 'B' || customKey == 'C'){
+			billCombinationSelection = "";
+			withdrawStep = 0;
+		}
+	}
+}
+	*/

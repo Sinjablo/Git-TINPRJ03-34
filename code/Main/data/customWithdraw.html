@@ -50,11 +50,6 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 switch(this.responseText){
-                    case '11':
-                        if(withdrawStep == 2){
-                            location.replace("/receipt");
-                        }
-                        break;
                     case '12':
                         location.replace("/withdraw");
                         break;
@@ -82,9 +77,9 @@
             if (this.readyState == 4 && this.status == 200) {
                 if(this.responseText != ""){
                     console.log("Not empty");
-                    var location = 0;
-                    location = this.responseText.charAt(0);
-                    switch (location) {
+                    var tabLocation = 0;
+                    tabLocation = this.responseText.charAt(0);
+                    switch (tabLocation) {
                         case "1":
                             document.getElementById("tab1").innerHTML = this.responseText;
                             break;
@@ -97,11 +92,21 @@
                         case "*":
                             document.getElementById("tab4").innerHTML = this.responseText;   
                             break;
+                        case "q":
+                            document.getElementById("paragraph1").innerHTML = "Laat uw bedrag eindigen op een 0 of 5 A.U.B.";
+                            break;
+                        case "d":
+                            console.log("Triggered1");
+                            location.replace("/receipt");
+                            break;
+                    }
+                    if(this.responseText.length > 4){
+                        document.getElementById("paragraph1").innerHTML = "U heeft geselecteerd:";
                     }
                 }
             }
         };
-        xhttp.open("GET", "/menuTest", true);
+        xhttp.open("GET", "/customWithdrawOptions", true);
         xhttp.send();
     }, 200);
 
