@@ -6,8 +6,8 @@ const int motorForward20 = 8;
 const int motorBackward20 = 9;
 const int motorForward50 = 10;
 const int motorBackward50 = 11;
-int noteArray[9] = {45, 1, 10, 0, 0, 0, 0, 0, 0};
-//int noteArray[9] = {45, 1, 10, 1, 5, 1, 20, 1, 50};
+//int noteArray[9] = {45, 1, 10, 0, 0, 0, 0, 0, 0};
+int noteArray[9] = {45, 1, 10, 1, 5, 1, 20, 1, 50};
 
 void setup() {
   pinMode(motorForward5, OUTPUT);
@@ -62,10 +62,10 @@ void dispense50(int value) {
   for (value; value != 0; value--) {
     Serial.println("50 word uitgeworpen");
     digitalWrite(motorForward50, HIGH);
-    delay(1300);
+    delay(1900);
     digitalWrite(motorForward50, LOW);
     digitalWrite(motorBackward50, HIGH);
-    delay(800);
+    delay(1000);
     digitalWrite(motorBackward50, LOW);
   }
 }
@@ -73,10 +73,10 @@ void dispense20(int value) {
   for (value; value != 0; value--) {
     Serial.println("20 word uitgeworpen");
     digitalWrite(motorForward20, HIGH);
-    delay(1500);
+    delay(2000);
     digitalWrite(motorForward20, LOW);
     digitalWrite(motorBackward20, HIGH);
-    delay(800);
+    delay(1000);
     digitalWrite(motorBackward20, LOW);
   }
 }
@@ -84,10 +84,10 @@ void dispense10(int value) {
   for (value; value != 0; value--) {
     Serial.println("10 word uitgeworpen");
     digitalWrite(motorForward10, HIGH);
-    delay(1500);
+    delay(1900);
     digitalWrite(motorForward10, LOW);
     digitalWrite(motorBackward10, HIGH);
-    delay(800);
+    delay(1000);
     digitalWrite(motorBackward10, LOW); 
   }
 }
@@ -95,10 +95,10 @@ void dispense5(int value) {
   for (value; value != 0; value--) {
     Serial.println("5 word uitgeworpen");
     digitalWrite(motorForward5, HIGH);
-    delay(1300);
+    delay(1850);
     digitalWrite(motorForward5, LOW);
     digitalWrite(motorBackward5, HIGH);
-    delay(600);
+    delay(1000);
     digitalWrite(motorBackward5, LOW);
   }
 }
