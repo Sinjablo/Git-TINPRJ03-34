@@ -61,7 +61,9 @@ char hexaKeys[ROWS][COLS] = {
 };
 //byte rowPins[ROWS] = {23, 22, 3, 21}; 
 //byte colPins[COLS] = {19, 18, 16, 17};
-byte colPins[COLS] = {16, 4, 15, 2};
+// byte colPins[COLS] = {16, 4, 2, 0};
+// byte rowPins[ROWS] = {22, 3, 5, 17}; 
+byte colPins[COLS] = {16, 4, 13, 0};
 byte rowPins[ROWS] = {22, 3, 5, 17}; 
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
 //----------End keypad setUp
@@ -75,6 +77,11 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance
 
 //-------------setup printer----
 
+#define TX_PIN 14  //RX op printer (blauwe kabel(6))
+#define RX_PIN 2  //TX op printer (groene kabel(5))
+  
+SoftwareSerial mySerial(RX_PIN, TX_PIN);
+Adafruit_Thermal printer(&mySerial);
 //end printer setup
 
 //dummy variables:
@@ -116,7 +123,7 @@ String currency = "&euro;";
 String billCombinationString[3];	// a string array containing the combination of bills for the user to choose from
 int CustomBillCombinationReturned = 0;
 String CustomWithdrawOption;
-
+boolean billsChecked = false;
 String leftTabs[4] = {
 		"1| ",
 		"4| ",
@@ -224,6 +231,21 @@ String geldOpnemen(){
     http.end(); 
 	return balance;
   
+}
+
+String uitStroom(String noteWorth, String noteAmount, String medewerker, String medewerkerWachtwoord){
+	HTTPClient http;
+	String url = get_host+"/uitstroom.php?"+"sltl="+key+"&brfj="+noteWorth+"&hvbrfj="+noteAmount+"&mdw="+medewerker+"&mdwww="+medewerkerWachtwoord;
+	Serial.print(url);
+
+	http.begin(url);
+    
+    //GET method
+    int httpCode = http.GET();
+    String nrOfNotes = http.getString();
+    Serial.println(nrOfNotes);
+    http.end(); 
+	return nrOfNotes;
 }
 
 int aantalBriefjes(String briefWaarde, String medewerker, String medewerkerWachtwoord){
@@ -350,6 +372,10 @@ String getMenuTest(){
 void setup(){	// void setup
 	// Serial port for debugging purposes
 	Serial.begin(115200);
+
+	mySerial.begin(9600);
+    printer.begin();
+
 	pinMode(tempBtn, OUTPUT);
 
 	//motoren
@@ -410,6 +436,10 @@ void setup(){	// void setup
 	server.on("/navigation", HTTP_GET, [](AsyncWebServerRequest *request) {
 		request->send_P(200, "text/plain", getNavigation().c_str());
 		page = 3;
+	});
+	server.on("/balanceNavigation", HTTP_GET, [](AsyncWebServerRequest *request) {
+		request->send_P(200, "text/plain", getNavigation().c_str());
+		page = 7;
 	});
 	// route to abort the transaction processes and return to index
 	server.on("/abort", HTTP_GET, [](AsyncWebServerRequest *request) {
@@ -584,6 +614,7 @@ void dispense50(int value) {
     digitalWrite(motorBackward50, HIGH);
     delay(800);
     digitalWrite(motorBackward50, LOW);
+	uitStroom("50", "1", "ATM001", "ILoveMinderjarigen");
   }
 }
 void dispense20(int value) {
@@ -595,6 +626,7 @@ void dispense20(int value) {
     digitalWrite(motorBackward20, HIGH);
     delay(800);
     digitalWrite(motorBackward20, LOW);
+	uitStroom("20", "1", "ATM001", "ILoveMinderjarigen");
   }
 }
 void dispense10(int value) {
@@ -606,6 +638,7 @@ void dispense10(int value) {
     digitalWrite(motorBackward10, HIGH);
     delay(800);
     digitalWrite(motorBackward10, LOW); 
+	uitStroom("10", "1", "ATM001", "ILoveMinderjarigen");
   }
 }
 void dispense5(int value) {
@@ -617,6 +650,7 @@ void dispense5(int value) {
     digitalWrite(motorBackward5, HIGH);
     delay(600);
     digitalWrite(motorBackward5, LOW);
+	uitStroom("5", "1", "ATM001", "ILoveMinderjarigen");
   }
 }
 
@@ -636,6 +670,21 @@ void dispenseMoney(){
     noteArray[i] = 0;
     noteArray[i - 1] = 0;
   }
+
+	// int increament = 2;
+
+	// for(int i = 1; i < 9; i += increament){
+	// 	Serial.print("Note array: ");
+	// 	Serial.print(noteArray[i]);
+	// 	if(noteArray[i] == 0){
+	// 		break;
+	// 	}else{
+	// 		String noteAmount = String(noteArray[i]);
+	// 		String noteWorth = String(noteArray[i+1]);
+	// 		uitStroom(noteWorth, noteAmount, "ATM001", "ILoveMinderjarigen");
+	// 	}
+	// }
+
 	abortCheck = true;
 }
 
@@ -684,61 +733,14 @@ void billSelection(){
 	}
 }
 
-void withdrawlMenu(char customKey){
-	//Serial.println("case 4");
-	Serial.print("customKey: ");
-	Serial.println(customKey);
-	Serial.print("Withdraw step: ");
-	Serial.println(withdrawStep);
-	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
-		if(withdrawStep == 0 || withdrawStep == 1){
-			navigationKey = customKey;
-			switch (customKey){
-				case '1':
-					if(withdrawStep == 0){
-						noteArray[0] = 10;
-						billCombinationSelection += "1";
-					}else{
-						billCombinationSelection += "1";
-					}
-					break;
-				case '4':
-					if(withdrawStep == 0){
-						noteArray[0] = 30;
-						billCombinationSelection += "3";
-					}else{		
-						billCombinationSelection += "4";
-					}
-					break;
-				case '7':
-					if(withdrawStep == 0){
-						noteArray[0] = 70;
-						billCombinationSelection += "7";
-					}else{						
-						billCombinationSelection += "7";
-					}
-					break;
-				case '*':
-					if(withdrawStep == 0){
-						withdrawStep = 0;
-						return;
-					}else{
-						billCombinationSelection += "*";
-					}
-					break;
-			}
-			withdrawStep++;
-		}
-	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
-		navigationKey = customKey;
-		if(withdrawStep == 2 && customKey == 'A'){
-			billSelection();
-		}else if(customKey == 'B' || customKey == 'C'){
-			billCombinationSelection = "";
-			withdrawStep = 0;
-		}
+void billsInMachine(){
+	String bills[4] = {"5", "10", "20", "50"};
+	for(int i = 0; i < 4; i++){
+		billsAvailable[i] = aantalBriefjes(bills[i], "ATM001", "ILoveMinderjarigen");
 	}
 }
+
+
 
 void customAmountBillConstructor(int customAmountInt, String customAmountStr, int customAmountLenght){
 	Serial.println("customAmountBillConstructor");
@@ -761,7 +763,7 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 	customNoteArray03[0] = customAmount;
 	int divideCalculation;	// int to store calculations in.
 	boolean endsOn5 = false;	// boolean is true when custom amount ends on 5
-	int billOptions[3] = {50, 20, 10};	// the diffrent bills which can be selected
+	int billOptions[4] = {50, 20, 10, 5};	// the diffrent bills which can be selected
 	Serial.print("temp algo 2: ");
 	for(int i = 0; i < 9; i++){
 		Serial.print(customNoteArray02[i]);
@@ -821,54 +823,55 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 			Serial.print("half1: ");
 			Serial.println(half1);
 		}
-
-		// step 1:
-		boolean firstRun = false;
-		int biggestBillUsed;
-		Serial.print("step1: ");
-		for(int i = 0; i < 3 != 0; i++){
-			divideCalculation = half1 / billOptions[i];
-			if(divideCalculation >= 1){	
-				Serial.print(billOptions[i]);
-				Serial.println(" divider");
-				if(firstRun == false){
-					biggestBillUsed = i;
-					firstRun = true;
-				}
-				customNoteArray02[locationArray02] = divideCalculation;
-				customNoteArray02[locationArray02 + 1] = billOptions[i];
-				half1 -= billOptions[i] * divideCalculation;
-				locationArray02 += 2;
-			}
-		}
-
-		// step 2:
-		Serial.println("step2: ");
-		for(int i = 1; i < 3; i++){
-			boolean inArray = false;
-			Serial.print("for run: ");
-			Serial.println(i);
-			divideCalculation = half2 / billOptions[biggestBillUsed + i];
-			if(divideCalculation >= 1){
-				Serial.print(billOptions[i]);
-				Serial.println(" divider");
-				//check if bill is in array. yes -> add to that location, no -> make new entry
-				for(int u = 1; u < 9; u++){
-					if(u % 2 == 0 && customNoteArray02[u] == billOptions[biggestBillUsed + i]){
-						int tempBillAmount = customNoteArray02[u - 1];
-						tempBillAmount += divideCalculation;
-						customNoteArray02[u - 1] = tempBillAmount;
-						half2 -= billOptions[biggestBillUsed + i] * divideCalculation;
-						inArray = true;
+		if(half1 != 0){
+			// step 1:
+			boolean firstRun = false;
+			int biggestBillUsed;
+			Serial.print("step1: ");
+			for(int i = 0; i < 3 != 0; i++){
+				divideCalculation = half1 / billOptions[i];
+				if(divideCalculation >= 1){	
+					Serial.print(billOptions[i]);
+					Serial.println(" divider");
+					if(firstRun == false){
+						biggestBillUsed = i;
+						firstRun = true;
 					}
-				}
-				if(inArray == false){
-					Serial.print("divide calc: ");
-					Serial.println(divideCalculation);
 					customNoteArray02[locationArray02] = divideCalculation;
-					customNoteArray02[locationArray02 + 1] = billOptions[biggestBillUsed + i];
-					half2 -= billOptions[biggestBillUsed + i] * divideCalculation;
+					customNoteArray02[locationArray02 + 1] = billOptions[i];
+					half1 -= billOptions[i] * divideCalculation;
 					locationArray02 += 2;
+				}
+			}
+
+			// step 2:
+			Serial.println("step2: ");
+			for(int i = 1; i < 3; i++){
+				boolean inArray = false;
+				Serial.print("for run: ");
+				Serial.println(i);
+				divideCalculation = half2 / billOptions[biggestBillUsed + i];
+				if(divideCalculation >= 1){
+					Serial.print(billOptions[i]);
+					Serial.println(" divider");
+					//check if bill is in array. yes -> add to that location, no -> make new entry
+					for(int u = 1; u < 9; u++){
+						if(u % 2 == 0 && customNoteArray02[u] == billOptions[biggestBillUsed + i]){
+							int tempBillAmount = customNoteArray02[u - 1];
+							tempBillAmount += divideCalculation;
+							customNoteArray02[u - 1] = tempBillAmount;
+							half2 -= billOptions[biggestBillUsed + i] * divideCalculation;
+							inArray = true;
+						}
+					}
+					if(inArray == false){
+						Serial.print("divide calc: ");
+						Serial.println(divideCalculation);
+						customNoteArray02[locationArray02] = divideCalculation;
+						customNoteArray02[locationArray02 + 1] = billOptions[biggestBillUsed + i];
+						half2 -= billOptions[biggestBillUsed + i] * divideCalculation;
+						locationArray02 += 2;
+					}
 				}
 			}
 		}
@@ -930,13 +933,6 @@ void customAmountBillConstructor(int customAmountInt, String customAmountStr, in
 
 }
 
-void billsInMachine(){
-	String bills[4] = {"5", "10", "20", "50"};
-	for(int i = 0; i < 4; i++){
-		billsAvailable[i] = aantalBriefjes(bills[i], "ATM001", "ILoveMinderjarigen");
-	}
-}
-
 void billArrayStringConstructor(int billArray[9], int arrayNumber){
 	//&euro;10
 	
@@ -957,19 +953,6 @@ void billArrayStringConstructor(int billArray[9], int arrayNumber){
 			billCombinationString[arrayNumber] += billAmount+" x "+currency+value+" ";
 		}	
 	}
-	// if(billArray[0] == 0){
-	// 	billCombinationString = "";
-	// }else{
-	// 	for(int u = 1; u < 9; u += increament){
-	// 		if(billArray[u] == 0){
-	// 			break;
-	// 		}
-	// 		String billAmount = String(billArray[i]);
-	// 		String value = String(billArray[i+1]);
-	// 		billCombinationString[i] += "7|"+billAmount+" x "+currency+value+" ";
-	// 	}
-	// }
-	Serial.println(billCombinationString[0]);
 
 }
 
@@ -993,6 +976,101 @@ void billArrayChecker(int billArray[9], int arrayNumber){	// function to check i
 	return;
 }
 
+void withdrawlMenu(char customKey){
+	//Serial.println("case 4");
+	
+	Serial.print("customKey: ");
+	Serial.println(customKey);
+	Serial.print("Withdraw step: ");
+	Serial.println(withdrawStep);
+	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
+		if(withdrawStep == 0 || withdrawStep == 1){
+			navigationKey = customKey;
+			switch (customKey){
+				case '1':
+					if(withdrawStep == 0){
+						billsInMachine();
+						customAmountBillConstructor(10, "10", 1);
+					}else{
+						Serial.println("array: 1");
+						for(int i = 0; i < 9; i++){
+							noteArray[i] = customNoteArray01[i];
+							Serial.print(noteArray[i]);
+						}
+						Serial.println("");
+						customAmount = billCombinationString[0].substring(2, billCombinationString[0].length());
+					}
+					break;
+				case '4':
+					if(withdrawStep == 0){
+						billsInMachine();
+						customAmountBillConstructor(30, "30", 1);
+					}else{		
+						Serial.println("array: 2");
+						for(int i = 0; i < 9; i++){
+							noteArray[i] = customNoteArray02[i];
+							Serial.print(noteArray[i]);
+						}
+						Serial.println("");
+						customAmount = billCombinationString[2].substring(2, billCombinationString[2].length());
+					}
+					break;
+				case '7':
+					if(withdrawStep == 0){
+						billsInMachine();
+						customAmountBillConstructor(70, "70", 1);
+					}else{						
+						Serial.println("array: 3");
+						for(int i = 0; i < 9; i++){
+							noteArray[i] = customNoteArray03[i];
+							Serial.print(noteArray[i]);
+						}
+						Serial.println("");
+						customAmount = billCombinationString[3].substring(2, billCombinationString[3].length());
+					}
+					break;
+				case '*':
+					if(withdrawStep == 0){
+						withdrawStep = 0;
+						CustomWithdrawOption = "c0000";	//tells gui to switch to custom withdraw menu
+						return;
+					}else{
+						billCombinationSelection += "*";
+					}
+					break;
+			}
+			if(withdrawStep == 0){
+				billArrayChecker(customNoteArray01, 0);
+				billArrayChecker(customNoteArray02, 1);
+				billArrayChecker(customNoteArray03, 2);
+				withdrawStep = 1;
+			}else{
+				if(customKey == '1' || customKey == '4' || customKey == '7'){
+					for(int i = 0; i < 3; i++){
+						billCombinationString[i] = leftTabs[i];
+					}
+					withdrawStep = 2;
+				}
+			}
+
+		}
+	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
+		navigationKey = customKey;
+		if(customKey == 'A' && withdrawStep == 2){
+			Serial.println("option set to d");
+			CustomWithdrawOption = "d0000";	// tells the gui to switch to the receipt menu
+		}
+		if(customKey == 'B' || customKey == 'C'){
+			CustomWithdrawOption = "q0000";// tells gui to reset
+			billCombinationSelection = "";
+			withdrawStep = 0;
+			for(int i = 0; i < 3; i++){
+				billCombinationString[i] = leftTabs[i];
+			}
+		}
+	}
+}
+
 void customAmountMenu(char customKey){
 
 	Serial.print("customKey: ");
@@ -1007,7 +1085,7 @@ void customAmountMenu(char customKey){
 			Serial.println(customAmount.charAt(customAmountLenght));
 			if(withdrawStep == 2){
 				Serial.println("option set to d");
-				CustomWithdrawOption = "d";
+				CustomWithdrawOption = "d";	// tells the gui to switch to the receipt menu
 			}
 			if(wrongInput == true){
 				Serial.println("wrong input yeye");
@@ -1023,6 +1101,8 @@ void customAmountMenu(char customKey){
 					int customAmountInt = atoi(((String)customAmount).c_str());
 					Serial.print("customAmountInt: ");
 					Serial.println(customAmountInt);
+					Serial.print("customAmountLenght: ");
+					Serial.println(customAmountLenght);
 					billsInMachine();
 					customAmountBillConstructor(customAmountInt, customAmount, customAmountLenght);
 					billArrayChecker(customNoteArray01, 0);
@@ -1055,7 +1135,7 @@ void customAmountMenu(char customKey){
 					for(int i = 0; i < 3; i++){
 						billCombinationString[i] = leftTabs[i];
 					}
-					CustomWithdrawOption = "q";
+					CustomWithdrawOption = "q";	// resets the display message to the original
 				}
 				break;
 		}
@@ -1108,7 +1188,77 @@ void customAmountMenu(char customKey){
 
 
 
+void receiptPrinter(){
+	Serial.println("Now printing");
+	printer.println();
+    printer.println();
+  
+  
+    
+    //De naam van onze bank
+    printer.justify('C');
+    printer.setSize('L');
+    printer.print(F("BOEJIEBANK\n"));  
+    printer.justify('L');
+    printer.setSize('S');
 
+
+    printer.justify('C');
+    printer.setSize('L');
+    //printer.println(F("Tot ziens"));
+    printer.println(F("BOEJIEBANK\n"));
+    printer.justify('L');
+    printer.setSize('S');
+    printer.println();
+    printer.println();
+
+    /*
+   //De datum van het opnemen
+    printer.print(F("Datum : "));
+    printer.print(now.day(), DEC);
+    printer.print('/');
+    printer.print(now.month(), DEC);
+    printer.print('/');
+    printer.println(now.year(), DEC);
+  
+   //De tijd van het opnemen
+    printer.print(F("Tijd : "));
+    printer.print(now.hour(), DEC);
+    printer.print(':');
+    if(now.minute() < 10){
+      printer.print(F("0"));
+    }
+    printer.print(now.minute(), DEC);
+    printer.print(':');
+    printer.println(now.second(), DEC);
+    //printer.println();
+    */
+   // REKENING NUMMER
+
+	String passNumber = "************";
+	for(int i = 12; i < 16; i ++){
+		passNumber += rekeningNummer.charAt(i);
+	}
+	Serial.println(passNumber);
+    printer.println(passNumber);
+    printer.println();
+  
+   //Het opgenomen bedrag
+    printer.setSize('M');
+    printer.print("Opgenomen bedrag: €100 ");
+    printer.println(noteArray[0]);
+    printer.println();
+    
+    //Het bedankt bericht
+    printer.justify('C');
+    printer.setSize('M');
+    printer.println(F("Tot ziens"));
+    printer.println(F("bij BOEJIEBANK!\n"));
+    printer.println();
+    printer.println();
+	Serial.println("Done printing");
+
+}
 
 void receiptMenu(char customKey){
 	switch (customKey){
@@ -1116,6 +1266,7 @@ void receiptMenu(char customKey){
 			/* receipt constructor, 
 			printer, 
 			dispense money */
+			receiptPrinter();
 			geldOpnemen();
 			dispenseMoney();
 			break;
@@ -1126,6 +1277,37 @@ void receiptMenu(char customKey){
 			break;
 	}
 }
+
+void quickWithdraw(){
+	billsInMachine();
+	customAmountBillConstructor(70, "70", 1);
+	billArrayChecker(customNoteArray01, 0);
+	billArrayChecker(customNoteArray02, 1);
+	billArrayChecker(customNoteArray03, 2);
+	if(customNoteArray01[0] != 0){
+		for(int i = 0; i < 9; i++){
+			noteArray[i] = customNoteArray01[i];
+			Serial.print(noteArray[i]);
+		}
+	}else if(customNoteArray02[0] != 0){
+		for(int i = 0; i < 9; i++){
+			noteArray[i] = customNoteArray02[i];
+			Serial.print(noteArray[i]);
+		}
+	}else if(customNoteArray03[0] != 0){
+		for(int i = 0; i < 9; i++){
+			noteArray[i] = customNoteArray03[i];
+			Serial.print(noteArray[i]);
+		}
+	}else{
+		// print error message that the machine is out of bills
+		return;
+	}
+
+	geldOpnemen();
+	dispenseMoney();
+}
+
 #pragma endregion
 
 void timerControl(){	// function to abort if the user has been inactive for too long
@@ -1171,6 +1353,9 @@ void loop(){	//void main
 					break;
 				case 3:	//---------------- take keypad input for navigation
 					navigationInput(customKey);
+					if(customKey == '7'){
+						quickWithdraw();
+					}
 					break;
 				case 4://-----------------withdraw menu
 					withdrawlMenu(customKey);
@@ -1182,6 +1367,9 @@ void loop(){	//void main
 				case 6://-------------receipt menu
 					receiptMenu(customKey);
 					break;
+				case 7:
+					navigationInput(customKey);
+					break;
 			}
 			if(customKey == 'D'){
 				abortCheck = true;
@@ -1190,62 +1378,3 @@ void loop(){	//void main
 	}
 	yield();
 }
-	// int ui = aantalBriefjes("5", "ATM001", "ILoveMinderjarigen");
-	// Serial.println(ui);
-	/*
-	void withdrawlMenu(char customKey){
-	//Serial.println("case 4");
-	Serial.print("customKey: ");
-	Serial.println(customKey);
-	Serial.print("Withdraw step: ");
-	Serial.println(withdrawStep);
-	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
-		if(withdrawStep == 0 || withdrawStep == 1){
-			navigationKey = customKey;
-			switch (customKey){
-				case '1':
-					if(withdrawStep == 0){
-						noteArray[0] = 10;
-						billCombinationSelection += "1";
-					}else{
-						billCombinationSelection += "1";
-					}
-					break;
-				case '4':
-					if(withdrawStep == 0){
-						noteArray[0] = 30;
-						billCombinationSelection += "3";
-					}else{		
-						billCombinationSelection += "4";
-					}
-					break;
-				case '7':
-					if(withdrawStep == 0){
-						noteArray[0] = 70;
-						billCombinationSelection += "7";
-					}else{						
-						billCombinationSelection += "7";
-					}
-					break;
-				case '*':
-					if(withdrawStep == 0){
-						withdrawStep = 0;
-						return;
-					}else{
-						billCombinationSelection += "*";
-					}
-					break;
-			}
-			withdrawStep++;
-		}
-	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
-		navigationKey = customKey;
-		if(withdrawStep == 2 && customKey == 'A'){
-			billSelection();
-		}else if(customKey == 'B' || customKey == 'C'){
-			billCombinationSelection = "";
-			withdrawStep = 0;
-		}
-	}
-}
-	*/

@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"name": "esp32 printer",
+			"path": "..\\..\\esp32 printer"
+		}
+	],
+	"settings": {}
+}
