@@ -12,7 +12,7 @@ html {
       font-size: 1.5rem;
     }
     .bodies{
-      background-image: url('luxbackground.jpg');
+      background-image: url('boejiebackgound.png');
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;
@@ -41,7 +41,7 @@ html {
     }
     .menuBox{
       display: inline-block;
-      background-color: rgb(226, 186, 76);
+      background-color: #f2d249;
       color: rgb(0, 0, 0);
       
       
@@ -58,63 +58,63 @@ html {
 	#menuText2{
     font-family: 'Times New Roman', serif;
 		font-size: 50pt;
-		color: rgb(226, 186, 76);
+		color: #f2d249;
 	}
     .left1{
       position: absolute;
       left: 0px;
       top: 12.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: rgb(226, 186, 76);
+	  background-color: #f2d249;
     }
     .left2{
       position: absolute;
       left: 0px;
       top: 37.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: rgb(226, 186, 76);
+	  background-color: #f2d249;
     }
     .left3{
       position: absolute;
       left: 0px;
       top: 62.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: rgb(226, 186, 76);
+	  background-color: #f2d249;
     }
     .left4{
       position: absolute;
       left: 0px;
       top: 87.5%;
 	  border-radius: 0px 32px 32px 0px;
-	  background-color: rgb(226, 186, 76);
+	  background-color: #f2d249;
     }
 	.right1{
 		position: absolute;
 		right: 0px;
 		top: 12.5%;
 		border-radius: 32px 0px 0px 32px;
-		background-color: #f44336;
+		background-color: #d9d9d9;
 	}
 	.right2{
 		position: absolute;
 		right: 0px;
 		top: 37.5%;
 		border-radius: 32px 0px 0px 32px;
-		background-color: #f44336;
+		background-color: #d9d9d9;
 	}
 	.right3{
 		position: absolute;
 		right: 0px;
 		top: 62.5%;
 		border-radius: 32px 0px 0px 32px;
-		background-color: #f44336;
+		background-color: #d9d9d9;
 	}
 	.right4{
 		position: absolute;
 		right: 0px;
 		top: 87.5%;
 		border-radius: 32px 0px 0px 32px;
-		background-color: #f44336;
+		background-color: #d9d9d9;
 	}
 
   .withdrawBox1{
