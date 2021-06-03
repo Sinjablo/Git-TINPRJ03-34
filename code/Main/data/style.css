@@ -13,7 +13,8 @@ html {
       font-size: 30px;
     }
     .bodies{
-      background-image: url('boejiebackgoundd.jpg');
+      background-image: radial-gradient(circle, #4058a7, rgb(0, 0, 0));
+      background-image: url('boejiebackground.jpg');
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;
