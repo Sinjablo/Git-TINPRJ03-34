@@ -13,7 +13,8 @@ html {
       font-size: 30px;
     }
     .bodies{
-      background-image: url('boejiebackgound.jpg');
+
+      background-image: url('boejiebackground.jpg');
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;
