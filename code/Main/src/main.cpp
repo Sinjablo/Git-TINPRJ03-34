@@ -132,12 +132,12 @@ String leftTabs[4] = {
 	};
 
 //Motoren geld dispenser
-const int motorForward5 = 26;
-const int motorBackward5 = 27;
-const int motorForward10 = 28;
-const int motorBackward10 = 29;
-const int motorForward20 = 30;
-const int motorBackward20 = 31;
+const int motorForward5 = 1;
+const int motorBackward5 = 12;
+const int motorForward10 = 15;
+const int motorBackward10 = 25;
+const int motorForward20 = 26;
+const int motorBackward20 = 27;
 const int motorForward50 = 32;
 const int motorBackward50 = 33;
 
