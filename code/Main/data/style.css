@@ -5,11 +5,12 @@ html {
       text-align: center;
     }
     h1 {
-      color: #0F3376;
-      padding: 2vh;
+      color: #f2d249;
+      font-size: 32pt;
     }
     p {
-      font-size: 1.5rem;
+      color: #d9d9d9;
+      font-size: 30px;
     }
     .bodies{
       background-image: url('boejiebackgound.png');
@@ -21,7 +22,7 @@ html {
       display: inline-block;
       border: none;
       border-radius: 4px;
-      color: rgb(255, 255, 255);
+      color: #d9d9d9;
       padding: 16px 40px;
       text-decoration: none;
       font-size: 30px;
@@ -29,7 +30,7 @@ html {
       cursor: pointer;
     }
     .button2 {
-      background-color: #f44336;
+      background-color: #01316c;
     }
     .units {
       font-size: 1.2rem;
@@ -126,30 +127,32 @@ html {
     width: 100%
   }
   #midTables{
-    background-color: #C44536;
+    background-color: #01316c;
     width: 70%;
     height: 270px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
     float: center;
+    border: 1px solid #f2d249
   }
   #balanceTable{
-    font-family: arial;
+    font-family: 'Times New Roman', serif;
+    color: #d9d9d9;
     border-collapse: collapse;
     width: 100%;
   }
   .balanceTR:nth-child(even){
-    background-color: #135358;
+    background-color: #0955a3;
   }
   .balanceTH{
     
-    border: 1px solid #162020;
+    border: 1px solid #f2d249;
     padding: 8px;
     text-align: center;
   }
   #Nibba_colum_mid_top{
-    background-color: #C44536;
+    background-color: #01316c;
     width: 550px;
     height: 350px;
 
@@ -157,5 +160,8 @@ html {
     top: 50%;
     bottom: 50%;
     width: 50%;
+    border: 1px solid #f2d249;
+    font-family: 'Times New Roman', serif;
+    color: #d9d9d9;
 
 }
