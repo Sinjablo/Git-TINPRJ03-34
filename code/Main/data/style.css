@@ -50,6 +50,7 @@ html {
       padding: 16px 40px;
       font-size: 30px;
     }
+
 	#lastName{
 		font-size: 32pt;
 	}
@@ -117,45 +118,47 @@ html {
 		border-radius: 32px 0px 0px 32px;
 		background-color: #d9d9d9;
 	}
-
   .withdrawBox1{
 	position: absolute;
 	bottom: 0px;
 	left: 33%
   }
+
   #midWrapper{
     width: 100%
   }
   #midTables{
     background-color: #01316c;
+    border-radius: 25px;
     width: 70%;
     height: 270px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
     float: center;
-    border: 1px solid #f2d249
+    border: 2px solid #f2d249
   }
   #balanceTable{
     font-family: 'Times New Roman', serif;
     color: #d9d9d9;
+    font-size: 20pt;
     border-collapse: collapse;
     width: 100%;
   }
   .balanceTR:nth-child(even){
     background-color: #0955a3;
+    border: 1px solid #f2d249;
   }
   .balanceTH{
-    
-    border: 1px solid #f2d249;
     padding: 8px;
     text-align: center;
   }
+
   #Nibba_colum_mid_top{
     background-color: #01316c;
+    border-radius: 25px;
     width: 550px;
     height: 350px;
-
     margin: auto;
     top: 50%;
     bottom: 50%;
