@@ -20,11 +20,11 @@
 
 using namespace std; 
 // Replace with your network credentials
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
+//const char *ssid = "ASUS1424";
+//const char *password = "MaJaNe14245.";
 
-//const char *ssid = "Tesla IoT";
-//const char *password = "fsL6HgjN";
+const char *ssid = "Tesla IoT";
+const char *password = "fsL6HgjN";
 
 //const char *ssid = "LaptopieVanSander";
 //const char *password = "KrijgsheerSander";
@@ -78,7 +78,7 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); // Create MFRC522 instance
 //-------------setup printer----
 
 #define TX_PIN 14  //RX op printer (blauwe kabel(6))
-#define RX_PIN 2  //TX op printer (groene kabel(5))
+#define RX_PIN 1  //TX op printer (groene kabel(5))
   
 SoftwareSerial mySerial(RX_PIN, TX_PIN);
 Adafruit_Thermal printer(&mySerial);
@@ -132,7 +132,7 @@ String leftTabs[4] = {
 	};
 
 //Motoren geld dispenser
-const int motorForward5 = 1;
+const int motorForward5 = 2;
 const int motorBackward5 = 12;
 const int motorForward10 = 15;
 const int motorBackward10 = 25;

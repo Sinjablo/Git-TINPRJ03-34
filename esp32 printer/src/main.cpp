@@ -17,7 +17,7 @@
   //#include "RTClib.h"
   
   #define TX_PIN 14  //RX op printer (blauwe kabel(6))
-  #define RX_PIN 2  //TX op printer (groene kabel(5))
+  #define RX_PIN 1  //TX op printer (groene kabel(5))
   
   SoftwareSerial mySerial(RX_PIN, TX_PIN);
   Adafruit_Thermal printer(&mySerial);
