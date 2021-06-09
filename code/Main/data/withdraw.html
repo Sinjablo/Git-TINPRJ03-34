@@ -19,8 +19,9 @@
 
     <div id="Nibba_colum_mid_top">
         <h1 id="caption"></h1>
-        <h2 id=amount></h2>
+        <h1 id=amount>Kies uw gewenste waarden.</h1>
         <p id="paragraph1"></p>
+        <p id="customAmount"></p>
         <p id="paragraph2"></p>
         <p id="paragraph3"></p>
         <p id="paragraph4"></p>
@@ -69,10 +70,22 @@
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("customAmount").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/customAmount", true);
+        xhttp.send(); 
+    }, 200);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
                 if(this.responseText.length > 4){
                     console.log("Not empty");
                     var tabLocation = 0;
                     tabLocation = this.responseText.charAt(0);
+                    console.log(tabLocation);
                     if(withdrawStep == 0){
                         if(tabLocation == "1" || tabLocation == "4" || tabLocation == "7"){
                             document.getElementById("tab1").innerHTML = "|";
@@ -96,10 +109,10 @@
                             document.getElementById("tab4").innerHTML = this.responseText;   
                             break;
                         case "q":
-                            document.getElementById("tab1").innerHTML = "1| &euro;10"
-                            document.getElementById("tab2").innerHTML = "4| &euro;30"
-                            document.getElementById("tab3").innerHTML = "7| &euro;70" 
-                            document.getElementById("tab4").innerHTML = "*| Gepast"
+                            document.getElementById("tab1").innerHTML = "1| &euro;10";
+                            document.getElementById("tab2").innerHTML = "4| &euro;30";
+                            document.getElementById("tab3").innerHTML = "7| &euro;70";
+                            document.getElementById("tab4").innerHTML = "*| Gepast";
                             withdrawStep = 0;
                             break;
                         case "c":
@@ -110,6 +123,19 @@
                             console.log("Triggered1");
                             location.replace("/receipt");
                             withdrawStep = 0;
+                            break;
+                        case "a":
+                            document.getElementById("paragraph1").innerHTML = "U heeft geselecteerd:";
+                            document.getElementById("tab1").innerHTML = "1|"
+                            document.getElementById("tab2").innerHTML = "4|"
+                            document.getElementById("tab3").innerHTML = "7|" 
+                            document.getElementById("tab4").innerHTML = "|"
+                            break;
+                        case "i":   // gives the error that the balance is too low
+                            document.getElementById("paragraph1").innerHTML = "Uw balans is onvoldoende";
+                            break;
+                        case "u":   // clear the paragraph1 tag
+                            document.getElementById("paragraph1").innerHTML = "";
                             break;
                     }
                     

@@ -79,6 +79,7 @@
                     console.log("Not empty");
                     var tabLocation = 0;
                     tabLocation = this.responseText.charAt(0);
+                    console.log(tabLocation);
                     switch (tabLocation) {
                         case "1":
                             document.getElementById("tab1").innerHTML = this.responseText;
@@ -98,6 +99,13 @@
                         case "d":
                             console.log("Triggered1");
                             location.replace("/receipt");
+                            break;
+                        case "i":   // gives the error that the balance is too low
+                            console.log("i");
+                            document.getElementById("paragraph1").innerHTML = "Uw balans is onvoldoende";
+                            break;
+                        case "u":   // clear the paragraph1 tag
+                            document.getElementById("paragraph1").innerHTML = "Laat uw bedrag eindigen op een 0 of 5 A.U.B.";
                             break;
                     }
                     if(this.responseText.length > 4){

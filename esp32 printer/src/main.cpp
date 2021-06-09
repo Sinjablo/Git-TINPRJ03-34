@@ -1,5 +1,7 @@
 #include <arduino.h>
 
+String rekeningNummer;
+String uid;
 /*----------- I2C library ----------- */
   #include <Wire.h>
   
@@ -7,8 +9,8 @@
   #include <SPI.h>
   #include <MFRC522.h>
   
-  #define SS_PIN 10
-  #define RST_PIN 9
+const int RST_PIN = 13; // Reset pin
+const int SS_PIN = 21; // Slave select pin
   MFRC522 mfrc522(SS_PIN, RST_PIN);
   
   /*----------- Printer libraries en setup ----------- */
@@ -52,18 +54,6 @@
   unsigned long lastTime;
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   /*Het opgenomen bedrag opslaan en de bonprint variabele op true zetten om bon te printen*/
   void receiveEvent() {
     bedrag = Wire.read();
@@ -81,47 +71,63 @@
 
   }
   
-  void RFID(){
-   //Een aantal benodigde variabele
-    byte len = 18;
-    byte buffer2[18];
-    byte block = 1;
-    MFRC522::StatusCode status;
+void rfidReader(){
+	// Look for new cards
+	
+	// Select one of the cards
+	
+	if (!mfrc522.PICC_ReadCardSerial()){
+		return;
+	}
+
+	rekeningNummer = "";
+    // Prepare key - all keys are set to FFFFFFFFFFFFh at chip delivery from the factory.
+  	MFRC522::MIFARE_Key key;
+  	for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
   
-    MFRC522::MIFARE_Key key;
-   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;                     //Maak de key FFFFFFFFFFFFh (standaardwaarde)
-    
-  
-   if (!mfrc522.PICC_IsNewCardPresent()) return;
-  
-    if (!mfrc522.PICC_ReadCardSerial()) return;
-  
-   //Valideren van de key
-    status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, 1, &key, &(mfrc522.uid)); //line 834
-   if (status != MFRC522::STATUS_OK) {
-      Serial.print(F("Authentication failed: "));
-      Serial.println(mfrc522.GetStatusCodeName(status));
-      return;
-    }
-  
-   //Het lezen van het eerste blok op de kaart
-    status = mfrc522.MIFARE_Read(block, buffer2, &len);
-   if (status != MFRC522::STATUS_OK) {
-      Serial.print(F("Reading failed: "));
-      Serial.println(mfrc522.GetStatusCodeName(status));
-      return;
-    }
-  
-   //zet de informatie om van bytes naar een string
-   for (uint8_t i = 0; i < 16; i++) {
-      char letter = char(buffer2[i]);
-      content += letter;
-    }
-  
-    mfrc522.PICC_HaltA();
-    mfrc522.PCD_StopCrypto1();
-  }
- 
+  	MFRC522::StatusCode status;
+
+	byte block = 1;
+  	byte len;
+  	byte readBuffer[18];
+
+	status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, 1, &key, &(mfrc522.uid));
+  	if (status != MFRC522::STATUS_OK) {
+  	  Serial.print(F("Authentication failed: "));
+  	  Serial.println(mfrc522.GetStatusCodeName(status));
+  	  return;
+  	}
+
+  	status = mfrc522.MIFARE_Read(block, readBuffer, &len);
+  	if (status != MFRC522::STATUS_OK) {
+  	  Serial.print(F("Reading failed: "));
+  	  Serial.println(mfrc522.GetStatusCodeName(status));
+  	  return;
+  	}
+	
+  	Serial.print("Rekening Nummer: ");
+  	for (uint8_t i = 0; i < 16; i++){
+  	  rekeningNummer += (char)readBuffer[i];
+  	}
+
+	mfrc522.PICC_HaltA();
+  	mfrc522.PCD_StopCrypto1();
+	
+  	Serial.println(rekeningNummer);
+	
+  	uid = "";
+  	byte letter;
+  	for (byte i = 0; i < mfrc522.uid.size; i++){
+  	   uid.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+  	   uid.concat(String(mfrc522.uid.uidByte[i], HEX));
+  	}
+  	uid.toUpperCase();
+	
+  	Serial.print("UID: ");
+  	Serial.println(uid);
+	
+  	Serial.println(F("\n**End Reading**\n"));
+}
   
   void printBon(){
    //De tijd en datum van dit tijdstip bepalen voor later gebruik op de bon
@@ -194,7 +200,7 @@
 
 void setup() {
    //Start de seriële monitor
-    Serial.begin(9600);
+    Serial.begin(115200);
     
     //Setup voor de I2C verbinding met de ESP
     //Wire.begin(13); 
@@ -211,15 +217,17 @@ void setup() {
   
    //Interrupt om deel van de keypad te laten werken voordat er een pas gescanned is
    //attachInterrupt(digitalPinToInterrupt(3), keypadLezen, RISING);
-   printBon();
+
   }
 
 void loop() {
 
    //Als boolPrint aan staat moet er een bon geprint worden
-   if(boolPrint){
-      printBon();
-    }
+   if(mfrc522.PICC_IsNewCardPresent()){
+		
+		rfidReader();
+		Serial.println("--------------------------------------------------------------loc1");
+		delay(200);
+	}
     
-    delay(100);
-  }
+}

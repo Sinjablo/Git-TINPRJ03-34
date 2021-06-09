@@ -41,24 +41,23 @@
             if (this.readyState == 4 && this.status == 200) {
                 console.log(this.responseText);
                 switch(this.responseText){
-                    case '1':
+                    case '1':   // login succes
                         location.replace('/mainMenu');
                         break;
-                    case '-1':
-                        starHidden = true;
-                        hideStars();
+                    case '2':		//pincode wrong
+                        document.getElementById("passcode1").innerHTML = "Uw ingevoerde pincode is verkeerd";
                         break;
-                    case '-2':
-                        starHidden = true;
-                        hideStars();
+                    case '3':		// pas blocked
+                        document.getElementById("passcode1").innerHTML = "Uw pas is geblokkeerd";
                         break;
-                    case '-3':
-                        starHidden = true;
-                        hideStars();
+                    case '4':		//target bank not reacting
+                        document.getElementById("passcode1").innerHTML = "Er is een probleem met de connectie met Uw bank, probeer later opniew";
                         break;
-                    case '-4':
-                        starHidden = true;
-                        hideStars();
+                    case '5':		//target bank is unknown by country server
+                        document.getElementById("passcode1").innerHTML = "Uw bank is onbekend bij ons";
+                        break;
+                    case '6':		//card is unknown by target bank
+                        document.getElementById("passcode1").innerHTML = "Uw pas is onbekend bij Uw bank";
                         break;
                     default:
                         break;
