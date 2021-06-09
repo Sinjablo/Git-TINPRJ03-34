@@ -931,10 +931,6 @@ void billConstructor(int customAmountInt, String customAmountStr, int customAmou
 		}
 		#pragma endregion
 
-
-		// customNoteArray04[locationArray04] = divideCalculation;
-		// customNoteArray04[locationArray04 + 1] = billOptions[2];
-		// locationArray04 += 2;
 	}
 	for(int i = locationArray01; i < 9; i ++){
 		customNoteArray01[i] = 0;
@@ -945,6 +941,7 @@ void billConstructor(int customAmountInt, String customAmountStr, int customAmou
 	for(int i = locationArray03; i < 9; i ++){
 		customNoteArray03[i] = 0;
 	}
+	//prints the results of the 3 algorithems
 	Serial.print("algo 1: ");
 	for(int i = 0; i < 9; i++){
 		Serial.print(customNoteArray01[i]);
@@ -963,25 +960,18 @@ void billConstructor(int customAmountInt, String customAmountStr, int customAmou
 		Serial.print(" ");
 	}
 	Serial.println(" ");
-/*
-
-*/
-
 }
 
-void billArrayStringConstructor(int billArray[9], int arrayNumber){
-	//&euro;10
-	
-	//String tempArrayString;
+void billArrayStringConstructor(int billArray[9], int arrayNumber){	//constructs strings useable for the gui from the arrays made in billConstructor()
 	int increament = 2;
-	if(billArray[0] == 0){
-		billCombinationString[arrayNumber] = "";
+	if(billArray[0] == 0){	//checks if the array has been declared unuseable
+		billCombinationString[arrayNumber] = "";	//makes the string empty
 	}else{
-		for(int u = 1; u < 9; u += increament){
-			if(billArray[u] == 0){
+		for(int u = 1; u < 9; u += increament){	//constructs the String from the array
+			if(billArray[u] == 0){// checks for the end of the array
 				break;
 			}
-			if(billCombinationString[arrayNumber] == ""){
+			if(billCombinationString[arrayNumber] == ""){	//if the string is still empty, first give it the correct position for the gui
 				billCombinationString[arrayNumber] += leftTabs[arrayNumber];
 			}
 			String billAmount = String(billArray[u]);
@@ -994,16 +984,15 @@ void billArrayStringConstructor(int billArray[9], int arrayNumber){
 
 void billArrayChecker(int billArray[9], int arrayNumber){	// function to check if the bills selected are available.
 
-	int increament = 2;
+	int increament = 2;	// increament of 2 to skip a space in the array for each loop
 	Serial.println(billArray[0]);
 	for(int i = 1; i < 9; i += increament){
-		//String value = String(billArray[i+1]);
-		if(billArray[i] == 0){
+		if(billArray[i] == 0){	// checks for the end of the array
 			break;
-		}else if(billsAvailable[billsAvailableIndex[billArray[i+1]]] < billArray[i]){
+		}else if(billsAvailable[billsAvailableIndex[billArray[i+1]]] < billArray[i]){	//checks if the amount of notes selected are available in the machine
 			Serial.print("Er zijn te weinig briefjes van: ");
 			Serial.println(billArray[i+1]);
-			billArray[0] = 0;
+			billArray[0] = 0;	// puts the 0 position of the array to 0, marking it unusable. Used in billArrayStringConstructor()
 			break;
 		}
 	}
@@ -1013,8 +1002,6 @@ void billArrayChecker(int billArray[9], int arrayNumber){	// function to check i
 }
 
 void withdrawlMenu(char customKey){
-	//Serial.println("case 4");
-	
 	Serial.print("customKey: ");
 	Serial.println(customKey);
 	Serial.print("Withdraw step: ");

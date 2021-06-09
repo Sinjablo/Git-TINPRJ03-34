@@ -1,0 +1,10 @@
+Wat er nog in de opleverset moet:
+
+- Ontwerp pasjes?
+- Server bestanden?
+
+- Code
+- Requirement analyse
+- Demo video eindproduct
+- Test verslag
+- Website dataflowdiagram
