@@ -9,12 +9,7 @@
 </head>
 
 <body class="bodies">
-    <!--
-    <span class="menuBox">Withdraw</span>
-    -->
-
     <h1 id="menuText2">Wilt U een bonnetje?</h1>
-
     <span class="menuBox left1">| </span>
     <span class="menuBox left2">| </span>
     <span class="menuBox left3">|</span>
@@ -71,41 +66,6 @@
         xhttp.open("GET", "/abort", true);
         xhttp.send();
     }, 20000);
-/*
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    
-                }
-            }
-        };
-        xhttp.open("GET", "/receipt", true);
-        xhttp.send();
-    }, 200);
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    case '1':
-                        location.replace("/balance");
-                        break;
-                    case '4':
-                        location.replace("/withdraw");
-                        break;
-                }
-            }
-        };
-        xhttp.open("GET", "/receipt", true);
-        xhttp.send();
-    }, 200);
-
-
-    */
 </script>
 
 </html>

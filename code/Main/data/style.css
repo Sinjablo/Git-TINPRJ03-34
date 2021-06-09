@@ -13,14 +13,7 @@ html {
       font-size: 30px;
     }
     .bodies{
-<<<<<<< HEAD
-      background: rgb(64,88,167);
-      background: radial-gradient(circle, rgba(64,88,167,1) 0%, rgba(0,0,0,1) 100%);
       background-color: #4058a7;
-      background-color: radial-gradient(circle, #4058a7, rgb(0, 0, 0));
-=======
-      background-color: #4058a7;
->>>>>>> 855589fb32c86cba2b08887138b99dea48afe177
       background-image: url('boejiebackground.jpg');
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -162,7 +155,7 @@ html {
     text-align: center;
   }
 
-  #Nibba_colum_mid_top{
+  #colum_mid_top{
     background-color: #01316c;
     border-radius: 25px;
     width: 550px;

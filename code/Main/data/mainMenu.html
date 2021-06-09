@@ -9,10 +9,6 @@
 </head>
 
 <body class="bodies">
-    <!--
-    <span class="menuBox">Withdraw</span>
-    -->
-
     <span class="menuBox left1">1| Saldo controleren</span>
     <span class="menuBox left2">4| Geld opnemen</span>
     <span id="tab3" class="menuBox left3">7| Snel &euro;70 pinnen</span>
@@ -23,11 +19,7 @@
     <span class="menuBox right3">|</span>
     <span class="menuBox right4">AFSLUITEN |D</span>
     
-    
-    <h1 id="menuText2">Maak Uw keuze:</h1>
-        
-        
-     
+    <h1 id="menuText2">Maak Uw keuze:</h1>   
         
 </body>
 <script>
@@ -75,45 +67,6 @@
         xhttp.open("GET", "/menuCommand", true);
         xhttp.send();
     }, 200);
-/* 
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/mainMenu");
-                }
-            }
-        };
-        xhttp.open("GET", "/balanceCheck", true);
-        xhttp.send();
-    }, 1000);
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/mainMenu");
-                }
-            }
-        };
-        xhttp.open("GET", "/withdrawCheck", true);
-        xhttp.send();
-    }, 1000);
-    
-    
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("pressure").innerHTML = this.responseText;
-            }
-        };
-        xhttp.open("GET", "/pressure", true);
-        xhttp.send();
-    }, 10000);
-    */
 </script>
 
 </html>

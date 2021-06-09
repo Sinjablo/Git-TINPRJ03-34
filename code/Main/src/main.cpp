@@ -23,11 +23,9 @@
 using namespace std; 
 //Wifi passwords for the ESP
 // Replace with your network credentials
-const char *ssid = "ASUS1424";
-const char *password = "MaJaNe14245.";
 
-//const char *ssid = "Tesla IoT";
-//const char *password = "fsL6HgjN";
+const char *ssid = "Tesla IoT";
+const char *password = "fsL6HgjN";
 
 //Access point credentials
 
@@ -1001,32 +999,33 @@ void billArrayChecker(int billArray[9], int arrayNumber){	// function to check i
 	return;
 }
 
-void withdrawlMenu(char customKey){
+void withdrawlMenu(char customKey){		//withdraw menu, user can select one of three preselected values to withdraw. the user can also switch to a menu to enter the value themselfs
 	Serial.print("customKey: ");
 	Serial.println(customKey);
 	Serial.print("Withdraw step: ");
 	Serial.println(withdrawStep);
-	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){
+	if(customKey == '1' || customKey == '4' || customKey == '7' || customKey == '*'){	//keypad presses for selection of pre-determaind values
 		if(withdrawStep == 0 || withdrawStep == 1){
 			navigationKey = customKey;
+			// switches based on the keypress, 1,4,&7 are for amount selection, * is for the custom withdraw menu 
 			switch (customKey){
 				case '1':
-					if(balanceInt >= 10){
+					if(balanceInt >= 10){	//checks if the users balance is high enough
 						customWithdrawOption = "u0000"; //clears the display message;
 						if(withdrawStep == 0){
-							billsInMachine();
-							billConstructor(10, "10", 1);
+							billsInMachine();	//gets the amount of bills in the machine
+							billConstructor(10, "10", 1);	// constructs 3 arrays with driffrent bill combinations
 						}else{
 							Serial.println("array: 1");
-							for(int i = 0; i < 9; i++){
+							for(int i = 0; i < 9; i++){	//transfers the selected array to the main array used for dispensing money
 								noteArray[i] = customNoteArray01[i];
 								Serial.print(noteArray[i]);
 							}
 							Serial.println("");
-							customAmount = billCombinationString[0].substring(2, billCombinationString[0].length());
+							customAmount = billCombinationString[0].substring(2, billCombinationString[0].length());	// sets the custom amount to the constructed string of the selected array
 						}
 					}else{
-						customWithdrawOption = "i0000"; //verteld de user dat het balans onvoldoende is.
+						customWithdrawOption = "i0000"; //tells the user that their balance is insuffisiant
 						return;
 					}
 					break;
@@ -1046,7 +1045,7 @@ void withdrawlMenu(char customKey){
 							customAmount = billCombinationString[1].substring(2, billCombinationString[1].length());
 						}
 					}else{
-						customWithdrawOption = "i0000"; //verteld de user dat het balans onvoldoende is.
+						customWithdrawOption = "i0000"; //tells the user that their balance is insuffisiant
 						return;
 					}
 					break;
@@ -1066,7 +1065,7 @@ void withdrawlMenu(char customKey){
 							customAmount = billCombinationString[2].substring(2, billCombinationString[2].length());
 						}
 					}else{
-						customWithdrawOption = "i0000"; //verteld de user dat het balans onvoldoende is.
+						customWithdrawOption = "i0000"; //tells the user that their balance is insuffisiant
 						return;
 					}
 					break;
@@ -1080,28 +1079,28 @@ void withdrawlMenu(char customKey){
 					break;
 			}
 			if(withdrawStep == 0){
+				// checks if the notes in the constructed array are available
 				billArrayChecker(customNoteArray01, 0);
 				billArrayChecker(customNoteArray02, 1);
 				billArrayChecker(customNoteArray03, 2);
 				withdrawStep = 1;
 			}else{
 				if(customKey == '1' || customKey == '4' || customKey == '7'){
-					for(int i = 0; i < 3; i++){
+					for(int i = 0; i < 3; i++){	// fills the string arrays for the gui with their stock message
 						billCombinationString[i] = leftTabs[i];
 					}
-					customWithdrawOption = "a0000";	// maakt de tabs aan de linker kant van de gui leeg
+					customWithdrawOption = "a0000";	// empties the left tabs on the gui
 					withdrawStep = 2;
 				}
 			}
 
 		}
-	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){
+	}else if(customKey == 'A' || customKey == 'B' || customKey == 'C' || customKey == 'D'){	//keypresses for ok, return & cancel
 		navigationKey = customKey;
-		if(customKey == 'A' && withdrawStep == 2){
-			Serial.println("option set to d");
+		if(customKey == 'A' && withdrawStep == 2){	//for when the selection process is done
 			customWithdrawOption = "d0000";	// tells the gui to switch to the receipt menu
 		}
-		if(customKey == 'B' || customKey == 'C'){
+		if(customKey == 'B' || customKey == 'C'){	//empties the selection
 			customWithdrawOption = "q0000";	// tells gui to reset
 			customAmount = "";
 			withdrawStep = 0;
@@ -1112,7 +1111,7 @@ void withdrawlMenu(char customKey){
 	}
 }
 
-void customAmountMenu(char customKey){
+void customAmountMenu(char customKey){	//the user can enter a custom value of what they want to withdraw
 
 	Serial.print("customKey: ");
 	Serial.println(customKey);
@@ -1155,7 +1154,7 @@ void customAmountMenu(char customKey){
 					}
 				}else{
 					Serial.println("loc0");
-					customWithdrawOption = "i";	//verteld de user dat het balans onvoldoende is.
+					customWithdrawOption = "i";	//tells the user that their balance is insuffisiant
 					customAmount = "";
 					wrongInput = true;
 				}
@@ -1235,22 +1234,21 @@ void customAmountMenu(char customKey){
 	}
 }
 
-void updateTime(){
+void updateTime(){	//updates the date and time for the receipt
 	timeClient.update();
 
-	formattedDate = timeClient.getFullFormattedTime();
+	formattedDate = timeClient.getFullFormattedTime();	// puts the date & time into a String
 	Serial.print("Date: ");
 	Serial.println(formattedDate);
 }
 
-void receiptPrinter(){
-
-	//printer.setCodePage(19); //gebruikt codepage 858, 19 in library. with 197
+void receiptPrinter(){	//prints the receipt
+	updateTime();// updates the time
 
 	printer.println();
     printer.println();
     
-    //De naam van onze bank
+    //name of our bank
     printer.justify('C');
     printer.setSize('L');
     printer.print(F("BOEJIEBANK\n"));  
@@ -1260,33 +1258,30 @@ void receiptPrinter(){
     printer.println();
     printer.println();
  
-   //De datum van het opnemen
-	updateTime();
+   //prints the date & time
     printer.print(F("Datum : "));
 	printer.print(formattedDate);
-
 	printer.println();
-   // REKENING NUMMER
+
+   // prints the last 4 digits of the Iban
     String passNumber = "************";
 	for(int i = 12; i < 16; i ++){
 		passNumber += iban.charAt(i);
 	}
 	Serial.println(passNumber);
     printer.println(passNumber);
-  
-   //Het opgenomen bedrag
    	printer.println();
+  
+   //prints the amount withdrawn
     printer.setSize('M');
 	printer.print("Opgenomen bedrag: ");
     //printer.write(20AC); printer.print("100 ");
     printer.print(String(noteArray[0]));
-	/**/
-	
-    //printer.println(bedrag);
+
     printer.println();
     printer.println();
     
-    //Het bedankt bericht
+    //prints goodbye message
     printer.justify('C');
     printer.setSize('M');
     printer.println(F("Tot ziens & fijne dag"));
@@ -1297,25 +1292,21 @@ void receiptPrinter(){
 	
 }
 
-void receiptMenu(char customKey){
-	switch (customKey){
-		case 'A':
-			/* receipt constructor, 
-			printer, 
-			dispense money */
-			receiptPrinter();
-			geldOpnemen();
-			dispenseMoney();
+void receiptMenu(char customKey){	// gets called when the user is on the receipt menu
+	switch (customKey){	// switches based on if the user want a receipt or not
+		case 'A':	//wants a receipt
+			receiptPrinter();	//prints a receipt
+			geldOpnemen();	//withdraws money from account
+			dispenseMoney();	//dispenses money
 			break;
-		case 'B':
-			//dispense money
-			geldOpnemen();
-			dispenseMoney();
+		case 'B':	//no receipt
+			geldOpnemen();	//withdraws money from account
+			dispenseMoney();	// dispenses money
 			break;
 	}
 }
 
-void quickWithdraw(){
+void quickWithdraw(){	// function that quickly withdraws & dispenses 70 euros when called. Can be called from the main menu
 	billsInMachine();
 	billConstructor(70, "70", 1);
 	billArrayChecker(customNoteArray01, 0);
@@ -1340,15 +1331,14 @@ void quickWithdraw(){
 		// print error message that the machine is out of bills
 		return;
 	}
-	switch (foreignBank)
-	{
-	case 0:
-		geldOpnemen();
-		break;
-	
-	case 1:
-		geldOpnemenLand();
-		break;
+	switch (foreignBank){
+		case 0:
+			geldOpnemen();
+			break;
+
+		case 1:
+			geldOpnemenLand();
+			break;
 	}
 	
 	dispenseMoney();
@@ -1356,12 +1346,11 @@ void quickWithdraw(){
 
 #pragma endregion
 
-void timerReset(){
+void timerReset(){	// resets the timer for time out
 
-	if(page != tempPage){
+	if(page != tempPage){ //checks if the user has switched pages
 		sessionTime = millis();	//resets the inactivity timer
 	}
-
 	tempPage = page;
 
 }
@@ -1413,28 +1402,27 @@ void loop(){	//void main
 		}
 		char customKey = customKeypad.getKey();
   		if (customKey){
-			//sessionTime = millis();	//resets the inactivity timer
 			switch (page){
-				case 2:	//--------------------Take the keypad input for the passcode
+				case 2:	//--------------------take the keypad input for the passcode
 					passcodeChecker(customKey);
 					break;
 				case 3:	//---------------- take keypad input for navigation
 					navigationInput(customKey);
 					if(customKey == '7' && balanceInt >= 70){
-						quickWithdraw();
+						quickWithdraw();// quickly withdraws 70 euros
 					}
 					break;
 				case 4://-----------------withdraw menu
 					withdrawlMenu(customKey);
 					vTaskDelay(10);
 					break;
-				case 5:
+				case 5://-------------------------custom withdraw menu
 					customAmountMenu(customKey);
 					break;
-				case 6://-------------receipt menu
+				case 6://-----------------receipt menu
 					receiptMenu(customKey);
 					break;
-				case 7:
+				case 7://----------------------balance menu
 					navigationInput(customKey);
 					break;
 			}
@@ -1443,5 +1431,5 @@ void loop(){	//void main
 			}
   		}
 	}
-	yield();
+	yield();	// gives the esp32 time to catch up
 }

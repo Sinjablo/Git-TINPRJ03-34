@@ -9,15 +9,13 @@
 </head>
 
 <body class="bodies">
-    <!--
-    <span class="menuBox">Withdraw</span>
-    -->
+
     <span class="menuBox left1" id="tab1"></span>
     <span class="menuBox left2" id="tab2"></span>
     <span class="menuBox left3" id="tab3"></span>
     <span class="menuBox left4" id="tab4"></span>
 
-    <div id="Nibba_colum_mid_top">
+    <div id="colum_mid_top">
         <h1 id="caption"></h1>
         <h1 id=amount>Kies uw gewenste waarden.</h1>
         <p id="paragraph1"></p>
@@ -36,15 +34,11 @@
         
 </body>
 <script>
-
-    /**/
     var withdrawStep = 0;
     var amountSelected = 0;
     var combination;
-    //var customAmount = false;
     var customAmountPage = false;
     var filled = 0;
-    //var location = 0;
     document.getElementById("tab1").innerHTML = "1| &euro;10"
     document.getElementById("tab2").innerHTML = "4| &euro;30"
     document.getElementById("tab3").innerHTML = "7| &euro;70" 
@@ -159,194 +153,6 @@
         xhttp.open("GET", "/abort", true);
         xhttp.send();
     }, 200);
-/*
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/mainMenu");
-                    
-                }
-            }
-        };
-        xhttp.open("GET", "/withdrawAmount", true);
-        xhttp.send();
-    }, 200);
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/mainMenu");
-                }
-            }
-        };
-        xhttp.open("GET", "/withdrawCheck", true);
-        xhttp.send();
-    }, 1000);
-    
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("accountNumber").innerHTML = this.responseText;
-            }
-        };
-        xhttp.open("GET", "/accountNumber", true);
-        xhttp.send();
-    }, 500);
-
-
-    var withdrawStep = 0;
-    var amountSelected = 0;
-    var combination;
-    document.getElementById("tab1").innerHTML = "1| &euro;10"
-    document.getElementById("tab2").innerHTML = "4| &euro;30"
-    document.getElementById("tab3").innerHTML = "7| &euro;70" 
-    document.getElementById("tab4").innerHTML = "*| Gepast"
-
-    var noteCombs = {
-        a1:"1x &euro;10",
-        a4:"2x &euro;5",
-        a7:"",
-        a10:"",
-        b1:"1x &euro;20, 1x &euro;10",
-        b4:"1x &euro;20, 2x &euro;5",
-        b7:"3x &euro;10",
-        b10:"6x &euro;5",
-        c1:"1x &euro;50, 1x &euro;20",
-        c4:"1x &euro;50, 2x &euro;10",
-        c7:"3x &euro;20, 1x &euro;10",
-        c10:"7x &euro;10"
-    }
-
-    function withdrawOptions(){
-        if(withdrawStep == 0){
-            document.getElementById("caption").innerHTML = "U heeft &euro;"+amountSelected+" geselecteerd.";
-            document.getElementById("amount").innerHTML = "Hoe wilt u het hebben?";
-            switch (amountSelected){
-                case 10:
-                    document.getElementById("tab1").innerHTML = "1| 1x &euro;10";
-                    document.getElementById("tab2").innerHTML = "4| 2x &euro;5";
-                    document.getElementById("tab3").innerHTML = "|";
-                    document.getElementById("tab4").innerHTML = "|";
-                    break;
-                case 30:
-                    document.getElementById("tab1").innerHTML = "1| 1x &euro;20, 1x &euro;10";
-                    document.getElementById("tab2").innerHTML = "4| 1x &euro;20, 2x &euro;5";
-                    document.getElementById("tab3").innerHTML = "7| 3x &euro;10";
-                    document.getElementById("tab4").innerHTML = "*| 6x &euro;5";
-                    break;
-                case 70:
-                    document.getElementById("tab1").innerHTML = "1| 1x &euro;50, 1x &euro;20";
-                    document.getElementById("tab2").innerHTML = "4| 1x &euro;50, 2x &euro;10";
-                    document.getElementById("tab3").innerHTML = "7| 3x &euro;20, 1x &euro;10";
-                    document.getElementById("tab4").innerHTML = "*| 7x &euro;10";
-                    break;
-            }
-            withdrawStep = 1;
-        }else{
-            document.getElementById("amount").innerHTML = "U heeft de volgende waarde geselecteerd:";
-            document.getElementById("paragraph1").innerHTML = noteCombs[combination];
-            document.getElementById("paragraph2").innerHTML = "Is deze selectie correct?";
-            document.getElementById("tab1").innerHTML = "1|"
-            document.getElementById("tab2").innerHTML = "4|"
-            document.getElementById("tab3").innerHTML = "7|" 
-            document.getElementById("tab4").innerHTML = "*|"
-            withdrawStep = 2;
-
-        }
-    }
-
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                switch(this.responseText){
-                    case '1':
-                        if(withdrawStep == 0){
-                            amountSelected = 10;
-                            combination = "a";
-                            console.log(combination);
-                        }else{
-                            console.log("info: ");
-                            combination += "1";
-                            console.log(combination);
-                        }
-                        withdrawOptions();
-                        break;
-                    case '4':
-                        if(withdrawStep == 0){
-                            amountSelected = 30;
-                            combination = "b";
-                        }else{
-                            combination += "4";
-                        }
-                        withdrawOptions();
-                        break;
-                    case '7':
-                        if(withdrawStep == 0){
-                            amountSelected = 70;
-                            combination = "c";
-                        }else{
-                            combination += "7";
-                        }
-                        withdrawOptions();
-                        break;
-                    case '10':
-                        if(withdrawStep == 0){
-                            location.replace("/customWithdraw")
-                        }else{
-                            combination += "10"; 
-                            withdrawOptions();
-                        }
-                        break;
-                        case '11':
-                        if(withdrawStep == 2){
-                            location.replace("/receipt");
-                        }
-                        break;
-                    case '12':
-                        withdrawStep = 0;
-                        location.replace("/mainMenu");
-                        break;
-                    case '13':
-                        customAmount = false;
-                        customAmountPage = false;
-                        document.getElementById("caption").innerHTML = "";
-                        document.getElementById("amount").innerHTML = "";
-                        document.getElementById("paragraph1").innerHTML = "";
-                        document.getElementById("paragraph2").innerHTML = "";
-                        document.getElementById("tab1").innerHTML = "1| &euro;10"
-                        document.getElementById("tab2").innerHTML = "4| &euro;30"
-                        document.getElementById("tab3").innerHTML = "7| &euro;70" 
-                        document.getElementById("tab4").innerHTML = "*| Gepast"
-                        withdrawStep = 0;
-                        break;
-                }
-            }
-        };
-        xhttp.open("GET", "/withdrawlNav", true);
-        xhttp.send();
-    }, 200);
-    
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == true){
-                    location.replace("/index");
-                }
-            }
-        };
-        xhttp.open("GET", "/abort", true);
-        xhttp.send();
-    }, 200);
-
-    */  
-
 </script>
 
 </html>

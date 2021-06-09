@@ -19,13 +19,6 @@
         <span class="menuBox right2">LEEG |B</span>
         <span class="menuBox right3">|</span>
         <span class="menuBox right4">AFSLUITEN |D</span>
-    <!--
-        <p>
-            <span class="sensor-labels">Pressure</span>
-            <span id="pressure">%PRESSURE%</span>
-            <sup class="units">hPa</sup>
-        </p>
-    -->
         
 </body>
 <script>  
@@ -110,33 +103,6 @@
         xhttp.open("GET", "/passcodeLenght", true);
         xhttp.send();
     }, 200);
-    
-    /*
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                document.getElementById("passcode").innerHTML = this.responseText;
-            }
-        };
-        xhttp.open("GET", "/passcodeLenght", true);
-        xhttp.send();
-    }, 200);
-    
-    setInterval(function () {
-        var xhttp = new XMLHttpRequest();
-        
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                if(this.responseText == 1){
-                    location.replace("/mainMenu");
-                }
-            }
-        };
-        xhttp.open("GET", "/tempBtn", true);
-        xhttp.send();
-    }, 1000);
-    */
 </script>
 
 </html>
