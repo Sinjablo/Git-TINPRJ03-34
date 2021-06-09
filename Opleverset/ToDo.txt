@@ -7,3 +7,4 @@ Wat er nog in de opleverset moet:
 - Requirement analyse
 - Demo video eindproduct
 - Test verslag
+- Website dataflowdiagram
