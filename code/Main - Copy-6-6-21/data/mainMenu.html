@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ESP8266 Web Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body class="bodies">
+    <!--
+    <span class="menuBox">Withdraw</span>
+    -->
+
+    <span class="menuBox left1">1| Saldo controleren</span>
+    <span class="menuBox left2">4| Geld opnemen</span>
+    <span id="testing" class="menuBox left3">7| Snel &euro;70 pinnen</span>
+    <span id="testing1" class="menuBox left4">|</span>
+
+    <span class="menuBox right1">|</span>
+    <span class="menuBox right2">|</span>
+    <span class="menuBox right3">|</span>
+    <span class="menuBox right4">AFSLUITEN |D</span>
+    
+    
+    <h1 id="menuText2">Maak Uw keuze:</h1>
+        
+        
+     
+        
+</body>
+<script>
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        /**/
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                switch(this.responseText){
+                    case '1':
+                        location.replace("/balance");
+                        break;
+                    case '4':
+                        location.replace("/withdraw");
+                        break;
+                }
+            }
+        };
+        xhttp.open("GET", "/navigation", true);
+        xhttp.send();
+    }, 200);
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == true){
+                    location.replace("/index");
+                }
+            }
+        };
+        xhttp.open("GET", "/abort", true);
+        xhttp.send();
+    }, 200);
+/*    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText.charAt(0) == "7"){
+                    document.getElementById("testing").innerHTML = this.responseText;
+                }else{
+                    document.getElementById("testing1").innerHTML = this.responseText;
+
+                }
+                console.log("text: ");
+                console.log(this.responseText);
+            }
+        };
+        xhttp.open("GET", "/menuTest", true);
+        xhttp.send();
+    }, 200);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
+            }
+        };
+        xhttp.open("GET", "/balanceCheck", true);
+        xhttp.send();
+    }, 1000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
+            }
+        };
+        xhttp.open("GET", "/withdrawCheck", true);
+        xhttp.send();
+    }, 1000);
+    
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("pressure").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/pressure", true);
+        xhttp.send();
+    }, 10000);
+    */
+</script>
+
+</html>

@@ -1,0 +1,174 @@
+html {
+  font-family: 'Times New Roman', serif;
+  	display: inline-block;
+      margin: 0px auto;
+      text-align: center;
+    }
+    h1 {
+      color: #f2d249;
+      font-size: 32pt;
+    }
+    p {
+      color: #d9d9d9;
+      font-size: 30px;
+    }
+    .bodies{
+      background: rgb(64,88,167);
+      background: radial-gradient(circle, rgba(64,88,167,1) 0%, rgba(0,0,0,1) 100%);
+      background color: #4058a7;
+      background-color: radial-gradient(circle, #4058a7, rgb(0, 0, 0));
+      background-image: url('boejiebackground.jpg');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+    .button {
+      display: inline-block;
+      border: none;
+      border-radius: 4px;
+      color: #d9d9d9;
+      padding: 16px 40px;
+      text-decoration: none;
+      font-size: 30px;
+      margin: 2px;
+      cursor: pointer;
+    }
+    .button2 {
+      background-color: #01316c;
+    }
+    .units {
+      font-size: 1.2rem;
+     }
+    .sensor-labels {
+      font-size: 1.5rem;
+      vertical-align:middle;
+      padding-bottom: 15px;
+    }
+    .menuBox{
+      display: inline-block;
+      background-color: #f2d249;
+      color: rgb(0, 0, 0);
+      
+      
+      border: none;
+      padding: 16px 40px;
+      font-size: 30px;
+    }
+
+	#lastName{
+		font-size: 32pt;
+	}
+	#menuText1{
+		font-size: 32pt;
+	}
+	#menuText2{
+    font-family: 'Times New Roman', serif;
+		font-size: 50pt;
+		color: #f2d249;
+	}
+    .left1{
+      position: absolute;
+      left: 0px;
+      top: 12.5%;
+	  border-radius: 0px 32px 32px 0px;
+	  background-color: #f2d249;
+    }
+    .left2{
+      position: absolute;
+      left: 0px;
+      top: 37.5%;
+	  border-radius: 0px 32px 32px 0px;
+	  background-color: #f2d249;
+    }
+    .left3{
+      position: absolute;
+      left: 0px;
+      top: 62.5%;
+	  border-radius: 0px 32px 32px 0px;
+	  background-color: #f2d249;
+    }
+    .left4{
+      position: absolute;
+      left: 0px;
+      top: 87.5%;
+	  border-radius: 0px 32px 32px 0px;
+	  background-color: #f2d249;
+    }
+	.right1{
+		position: absolute;
+		right: 0px;
+		top: 12.5%;
+		border-radius: 32px 0px 0px 32px;
+		background-color: #d9d9d9;
+	}
+	.right2{
+		position: absolute;
+		right: 0px;
+		top: 37.5%;
+		border-radius: 32px 0px 0px 32px;
+		background-color: #d9d9d9;
+	}
+	.right3{
+		position: absolute;
+		right: 0px;
+		top: 62.5%;
+		border-radius: 32px 0px 0px 32px;
+		background-color: #d9d9d9;
+	}
+	.right4{
+		position: absolute;
+		right: 0px;
+		top: 87.5%;
+		border-radius: 32px 0px 0px 32px;
+		background-color: #d9d9d9;
+	}
+  .withdrawBox1{
+	position: absolute;
+	bottom: 0px;
+	left: 33%
+  }
+
+  #midWrapper{
+    width: 100%
+  }
+  #midTables{
+    background-color: #01316c;
+    border-radius: 25px;
+    width: 70%;
+    height: 270px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    float: center;
+    border: 2px solid #f2d249
+  }
+  #balanceTable{
+    font-family: 'Times New Roman', serif;
+    color: #d9d9d9;
+    font-size: 20pt;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .balanceTR:nth-child(even){
+    background-color: #0955a3;
+    border: 1px solid #f2d249;
+  }
+  .balanceTH{
+    padding: 8px;
+    text-align: center;
+  }
+
+  #Nibba_colum_mid_top{
+    background-color: #01316c;
+    border-radius: 25px;
+    width: 550px;
+    height: 350px;
+    margin: auto;
+    top: 50%;
+    bottom: 50%;
+    width: 50%;
+    border: 1px solid #f2d249;
+    font-family: 'Times New Roman', serif;
+    color: #d9d9d9;
+
+}

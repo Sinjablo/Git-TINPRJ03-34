@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ESP8266 Web Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body class="bodies">
+    <h1 id="menuText2">Geld overzicht:</h1>
+    <!--
+    <span class="menuBox">Withdraw</span>
+    -->
+    <span class="menuBox left1">|</span>
+    <span class="menuBox left2">|</span>
+    <span class="menuBox left3">|</span>
+    <span class="menuBox left4">|</span>
+
+    <span class="menuBox right1">|</span>
+    <span class="menuBox right2">TERUG |B</span>
+    <span class="menuBox right3">|</span>
+    <span class="menuBox right4">AFSLUITEN |D</span>
+    
+    
+
+    <div id="midWrapper">
+        <div id="midTables">
+            <table id="balanceTable">
+                <tr class="balanceTR">
+                    <th class="balanceTH">Account nummer</th>
+                    <th class="balanceTH">Balans</th>
+                </tr>
+                
+                <tr class="balanceTR">
+                    <td class="balanceTH" id="accountNumber">%ACCOUNTNUMBER%</td>
+                    <td class="balanceTH" id="balance">%BALANCE%</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+        
+        
+     
+        
+</body>
+<script>
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        /**/
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                switch(this.responseText){
+                    case '12':
+                        location.replace("/mainMenu");
+                }
+            }
+        };
+        xhttp.open("GET", "/balanceNavigation", true);
+        xhttp.send();
+    }, 200);
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == true){
+                    location.replace("/index");
+                }
+            }
+        };
+        xhttp.open("GET", "/abort", true);
+        xhttp.send();
+    }, 200);
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("accountNumber").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", "/accountNumber", true);
+    xhttp.send();
+        
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            document.getElementById("balance").innerHTML = this.responseText;
+        }
+    };
+    xhttp.open("GET", "/getBalance", true);
+    xhttp.send();
+
+/*
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
+            }
+        };
+        xhttp.open("GET", "/balanceCheck", true);
+        xhttp.send();
+    }, 1000);
+
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText == 1){
+                    location.replace("/mainMenu");
+                }
+            }
+        };
+        xhttp.open("GET", "/withdrawCheck", true);
+        xhttp.send();
+    }, 1000);
+    
+    setInterval(function () {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("accountNumber").innerHTML = this.responseText;
+            }
+        };
+        xhttp.open("GET", "/accountNumber", true);
+        xhttp.send();
+    }, 500);
+    */
+    
+    
+    
+</script>
+
+</html>
