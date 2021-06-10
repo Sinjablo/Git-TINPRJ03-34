@@ -177,7 +177,8 @@ String verifieer_pincodeLand(String passcode, String accountNumber){
     //WiFiClient client = server.available();
 		
     HTTPClient http;
-    String url = get_host+"/verificatie.php?"+"sltl="+key+"&mgrkn="+accountNumber+"&mgpc="+passcode;
+    String url = get_host+"/verificatieLand.php?"+"sltl="+key+"&mgrkn="+accountNumber+"&mgpc="+passcode+"&mgld="+country+"&mgbk="+bank;
+	http://145.24.222.170/verificatieLand.php?sltl=de3w2jbn7eif1nw9e&mgrkn=KC21BOEB06102001&mgpc=5467&mgld=KC&mgbk=BOEB
     Serial.println(url);
     
     http.begin(url);
@@ -333,6 +334,8 @@ String getAbortCheck(){		// used to end the session
 		customAmount = "";
 		rfidCheck = false;
 		resetESP = true;
+		country = "";
+		bank = "";
 		Serial.println("Abort has been called");
 	}
 	return String(tempAbortCheck);
@@ -660,6 +663,7 @@ void passcodeChecker(char customKey){	//checks the passcode & iban of the user
 			if(foreignBank){	// checks if the bankcard is ours
 				// verificatie land
 				//get the F-code for foreign banks
+				fCode = fCodesMap[verifieer_pincodeLand(passcode, iban)];
 			}else{
 				fCode = fCodesMap[verifieer_pincode(passcode, iban)];	// gets the F-code for our bank
 			}
@@ -707,10 +711,10 @@ void dispense50(int value) {	//dispenses a 50 euro bill
   for (value; value != 0; value--) {
     Serial.println("50 word uitgeworpen");
     digitalWrite(motorForward50, HIGH);
-    delay(1300);
+    delay(3300);
     digitalWrite(motorForward50, LOW);
     digitalWrite(motorBackward50, HIGH);
-    delay(800);
+    delay(1300);
     digitalWrite(motorBackward50, LOW);
 	uitStroom("50", "1", atmUser, atmPass);
   }
@@ -1357,8 +1361,8 @@ void timerReset(){	// resets the timer for time out
 
 void timerControl(){	// function to abort if the user has been inactive for too long
 	
-	Serial.print("time: ");
-	Serial.println(millis()-sessionTime);
+	//Serial.print("time: ");
+	//Serial.println(millis()-sessionTime);
 	if(millis()-sessionTime > generalTimeOut){
 		abortCheck = true;
 		page = 1;
@@ -1383,8 +1387,8 @@ void loop(){	//void main
 		}
 		
 	}else{
-		//timerControl(); //function to start timer && check the spend time
-		//timerReset();	// checks if the the page has been switched and the timer can be reset.
+		timerControl(); //function to start timer && check the spend time
+		timerReset();	// checks if the the page has been switched and the timer can be reset.
 		if(page != 2 && balanceCheck == false){
 			switch (foreignBank){
 				case 0:
